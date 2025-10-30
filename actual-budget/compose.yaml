@@ -13,3 +13,20 @@ services:
     volumes:
       - /volume1/docker/actual-budget/actual-data:/data:rw
     restart: unless-stopped
+
+  actual-ical:
+    image: ghcr.io/samaluk/actual-ical
+    container_name: actual-ical
+    ports:
+      - 3030:3000
+    env_file: .env
+    environment:
+      ACTUAL_SERVER: ${ACTUAL_URL}
+      ACTUAL_MAIN_PASSWORD: ${ACTUAL_MAIN_PASSWORD}
+      ACTUAL_SYNC_ID: ${ACTUAL_SYNC_ID}
+      SYNC_ID_AS_URL: true
+      TZ: America/Santiago
+      LOCALE: es-CL
+      CURRENCY: CLP
+    volumes:
+      - /volume1/docker/actual-ical:/app/.actual-cache
