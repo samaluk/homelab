@@ -1,0 +1,18 @@
+services:
+ bazarr:
+    image: ghcr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    healthcheck:
+     test: curl -f http://localhost:6767/ || exit 1
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:false
+    volumes:
+      - /volume1/docker/bazarr:/config:rw
+      - /volume1/homes/plex:/media
+    environment:
+      - TZ=America/Santiago
+      - PGID=100
+      - PUID=1026
+    ports:
+      - 6767:6767
