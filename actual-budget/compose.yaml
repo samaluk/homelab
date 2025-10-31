@@ -30,3 +30,19 @@ services:
       CURRENCY: CLP
     volumes:
       - /volume1/docker/actual-ical:/app/.actual-cache
+
+  actualtap:
+    container_name: actualtap
+    image: mattyfaz/actualtap:latest
+    restart: always
+    ports:
+      - 3333:3001
+    env_file: .env
+    volumes:
+      - /volume1/docker/actual-tap:/app/data
+    environment:
+      - TZ=America/Santiago
+      - API_KEY=${ACTUAL_TAP_APIKEY}
+      - ACTUAL_URL=${ACTUAL_URL}
+      - ACTUAL_PASSWORD=${ACTUAL_MAIN_PASSWORD}
+      - ACTUAL_SYNC_ID=${ACTUAL_SYNC_ID}
