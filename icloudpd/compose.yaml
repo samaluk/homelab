@@ -1,0 +1,18 @@
+services:
+  icloudpd:
+    container_name: icloudpd
+    restart: unless-stopped
+    environment:
+      UID: 1026
+      GID: 100
+    network_mode: host
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10m
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+    volumes:
+      - /volume1/docker/icloudpd/config/:/config
+      - /volume1/homes/SMaluk/Photos/icloud:/home/smaluk/iCloud
+    image: boredazfcuk/icloudpd:latest
