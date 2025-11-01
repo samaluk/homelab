@@ -1,0 +1,19 @@
+services:
+  sonarr:
+    image: ghcr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    healthcheck:
+     test: curl -f http://localhost:8989/ || exit 1
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /volume1/downloads:/downloads
+      - '/volume1/homes/plex/TV Shows:/movies'
+      - /volume1/docker/sonarr/config:/config
+    environment:
+      TZ: America/Santiago
+      PGID: 100
+      PUID: 1026
+    ports:
+      - 8989:8989
