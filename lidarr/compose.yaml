@@ -1,0 +1,19 @@
+services:
+  lidarr:
+    image: ghcr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    healthcheck:
+     test: curl -f http://localhost:8686/ || exit 1
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /volume1/homes/plex/Music:/music
+      - /volume1/downloads:/downloads
+      - /volume1/docker/lidarr/config:/config
+    environment:
+      TZ: America/Santiago
+      PGID: 100
+      PUID: 1026
+    ports:
+      - 8686:8686
