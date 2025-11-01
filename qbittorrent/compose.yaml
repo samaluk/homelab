@@ -1,0 +1,55 @@
+services:
+  qbittorrent:
+    container_name: qbittorrent
+    image: ghcr.io/linuxserver/qbittorrent:5.0.4
+    healthcheck:
+     test: curl -f http://localhost:9865/ || exit 1
+
+    security_opt:
+      - no-new-privileges:true
+    # network_mode: "service:gluetun"
+    tty: true
+    restart: on-failure:5
+    ports:
+      - 9865:9865
+      - 27581:27581
+    volumes:
+      - /volume1/docker/qbittorrent/config:/config:rw
+      - /volume1/downloads:/downloads:rw
+    environment:
+     - WEBUI_PORT=9865
+     - PUID=1026
+     - PGID=100
+     - TZ=America/Santiago
+
+
+  # gluetun:
+  #   container_name: gluetun
+  #   image: qmcgaw/gluetun:latest
+  #   cap_add:
+  #     - NET_ADMIN
+  #   devices:
+  #     - /dev/net/tun:/dev/net/tun
+  #   environment:
+  #     - HEALTH_VPN_DURATION_INITIAL=10s
+  #     - OPENVPN_CIPHERS=AES-128-CBC 
+  #     - VPN_SERVICE_PROVIDER=custom
+  #     - VPN_TYPE=openvpn
+  #     - OPENVPN_USER=RODVD6O19BSZITYR63JGBLH761WJ88HY
+  #     - OPENVPN_PASSWORD=rWA0vVXySApZn99h8wctelh-eE7S5QYW
+  #     - OPENVPN_CUSTOM_CONFIG=/gluetun/custom.conf
+  #     - HTTPPROXY=on #change to on if you wish to enable
+  #     - SHADOWSOCKS=on #change to on if you wish to enable
+  #     - FIREWALL_OUTBOUND_SUBNETS=172.20.0.0/16,192.168.0.0/24
+  #     - FIREWALL_VPN_INPUT_PORTS=8041
+  #     - PUID=1026
+  #     - PGID=100
+  #     - TZ=America/Santiago
+  #   volumes:
+  #     - /volume1/docker/gluetun/custom.ovpn:/gluetun/custom.conf:ro
+  #   ports:
+  #     - 9865:9865
+  #     - 6881:6881
+  #     - 6881:6881/udp
+
+  #   restart: on-failure:3
