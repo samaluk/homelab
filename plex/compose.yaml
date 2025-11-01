@@ -1,0 +1,20 @@
+services:
+  plex:
+    image: plexinc/pms-docker:latest
+    container_name: plex
+    network_mode: host
+    environment:
+      - PLEX_UID=100
+      - PLEX_GID=1026
+      - TZ=America/Santiago
+      - VERSION=public
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+    volumes:
+      - /volume1/docker/plex:/config
+      - '/volume1/homes/plex/TV Shows:/tv'
+      - /volume1/homes/plex/Movies:/movies
+      - /volume1/homes/plex/Music:/music
+      - /volume1/homes/plex/Rugby:/rugby
+    restart: unless-stopped
