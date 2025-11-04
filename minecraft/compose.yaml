@@ -1,0 +1,14 @@
+services:
+  minecraft:
+    image: itzg/minecraft-server:latest
+    pull_policy: daily
+    tty: true
+    stdin_open: true
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      PGID: 100
+      PUID: 1026
+    volumes:
+      - /volume1/docker/minecraft/data:/data
