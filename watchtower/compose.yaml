@@ -1,0 +1,28 @@
+services:
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    hostname: watchtower
+    mem_limit: 512m
+    mem_reservation: 128m
+    cpu_shares: 512
+    security_opt:
+      - no-new-privileges=true
+    read_only: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      TZ: America/Santiago
+      WATCHTOWER_CLEANUP: true # Remove old images after updating
+      WATCHTOWER_REMOVE_VOLUMES: false # Remove attached volumes after updating
+      DOCKER_API_VERSION: 1.41 # SSH docker version 1.41 for Docker engine version 20.10 - 1.43 for Docker engine version 24 - 1.45 for Docker engine version 26.1
+      WATCHTOWER_INCLUDE_RESTARTING: true # Restart containers after update
+      WATCHTOWER_INCLUDE_STOPPED: false # Update stopped containers
+      WATCHTOWER_SCHEDULE: "0 0 */2 * * *" # Update & Scan containers every 2 hours
+      WATCHTOWER_LABEL_ENABLE: false
+      WATCHTOWER_ROLLING_RESTART: true
+      WATCHTOWER_TIMEOUT: 30s
+      WATCHTOWER_LOG_FORMAT: pretty
+      WATCHTOWER_NOTIFICATION_SKIP_TITLE: true
+      WATCHTOWER_NOTIFICATION_URL: "ntfy://ntfy.malukzedan.synology.me/watchtower-IqsSAfcTDpjSUbwg?title=WatchtowerUpdates"
+    restart: on-failure:5
