@@ -1,0 +1,28 @@
+services:
+  tdarr:
+    image: ghcr.io/haveagitgat/tdarr:latest
+    container_name: tdarr
+    hostname: tdarr
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8265/ || exit 1
+    ports:
+      - 8265:8265
+      - 8266:8266
+    environment:
+      - TZ=America/Santiago
+      - PUID=1026
+      - PGID=100
+      - serverIP=192.168.1.12
+      - serverPort=8266
+      - webUIPort=8265
+      - internalNode=false
+
+    volumes:
+      - /volume1/docker/tdarr/server:/app/server
+      - /volume1/docker/tdarr/configs:/app/configs
+      - /volume1/docker/tdarr/logs:/app/logs
+      - /volume1/homes/plex:/home/Tdarr/media
+      - /volume1/docker/tdarr/temp:/temp
+    restart: always
