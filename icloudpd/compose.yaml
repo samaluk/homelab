@@ -3,6 +3,7 @@ services:
     container_name: icloudpd
     restart: unless-stopped
     environment:
+      TZ: America/Santiago
       UID: 1026
       GID: 100
     network_mode: host
