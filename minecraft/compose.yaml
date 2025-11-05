@@ -1,14 +1,13 @@
 services:
   minecraft:
-    image: itzg/minecraft-server:latest
-    pull_policy: daily
+    image: marctv/minecraft-papermc-server:latest
+    container_name: "minecraft-server-paper"
     tty: true
     stdin_open: true
     ports:
       - "25565:25565"
     environment:
-      EULA: "TRUE"
-      PGID: 100
-      PUID: 1026
+      MEMORYSIZE: "1G"
+      PAPERMC_FLAGS: ""
     volumes:
       - /volume1/docker/minecraft/data:/data
