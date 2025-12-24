@@ -1,6 +1,6 @@
 services:
   actual-ical:
-    image: ghcr.io/samaluk/actual-ical
+    image: ghcr.io/samaluk/actual-ical:v0.5.10
     container_name: actual-ical
     volumes:
       - /volume1/docker/actual-ical:/app/.actual-cache
@@ -16,7 +16,7 @@ services:
     ports:
       - '3030:3000'
   actual-server:
-    image: actualbudget/actual-server:latest
+    image: actualbudget/actual-server:25.12.0
     container_name: actual-server
 
     volumes:
@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
 
   actualtap:
-    image: mattyfaz/actualtap:latest
+    image: mattyfaz/actualtap:v1.0.21
     container_name: actualtap
     volumes:
       - /volume1/docker/actual-tap:/app/data
