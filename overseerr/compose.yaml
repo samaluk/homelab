@@ -1,6 +1,6 @@
 services:
   overseerr:
-    image: sctx/overseerr:latest
+    image: sctx/overseerr:1.34.0
     container_name: overseerr
     volumes:
       - /volume1/docker/overseerr:/app/config

@@ -14,7 +14,7 @@ services:
       interval: 10s
       start_period: 30s
   miniflux:
-    image: miniflux/miniflux:latest
+    image: miniflux/miniflux:2.2.15
     container_name: miniflux-web
     depends_on:
       db:

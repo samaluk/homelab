@@ -1,6 +1,6 @@
 services:
   icloudpd:
-    image: boredazfcuk/icloudpd:latest
+    image: boredazfcuk/icloudpd:1.0.1298_06-12-2025
     container_name: icloudpd
     volumes:
       - /volume1/docker/icloudpd/config/:/config

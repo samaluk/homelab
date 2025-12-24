@@ -1,6 +1,6 @@
 services:
   lidarr:
-    image: ghcr.io/linuxserver/lidarr:latest
+    image: linuxserver/lidarr:3.1.0
     container_name: lidarr
     volumes:
       - /volume1/homes/plex/Music:/music

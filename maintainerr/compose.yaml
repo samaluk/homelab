@@ -1,6 +1,6 @@
 services:
   maintainerr:
-    image: ghcr.io/maintainerr/maintainerr:latest
+    image: jorenn92/maintainerr:2.25.0
     container_name: maintainerr
     volumes:
       - /volume1/docker/maintainerr:/opt/data

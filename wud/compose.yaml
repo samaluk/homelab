@@ -1,6 +1,6 @@
 services:
   whatsupdocker:
-    image: getwud/wud
+    image: getwud/wud:8.1.1
     container_name: wud
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

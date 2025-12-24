@@ -1,6 +1,6 @@
 services:
   prowlarr:
-    image: ghcr.io/linuxserver/prowlarr:latest
+    image: ghcr.io/linuxserver/prowlarr:2.3.0
     container_name: prowlarr
     volumes:
       - /volume1/docker/prowlarr:/config:rw

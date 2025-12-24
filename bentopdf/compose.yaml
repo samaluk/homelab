@@ -1,6 +1,6 @@
 services:
   bentopdf:
-    image: bentopdf/bentopdf-simple:latest
+    image: bentopdf/bentopdf-simple:1.11.2
     container_name: bentopdf
     ports:
       - '5959:8080'

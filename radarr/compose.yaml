@@ -1,6 +1,6 @@
 services:
   radarr:
-    image: ghcr.io/linuxserver/radarr:latest
+    image: ghcr.io/linuxserver/radarr:6.0.4
     container_name: radarr
     volumes:
       - /volume1/downloads:/downloads

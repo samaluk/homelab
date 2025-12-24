@@ -1,6 +1,6 @@
 services:
   backend:
-    image: infisical/infisical:latest-postgres
+    image: infisical/infisical:v0.154.6
     container_name: infisical-backend
     depends_on:
       db:
