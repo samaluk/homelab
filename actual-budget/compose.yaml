@@ -1,25 +1,9 @@
 services:
-  actual-server:
-    image: actualbudget/actual-server:latest
-    container_name: actual-server
-    ports:
-      - 5007:5007
-    environment:
-      - ACTUAL_PORT=5007
-      - ACTUAL_UPLOAD_FILE_SYNC_SIZE_LIMIT_MB=50
-      - ACTUAL_UPLOAD_SYNC_ENCRYPTED_FILE_SYNC_SIZE_LIMIT_MB=50
-      - ACTUAL_UPLOAD_FILE_SIZE_LIMIT_MB=50
-
-    volumes:
-      - /volume1/docker/actual-budget/actual-data:/data:rw
-    restart: unless-stopped
-
   actual-ical:
     image: ghcr.io/samaluk/actual-ical
     container_name: actual-ical
-    ports:
-      - 3030:3000
-    env_file: .env
+    volumes:
+      - /volume1/docker/actual-ical:/app/.actual-cache
     environment:
       ACTUAL_SERVER: ${ACTUAL_URL}
       ACTUAL_MAIN_PASSWORD: ${ACTUAL_MAIN_PASSWORD}
@@ -28,16 +12,27 @@ services:
       TZ: America/Santiago
       LOCALE: es-CL
       CURRENCY: CLP
+    env_file: .env
+    ports:
+      - '3030:3000'
+  actual-server:
+    image: actualbudget/actual-server:latest
+    container_name: actual-server
+
     volumes:
-      - /volume1/docker/actual-ical:/app/.actual-cache
+      - /volume1/docker/actual-budget/actual-data:/data:rw
+    environment:
+      - ACTUAL_PORT=5007
+      - ACTUAL_UPLOAD_FILE_SYNC_SIZE_LIMIT_MB=50
+      - ACTUAL_UPLOAD_SYNC_ENCRYPTED_FILE_SYNC_SIZE_LIMIT_MB=50
+      - ACTUAL_UPLOAD_FILE_SIZE_LIMIT_MB=50
+    ports:
+      - '5007:5007'
+    restart: unless-stopped
 
   actualtap:
-    container_name: actualtap
     image: mattyfaz/actualtap:latest
-    restart: always
-    ports:
-      - 3333:3001
-    env_file: .env
+    container_name: actualtap
     volumes:
       - /volume1/docker/actual-tap:/app/data
     environment:
@@ -46,3 +41,7 @@ services:
       - ACTUAL_URL=${ACTUAL_URL}
       - ACTUAL_PASSWORD=${ACTUAL_MAIN_PASSWORD}
       - ACTUAL_SYNC_ID=${ACTUAL_SYNC_ID}
+    env_file: .env
+    ports:
+      - '3333:3001'
+    restart: always

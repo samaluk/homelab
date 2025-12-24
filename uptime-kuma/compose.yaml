@@ -2,14 +2,14 @@ services:
   uptime-kuma:
     image: louislam/uptime-kuma:2
     container_name: uptime-kuma
-    hostname: uptimekuma
-    mem_limit: 4g
-    cpu_shares: 1024
-    ports:
-      - 3444:3001
     volumes:
       - /volume1/docker/uptime-kuma:/app/data:rw
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       TZ: America/Santiago
+    ports:
+      - '3444:3001'
     restart: on-failure:5
+    cpu_shares: 1024
+    hostname: uptimekuma
+    mem_limit: 4g

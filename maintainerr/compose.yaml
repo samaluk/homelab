@@ -1,12 +1,12 @@
 services:
   maintainerr:
-     image: ghcr.io/maintainerr/maintainerr:latest 
-     container_name: maintainerr
-     user: 1026:100
-     volumes:
-       - /volume1/docker/maintainerr:/opt/data
-     environment:
-       - TZ=America/Santiago
-     ports:
-       - 6246:6246 
-     restart: unless-stopped
+    image: ghcr.io/maintainerr/maintainerr:latest
+    container_name: maintainerr
+    volumes:
+      - /volume1/docker/maintainerr:/opt/data
+    environment:
+      - TZ=America/Santiago
+    ports:
+      - '6246:6246'
+    restart: unless-stopped
+    user: 1026:100

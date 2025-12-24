@@ -2,16 +2,16 @@ services:
   prowlarr:
     image: ghcr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
-    healthcheck:
-     test: curl -f http://localhost:9696/ || exit 1
-    restart: on-failure:5
-    security_opt:
-      - no-new-privileges:true
     volumes:
-      - /volume1/docker/prowlarr:/config:rw 
+      - /volume1/docker/prowlarr:/config:rw
     environment:
       TZ: America/Santiago
       PGID: 100
       PUID: 1026
     ports:
-      - 9696:9696
+      - '9696:9696'
+    restart: on-failure:5
+    healthcheck:
+      test: curl -f http://localhost:9696/ || exit 1
+    security_opt:
+      - no-new-privileges:true

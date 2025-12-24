@@ -1,14 +1,14 @@
 services:
   overseerr:
-     image: sctx/overseerr:latest
-     container_name: overseerr
-     environment:
-       - TZ=America/Santiago
-       - PORT=5055
-       - PUID=1026
-       - PGID=100
-     ports:
-       - 5055:5055
-     volumes:
-       - /volume1/docker/overseerr:/app/config
-     restart: unless-stopped
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    volumes:
+      - /volume1/docker/overseerr:/app/config
+    environment:
+      - TZ=America/Santiago
+      - PORT=5055
+      - PUID=1026
+      - PGID=100
+    ports:
+      - '5055:5055'
+    restart: unless-stopped

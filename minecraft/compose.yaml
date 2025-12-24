@@ -2,12 +2,12 @@ services:
   minecraft:
     image: marctv/minecraft-papermc-server:latest
     container_name: "minecraft-server-paper"
-    tty: true
-    stdin_open: true
-    ports:
-      - "25565:25565"
+    volumes:
+      - /volume1/docker/minecraft/data:/data
     environment:
       MEMORYSIZE: "1G"
       PAPERMC_FLAGS: ""
-    volumes:
-      - /volume1/docker/minecraft/data:/data
+    ports:
+      - '25565:25565'
+    stdin_open: true
+    tty: true

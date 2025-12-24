@@ -2,13 +2,6 @@ services:
   watchtower:
     image: containrrr/watchtower:latest
     container_name: watchtower
-    hostname: watchtower
-    mem_limit: 512m
-    mem_reservation: 128m
-    cpu_shares: 512
-    security_opt:
-      - no-new-privileges=true
-    read_only: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
@@ -26,3 +19,10 @@ services:
       WATCHTOWER_NOTIFICATION_SKIP_TITLE: true
       WATCHTOWER_NOTIFICATION_URL: "ntfy://ntfy.malukzedan.synology.me/watchtower-IqsSAfcTDpjSUbwg?title=WatchtowerUpdates"
     restart: on-failure:5
+    cpu_shares: 512
+    hostname: watchtower
+    mem_limit: 512m
+    mem_reservation: 128m
+    read_only: true
+    security_opt:
+      - no-new-privileges=true

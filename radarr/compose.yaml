@@ -2,11 +2,6 @@ services:
   radarr:
     image: ghcr.io/linuxserver/radarr:latest
     container_name: radarr
-    healthcheck:
-     test: curl -f http://localhost:7878/ || exit 1
-    restart: on-failure:5
-    security_opt:
-      - no-new-privileges:true
     volumes:
       - /volume1/downloads:/downloads
       - /volume1/homes/plex/Movies:/movies
@@ -16,4 +11,9 @@ services:
       PGID: 100
       PUID: 1026
     ports:
-      - 7878:7878
+      - '7878:7878'
+    restart: on-failure:5
+    healthcheck:
+      test: curl -f http://localhost:7878/ || exit 1
+    security_opt:
+      - no-new-privileges:true

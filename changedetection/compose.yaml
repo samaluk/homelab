@@ -1,8 +1,7 @@
 services:
- changedetection:
+  changedetection:
     image: dgtlmoon/changedetection.io
     container_name: changedetection
-    restart: always
     volumes:
       - /volume1/docker/changedetection:/datastore
     environment:
@@ -10,4 +9,5 @@ services:
       - PGID=100
       - PUID=1026
     ports:
-      - 5900:5000
+      - '5900:5000'
+    restart: always

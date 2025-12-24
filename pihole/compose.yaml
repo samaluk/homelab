@@ -2,10 +2,6 @@ services:
   pihole:
     image: pihole/pihole
     container_name: pihole
-    network_mode: host
-    security_opt:
-      - no-new-privileges:false
-    restart: on-failure:5
     volumes:
       - /volume1/docker/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
       - /volume1/docker/pihole/pihole:/etc/pihole:rw
@@ -17,6 +13,10 @@ services:
       DNSMASQ_USER: pihole #or root NOT recommended to use root.
       PIHOLE_UID: 1026
       PIHOLE_GID: 100
+    network_mode: host
+    restart: on-failure:5
     cap_add:
       - SYS_TIME
       - SYS_NICE
+    security_opt:
+      - no-new-privileges:false
