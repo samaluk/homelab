@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "require-project-name-field": 0,
+    "service-image-require-explicit-tag": 0,
+    "no-unbound-port-interfaces": 0
+  },
+  "$schema": "./node_modules/dclint/schemas/linter-config.schema.json"
+}
