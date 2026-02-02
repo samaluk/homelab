@@ -1,6 +1,6 @@
 services:
   bazarr:
-    image: ghcr.io/linuxserver/bazarr:1.5.4
+    image: ghcr.io/linuxserver/bazarr:1.5.5
     container_name: bazarr
     volumes:
       - /volume1/docker/bazarr:/config:rw
