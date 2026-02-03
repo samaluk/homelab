@@ -1,6 +1,6 @@
 services:
   actual-ical:
-    image: ghcr.io/matheusvellone/actual-ical:v0.5.12
+    image: ghcr.io/samaluk/actual-ical:v0.5.14
     container_name: actual-ical
     volumes:
       - /volume1/docker/actual-ical:/app/.actual-cache
