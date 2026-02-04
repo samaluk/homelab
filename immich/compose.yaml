@@ -18,7 +18,7 @@ services:
     restart: always
 
   immich-machine-learning:
-    image: ghcr.io/immich-app/immich-machine-learning:v2.5.2
+    image: ghcr.io/immich-app/immich-machine-learning:v2.5.3
     container_name: immich_machine_learning
     volumes:
       - /volume1/docker/immich/cache:/cache
@@ -38,7 +38,7 @@ services:
     user: 1026:100
 
   immich-server:
-    image: ghcr.io/immich-app/immich-server:v2.5.2
+    image: ghcr.io/immich-app/immich-server:v2.5.3
     container_name: immich_server
     depends_on:
       - database
