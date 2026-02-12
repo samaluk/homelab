@@ -1,6 +1,6 @@
 services:
   ntfy:
-    image: binwiederhier/ntfy:v2.16
+    image: binwiederhier/ntfy:v2.17
     container_name: ntfy
 
     volumes:
