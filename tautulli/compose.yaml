@@ -1,6 +1,6 @@
 services:
   tautulli:
-    image: ghcr.io/tautulli/tautulli:v2.16.0
+    image: ghcr.io/tautulli/tautulli:v2.16.1
     container_name: tautulli
     volumes:
       - /volume1/docker/tautulli:/config
