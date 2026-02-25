@@ -2,6 +2,7 @@ services:
   icloudpd:
     image: boredazfcuk/icloudpd:1.0.1298_06-12-2025
     container_name: icloudpd
+    hostname: icloudpd
     volumes:
       - /volume1/docker/icloudpd/config/:/config
       - /volume1/homes/SMaluk/Photos/icloud:/home/smaluk/iCloud
@@ -9,7 +10,8 @@ services:
       TZ: America/Santiago
       UID: 1026
       GID: 100
-    network_mode: host
+    networks:
+      - icloudpd_bridge
     restart: unless-stopped
     healthcheck:
       test: [ "CMD", "/usr/local/bin/healthcheck.sh" ]
@@ -17,3 +19,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 2m
+
+networks:
+  icloudpd_bridge:
+    driver: bridge
