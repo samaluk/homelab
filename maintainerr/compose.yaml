@@ -1,6 +1,6 @@
 services:
   maintainerr:
-    image: jorenn92/maintainerr:2.26.1
+    image: jorenn92/maintainerr:2.27.0
     container_name: maintainerr
     volumes:
       - /volume1/docker/maintainerr:/opt/data
