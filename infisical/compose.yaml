@@ -1,6 +1,6 @@
 services:
   backend:
-    image: infisical/infisical:v0.158.6
+    image: infisical/infisical:v0.158.7
     container_name: infisical-backend
     depends_on:
       db:
