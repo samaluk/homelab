@@ -5,7 +5,7 @@ x-icloudpd-common: &icloudpd-common
     TZ: America/Santiago
   volumes:
     - /volume1/docker/icloud2/config:/config
-    - /volume1/homes/SMaluk/Photos/icloud2:/data
+    - /volume1/homes/SMaluk/Photos/icloud:/data
   networks:
     - icloudpd_bridge
 
@@ -16,9 +16,16 @@ services:
     hostname: icloudpd
     command: >-
       icloudpd
-      --directory /data
+      --directory /data/PrimarySync
       --username ${APPLE_USERNAME}
       --cookie-directory /config/cookies
+      --library "PrimarySync"
+      --folder-structure none
+      --file-match-policy name-size-dedup-with-suffix
+      --live-photo-mov-filename-policy suffix
+      --align-raw as-is
+      --size original
+      --live-photo-size original
       --auto-delete
       --watch-with-interval 3600
       --password-provider webui
@@ -26,6 +33,29 @@ services:
       --no-progress-bar
     ports:
       - 8085:8080
+    restart: unless-stopped
+
+  icloudpd-shared:
+    <<: *icloudpd-common
+    container_name: icloudpd-shared
+    hostname: icloudpd-shared
+    command: >-
+      icloudpd
+      --directory /data/SharedSync-11FA8566-11D0-4EF2-9A8B-352341D031CE
+      --username ${APPLE_USERNAME}
+      --cookie-directory /config/cookies
+      --library "SharedSync-11FA8566-11D0-4EF2-9A8B-352341D031CE"
+      --folder-structure none
+      --file-match-policy name-size-dedup-with-suffix
+      --live-photo-mov-filename-policy suffix
+      --align-raw as-is
+      --size original
+      --live-photo-size original
+      --auto-delete
+      --watch-with-interval 3600
+      --password-provider webui
+      --mfa-provider webui
+      --no-progress-bar
     restart: unless-stopped
 
   icloudpd-auth:
