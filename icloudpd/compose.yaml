@@ -1,24 +1,51 @@
+x-icloudpd-common: &icloudpd-common
+  image: icloudpd/icloudpd:latest
+  user: 1026:100
+  environment:
+    TZ: America/Santiago
+  volumes:
+    - /volume1/docker/icloud2/config:/config
+    - /volume1/homes/SMaluk/Photos/icloud2:/data
+  networks:
+    - icloudpd_bridge
+
 services:
   icloudpd:
-    image: boredazfcuk/icloudpd:1.0.1359_28-02-2026
+    <<: *icloudpd-common
     container_name: icloudpd
     hostname: icloudpd
-    volumes:
-      - /volume1/docker/icloudpd/config/:/config
-      - /volume1/homes/SMaluk/Photos/icloud:/home/smaluk/iCloud
-    environment:
-      TZ: America/Santiago
-      UID: 1026
-      GID: 100
-    networks:
-      - icloudpd_bridge
+    command: >-
+      icloudpd
+      --directory /data
+      --username ${APPLE_USERNAME}
+      --cookie-directory /config/cookies
+      --auto-delete
+      --watch-with-interval 3600
+      --password-provider webui
+      --mfa-provider webui
+      --no-progress-bar
+    ports:
+      - 8085:8080
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "/usr/local/bin/healthcheck.sh" ]
-      interval: 10m
-      timeout: 10s
-      retries: 3
-      start_period: 2m
+
+  icloudpd-auth:
+    <<: *icloudpd-common
+    container_name: icloudpd-auth
+    hostname: icloudpd-auth
+    profiles:
+      - auth
+    command: >-
+      icloudpd
+      --directory /data
+      --username ${APPLE_USERNAME}
+      --cookie-directory /config/cookies
+      --auth-only
+      --password-provider webui
+      --mfa-provider webui
+      --no-progress-bar
+    ports:
+      - 8086:8080
+    restart: "no"
 
 networks:
   icloudpd_bridge:
