@@ -47,7 +47,7 @@ services:
     restart: always
 
   fintual-api:
-    image: ghcr.io/samaluk/fintual-api:nightly@sha256:b49a142fb4351f6841ebb51fa16578d3cf69ecc066e1aa56efac0203270f630a
+    image: ghcr.io/samaluk/fintual-api:nightly@sha256:3f8d7adcf11b82f428a9aabd66bc0121a1ab8cb47373615bc72cc3b40d677f96
     container_name: fintual-api
     command: ["sleep", "infinity"]
     environment:
