@@ -45,3 +45,47 @@ services:
     ports:
       - '3333:3001'
     restart: always
+
+  fintual-api:
+    image: ghcr.io/samaluk/fintual-api:nightly@sha256:7177d6053e93229d00fc03e0d418f82efe7cfcd06ad20e6185025d518b6e2676
+    container_name: fintual-api
+    command: ["sleep", "infinity"]
+    environment:
+      TZ: America/Santiago
+      ACTUAL_SERVER_URL: http://actual-server:5007
+      ACTUAL_PASSWORD: ${ACTUAL_MAIN_PASSWORD}
+      ACTUAL_SYNC_ID: ${ACTUAL_SYNC_ID}
+      ACTUAL_FINTUAL_ACCOUNT: ${ACTUAL_FINTUAL_ACCOUNT}
+      ACTUAL_STARTING_DATE: ${ACTUAL_STARTING_DATE}
+      ACTUAL_PAYEE: ${ACTUAL_PAYEE}
+      FINTUAL_USER_EMAIL: ${FINTUAL_USER_EMAIL}
+      FINTUAL_USER_PASSWORD: ${FINTUAL_USER_PASSWORD}
+      FINTUAL_GOAL_ID: ${FINTUAL_GOAL_ID}
+      GMAIL_CLIENT_ID: ${GMAIL_CLIENT_ID}
+      GMAIL_CLIENT_SECRET: ${GMAIL_CLIENT_SECRET}
+      GMAIL_REFRESH_TOKEN: ${GMAIL_REFRESH_TOKEN}
+      GMAIL_USER_EMAIL: ${GMAIL_USER_EMAIL}
+      FINTUAL_2FA_SENDER: ${FINTUAL_2FA_SENDER}
+      FINTUAL_2FA_SUBJECT: ${FINTUAL_2FA_SUBJECT}
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.fintual-sync.schedule: "0 0 21 * * 1-5"
+      ofelia.job-exec.fintual-sync.command: "./bin/run-sync.sh"
+      ofelia.job-exec.fintual-sync.no-overlap: "true"
+    restart: unless-stopped
+
+  ofelia:
+    image: mcuadros/ofelia:latest
+    container_name: ofelia
+    depends_on:
+      - fintual-api
+    command:
+      - daemon
+      - --docker
+      - -f
+      - label=com.docker.compose.project=${COMPOSE_PROJECT_NAME:-actual-budget}
+    environment:
+      TZ: America/Santiago
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
