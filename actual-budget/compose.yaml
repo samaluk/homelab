@@ -47,26 +47,26 @@ services:
     restart: always
 
   fintual-api:
-    image: ghcr.io/samaluk/fintual-api:nightly@sha256:7177d6053e93229d00fc03e0d418f82efe7cfcd06ad20e6185025d518b6e2676
+    image: ghcr.io/samaluk/fintual-api:nightly@sha256:b49a142fb4351f6841ebb51fa16578d3cf69ecc066e1aa56efac0203270f630a
     container_name: fintual-api
     command: ["sleep", "infinity"]
     environment:
       TZ: America/Santiago
       ACTUAL_SERVER_URL: http://actual-server:5007
-      ACTUAL_PASSWORD: ${ACTUAL_MAIN_PASSWORD}
-      ACTUAL_SYNC_ID: ${ACTUAL_SYNC_ID}
-      ACTUAL_FINTUAL_ACCOUNT: ${ACTUAL_FINTUAL_ACCOUNT}
-      ACTUAL_STARTING_DATE: ${ACTUAL_STARTING_DATE}
-      ACTUAL_PAYEE: ${ACTUAL_PAYEE}
-      FINTUAL_USER_EMAIL: ${FINTUAL_USER_EMAIL}
-      FINTUAL_USER_PASSWORD: ${FINTUAL_USER_PASSWORD}
-      FINTUAL_GOAL_ID: ${FINTUAL_GOAL_ID}
-      GMAIL_CLIENT_ID: ${GMAIL_CLIENT_ID}
-      GMAIL_CLIENT_SECRET: ${GMAIL_CLIENT_SECRET}
-      GMAIL_REFRESH_TOKEN: ${GMAIL_REFRESH_TOKEN}
-      GMAIL_USER_EMAIL: ${GMAIL_USER_EMAIL}
-      FINTUAL_2FA_SENDER: ${FINTUAL_2FA_SENDER}
-      FINTUAL_2FA_SUBJECT: ${FINTUAL_2FA_SUBJECT}
+      ACTUAL_PASSWORD: "${ACTUAL_MAIN_PASSWORD:?Missing ACTUAL_MAIN_PASSWORD for fintual-api}"
+      ACTUAL_SYNC_ID: "${ACTUAL_SYNC_ID:?Missing ACTUAL_SYNC_ID for fintual-api}"
+      ACTUAL_FINTUAL_ACCOUNT: "${ACTUAL_FINTUAL_ACCOUNT:?Missing ACTUAL_FINTUAL_ACCOUNT for fintual-api}"
+      ACTUAL_STARTING_DATE: "${ACTUAL_STARTING_DATE:?Missing ACTUAL_STARTING_DATE for fintual-api}"
+      ACTUAL_PAYEE: "${ACTUAL_PAYEE:?Missing ACTUAL_PAYEE for fintual-api}"
+      FINTUAL_USER_EMAIL: "${FINTUAL_USER_EMAIL:?Missing FINTUAL_USER_EMAIL for fintual-api}"
+      FINTUAL_USER_PASSWORD: "${FINTUAL_USER_PASSWORD:?Missing FINTUAL_USER_PASSWORD for fintual-api}"
+      FINTUAL_GOAL_ID: "${FINTUAL_GOAL_ID:?Missing FINTUAL_GOAL_ID for fintual-api}"
+      GMAIL_CLIENT_ID: "${GMAIL_CLIENT_ID:?Missing GMAIL_CLIENT_ID for fintual-api}"
+      GMAIL_CLIENT_SECRET: "${GMAIL_CLIENT_SECRET:?Missing GMAIL_CLIENT_SECRET for fintual-api}"
+      GMAIL_REFRESH_TOKEN: "${GMAIL_REFRESH_TOKEN:?Missing GMAIL_REFRESH_TOKEN for fintual-api}"
+      GMAIL_USER_EMAIL: "${GMAIL_USER_EMAIL:-}"
+      FINTUAL_2FA_SENDER: "${FINTUAL_2FA_SENDER:-notificaciones@fintual.com}"
+      FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
     labels:
       ofelia.enabled: "true"
       ofelia.job-exec.fintual-sync.schedule: "0 0 21 * * 1-5"
