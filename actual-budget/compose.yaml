@@ -50,6 +50,8 @@ services:
     image: ghcr.io/samaluk/fintual-api:nightly@sha256:3f8d7adcf11b82f428a9aabd66bc0121a1ab8cb47373615bc72cc3b40d677f96
     container_name: fintual-api
     command: ["sleep", "infinity"]
+    ports:
+      - '127.0.0.1:3000:3000'
     environment:
       TZ: America/Santiago
       ACTUAL_SERVER_URL: http://actual-server:5007
