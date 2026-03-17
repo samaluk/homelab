@@ -63,7 +63,7 @@ services:
       FINTUAL_GOAL_ID: "${FINTUAL_GOAL_ID:?Missing FINTUAL_GOAL_ID for fintual-api}"
       GMAIL_CLIENT_ID: "${GMAIL_CLIENT_ID:?Missing GMAIL_CLIENT_ID for fintual-api}"
       GMAIL_CLIENT_SECRET: "${GMAIL_CLIENT_SECRET:?Missing GMAIL_CLIENT_SECRET for fintual-api}"
-      GMAIL_REFRESH_TOKEN: "${GMAIL_REFRESH_TOKEN:?Missing GMAIL_REFRESH_TOKEN for fintual-api}"
+      GMAIL_REFRESH_TOKEN: "${GMAIL_REFRESH_TOKEN:-}"
       GMAIL_USER_EMAIL: "${GMAIL_USER_EMAIL:-}"
       FINTUAL_2FA_SENDER: "${FINTUAL_2FA_SENDER:-notificaciones@fintual.com}"
       FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
