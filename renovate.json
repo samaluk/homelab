@@ -39,6 +39,15 @@
     },
     {
       "matchFileNames": [
+        "infisical/compose.yaml"
+      ],
+      "matchPackageNames": [
+        "postgres"
+      ],
+      "enabled": false
+    },
+    {
+      "matchFileNames": [
         "qbittorrent/compose.yaml"
       ],
       "matchPackageNames": [
