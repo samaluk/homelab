@@ -1,6 +1,6 @@
 services:
   qbittorrent:
-    image: ghcr.io/linuxserver/qbittorrent:5.0.4
+    image: linuxserver/qbittorrent:5.0.4
     container_name: qbittorrent
     volumes:
       - /volume1/docker/qbittorrent/config:/config:rw
