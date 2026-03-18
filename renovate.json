@@ -28,6 +28,24 @@
     },
     {
       "matchFileNames": [
+        "infisical/compose.yaml"
+      ],
+      "matchPackageNames": [
+        "postgres"
+      ],
+      "additionalBranchPrefix": "infisical-"
+    },
+    {
+      "matchFileNames": [
+        "miniflux/compose.yaml"
+      ],
+      "matchPackageNames": [
+        "postgres"
+      ],
+      "additionalBranchPrefix": "miniflux-"
+    },
+    {
+      "matchFileNames": [
         "immich/compose.yaml"
       ],
       "matchPackageNames": [
