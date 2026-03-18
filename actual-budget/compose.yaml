@@ -1,6 +1,6 @@
 services:
   actual-ical:
-    image: ghcr.io/samaluk/actual-ical:v0.5.14
+    image: ghcr.io/samaluk/actual-ical:v0.5.14@sha256:e8fc09e4484fdd3ee7288904769543df0adbe09355d08315ef05cf391d787bdb
     container_name: actual-ical
     volumes:
       - /volume1/docker/actual-ical:/app/.actual-cache
@@ -16,7 +16,7 @@ services:
     ports:
       - '3030:3000'
   actual-server:
-    image: actualbudget/actual-server:26.3.0
+    image: actualbudget/actual-server:26.3.0@sha256:eb8bc26f53025e07e464594c12d77c52c4b95840c8dadd9b95c4f0c4660f8ad2
     container_name: actual-server
 
     volumes:
@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
 
   actualtap:
-    image: mattyfaz/actualtap:v1.0.27
+    image: mattyfaz/actualtap:v1.0.27@sha256:fe30ad0f78c3518a2e1fa2f3a7960182b12b9e8333d803515ea805a29165635b
     container_name: actualtap
     volumes:
       - /volume1/docker/actual-tap:/app/data
@@ -77,7 +77,7 @@ services:
     restart: unless-stopped
 
   ofelia:
-    image: mcuadros/ofelia:latest
+    image: mcuadros/ofelia:latest@sha256:f6325d43543b27ff55f527b9a6fd2700da16d8ae56ec838ce3612d3c412ae1ef
     container_name: ofelia
     depends_on:
       - fintual-api

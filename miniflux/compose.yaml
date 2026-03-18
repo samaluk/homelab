@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:17-alpine@sha256:6f30057d31f5861b66f3545d4821f987aacf1dd920765f0acadea0c58ff975b1
     container_name: miniflux-db
     volumes:
       - /volume1/docker/miniflux:/var/lib/postgresql/data
@@ -14,7 +14,7 @@ services:
       interval: 10s
       start_period: 30s
   miniflux:
-    image: miniflux/miniflux:2.2.17
+    image: miniflux/miniflux:2.2.17@sha256:802ab7d045826d047883476e2310bf59f5d9b3875f7a8106fa0c43638d01fd64
     container_name: miniflux-web
     depends_on:
       db:

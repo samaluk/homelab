@@ -1,6 +1,6 @@
 services:
   maintainerr:
-    image: jorenn92/maintainerr:3.0.1
+    image: jorenn92/maintainerr:3.0.1@sha256:91ea358e965c2693e18e1f21ce1e7df016610bfdfd50e94d1fa3cc8e5e1a53f4
     container_name: maintainerr
     volumes:
       - /volume1/docker/maintainerr:/opt/data
