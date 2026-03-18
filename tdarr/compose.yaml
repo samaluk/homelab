@@ -1,6 +1,6 @@
 services:
   tdarr:
-    image: ghcr.io/haveagitgat/tdarr:2.60.01@sha256:bcca04076da332241e6c56eb8cd869947f173eda1e48183f712eaf9884a0f971
+    image: ghcr.io/haveagitgat/tdarr:2.63.01@sha256:6d3522f8bfea78614348b6be20e91d1d3e11e045c287b21be95dba55f49e242e
     container_name: tdarr
 
     volumes:
