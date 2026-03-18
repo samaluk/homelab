@@ -38,6 +38,15 @@
     },
     {
       "matchFileNames": [
+        "qbittorrent/compose.yaml"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/linuxserver/qbittorrent"
+      ],
+      "enabled": false
+    },
+    {
+      "matchFileNames": [
         "immich/compose.yaml"
       ],
       "matchPackageNames": [
