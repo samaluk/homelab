@@ -1,6 +1,6 @@
 services:
   uptime-kuma:
-    image: louislam/uptime-kuma:2.2.0
+    image: louislam/uptime-kuma:2.2.0@sha256:85d68948704fcadc7438f45c9f2666ef2239b5b84073479e1c5bc4d4d8b6d17c
     container_name: uptime-kuma
     volumes:
       - /volume1/docker/uptime-kuma:/app/data:rw

@@ -1,6 +1,6 @@
 services:
   minecraft:
-    image: marctv/minecraft-papermc-server:1.21.11
+    image: marctv/minecraft-papermc-server:1.21.11@sha256:eeebb757d33881918eb6eaa05d20e706d4d624f6c0ed9d3cb730617762acd398
     container_name: "minecraft-server-paper"
     volumes:
       - /volume1/docker/minecraft/data:/data

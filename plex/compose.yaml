@@ -1,6 +1,6 @@
 services:
   plex:
-    image: plexinc/pms-docker:1.42.2.10156-f737b826c
+    image: plexinc/pms-docker:1.42.2.10156-f737b826c@sha256:9c03c26b9479ba9a09935f3367459bfdc8d21545f42ed2a13258983c5be1b252
     container_name: plex
     volumes:
       - /volume1/docker/plex:/config
