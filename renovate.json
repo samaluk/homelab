@@ -23,26 +23,9 @@
       "matchDatasources": [
         "docker"
       ],
+      "additionalBranchPrefix": "{{parentDir}}-",
       "minimumReleaseAge": "3 days",
       "minimumReleaseAgeBehaviour": "timestamp-optional"
-    },
-    {
-      "matchFileNames": [
-        "infisical/compose.yaml"
-      ],
-      "matchPackageNames": [
-        "postgres"
-      ],
-      "additionalBranchPrefix": "infisical-"
-    },
-    {
-      "matchFileNames": [
-        "miniflux/compose.yaml"
-      ],
-      "matchPackageNames": [
-        "postgres"
-      ],
-      "additionalBranchPrefix": "miniflux-"
     },
     {
       "matchFileNames": [
