@@ -18,7 +18,7 @@ services:
     pull_policy: always
 
   db:
-    image: postgres:14-alpine@sha256:64ce25a0bb68e598edc3944f2f58f39d1e8641755baa4ba5f7ddfa142ed85c63
+    image: postgres:18-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
     container_name: infisical-db
     volumes:
       - /volume1/docker/infisical/pg_data:/var/lib/postgresql/data
