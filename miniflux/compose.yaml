@@ -3,11 +3,12 @@ services:
     image: postgres:18-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
     container_name: miniflux-db
     volumes:
-      - /volume1/docker/miniflux:/var/lib/postgresql
+      - /volume1/docker/miniflux/18:/var/lib/postgresql
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+      - PGDATA=/var/lib/postgresql/docker
     env_file: .env
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "miniflux" ]
