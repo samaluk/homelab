@@ -51,7 +51,7 @@
         "qbittorrent/compose.yaml"
       ],
       "matchPackageNames": [
-        "ghcr.io/linuxserver/qbittorrent"
+        "linuxserver/qbittorrent"
       ],
       "enabled": false
     },
