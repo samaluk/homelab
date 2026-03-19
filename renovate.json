@@ -48,6 +48,18 @@
     },
     {
       "matchFileNames": [
+        "miniflux/compose.yaml"
+      ],
+      "matchPackageNames": [
+        "postgres"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "matchFileNames": [
         "qbittorrent/compose.yaml"
       ],
       "matchPackageNames": [
