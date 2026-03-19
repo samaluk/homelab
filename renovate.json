@@ -53,6 +53,11 @@
       "matchPackageNames": [
         "linuxserver/qbittorrent"
       ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ],
       "enabled": false
     },
     {
