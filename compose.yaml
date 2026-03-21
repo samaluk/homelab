@@ -1,11 +1,13 @@
 services:
   home-assistant:
-    image: homeassistant/home-assistant:2026.3.3@sha256:4c1d99af9fcb666263fff855edc2d1116066faa259f66e6768cee518c8ce3b06
+    image: linuxserver/homeassistant:2026.3.3@sha256:6f61133c85a89743a43823799a7ad6ea27c5d32f23f9805525831507ba24bc4e
     container_name: home-assistant
     volumes:
       - /volume1/docker/home-assistant:/config
       - /etc/localtime:/etc/localtime:ro
     environment:
+      PUID: 1026
+      PGID: 100
       TZ: America/Santiago
     network_mode: host
     privileged: true
