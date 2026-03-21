@@ -1,16 +1,12 @@
-## Add your compose file here
 services:
-  hello_world:
-    image: hello-world
-    # networks:
-    #   - default
-    # ports:
-    #   - 3000:3000
-    # volumes:
-    #   - data:/data
-
-# networks:
-#   default: {}
-
-# volumes:
-#   data:
+  home-assistant:
+    image: homeassistant/home-assistant:2026.3.3@sha256:4c1d99af9fcb666263fff855edc2d1116066faa259f66e6768cee518c8ce3b06
+    container_name: home-assistant
+    volumes:
+      - /volume1/docker/home-assistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      TZ: America/Santiago
+    network_mode: host
+    privileged: true
+    restart: unless-stopped
