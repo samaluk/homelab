@@ -1,7 +1,7 @@
 ## Add your compose file here
 services:
   hello_world:
-    image: hello-world
+    image: hello-world@sha256:85404b3c53951c3ff5d40de0972b1bb21fafa2e8daa235355baf44f33db9dbdd
     # networks:
     #   - default
     # ports:
