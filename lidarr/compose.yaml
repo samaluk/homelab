@@ -22,7 +22,7 @@ services:
       - no-new-privileges:true
 
   db:
-    image: postgres:17-alpine
+    image: postgres:17-alpine@sha256:6f30057d31f5861b66f3545d4821f987aacf1dd920765f0acadea0c58ff975b1
     container_name: lidarr-db
     restart: unless-stopped
     volumes:
