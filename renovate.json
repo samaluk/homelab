@@ -73,6 +73,15 @@
       "enabled": false
     },
     {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "plexinc/pms-docker"
+      ],
+      "versioning": "loose"
+    },
+    {
       "matchFileNames": [
         "immich/compose.yaml"
       ],
