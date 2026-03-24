@@ -47,7 +47,7 @@ services:
     restart: always
 
   fintual-api:
-    image: ghcr.io/samaluk/fintual-api:v1.1.0@sha256:185623a9d516a7bd090ff7a97c7b33287f5ce3c3a49e539a284eddf71b19691e
+    image: samaluk/fintual-api:v1.1.1@sha256:5c3ec7e8169202baf3479f1730bb8e265288eaa051cf509da8d5357da9250e73
     container_name: fintual-api
     command: ["sleep", "infinity"]
     ports:
