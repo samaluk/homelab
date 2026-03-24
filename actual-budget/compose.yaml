@@ -22,7 +22,6 @@ services:
     volumes:
       - /volume1/docker/actual-budget/actual-data:/data:rw
     environment:
-      - DEBUG=actual:config,actual-sensitive:config
       - ACTUAL_PORT=5007
       - ACTUAL_UPLOAD_FILE_SYNC_SIZE_LIMIT_MB=50
       - ACTUAL_UPLOAD_SYNC_ENCRYPTED_FILE_SYNC_SIZE_LIMIT_MB=50
@@ -72,7 +71,7 @@ services:
       FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
     labels:
       ofelia.enabled: "true"
-      ofelia.job-exec.fintual-sync.schedule: "0 */6 * * * 1-5"
+      ofelia.job-exec.fintual-sync.schedule: "0 0 21 * * 1-5"
       ofelia.job-exec.fintual-sync.command: "./bin/run-sync.sh"
       ofelia.job-exec.fintual-sync.no-overlap: "true"
     restart: unless-stopped
