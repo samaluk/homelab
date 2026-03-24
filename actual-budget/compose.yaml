@@ -71,7 +71,7 @@ services:
       FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
     labels:
       ofelia.enabled: "true"
-      ofelia.job-exec.fintual-sync.schedule: "0 26 02 * * 1-5"
+      ofelia.job-exec.fintual-sync.schedule: "0 32 2 * * 1-5"
       ofelia.job-exec.fintual-sync.command: "./bin/run-sync.sh"
       ofelia.job-exec.fintual-sync.no-overlap: "true"
     restart: unless-stopped
