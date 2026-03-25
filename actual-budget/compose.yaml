@@ -47,7 +47,7 @@ services:
     restart: always
 
   fintual-api:
-    image: samaluk/fintual-api:v1.1.1@sha256:5c3ec7e8169202baf3479f1730bb8e265288eaa051cf509da8d5357da9250e73
+    image: samaluk/fintual-api:v2.0.0@sha256:c6e68225905b786d4796b66ab2403ab91118a6dc845083ff0920b038d02ec0fe
     container_name: fintual-api
     command: ["sleep", "infinity"]
     ports:
@@ -63,10 +63,8 @@ services:
       FINTUAL_USER_EMAIL: "${FINTUAL_USER_EMAIL:?Missing FINTUAL_USER_EMAIL for fintual-api}"
       FINTUAL_USER_PASSWORD: "${FINTUAL_USER_PASSWORD:?Missing FINTUAL_USER_PASSWORD for fintual-api}"
       FINTUAL_GOAL_ID: "${FINTUAL_GOAL_ID:?Missing FINTUAL_GOAL_ID for fintual-api}"
-      GMAIL_CLIENT_ID: "${GMAIL_CLIENT_ID:?Missing GMAIL_CLIENT_ID for fintual-api}"
-      GMAIL_CLIENT_SECRET: "${GMAIL_CLIENT_SECRET:?Missing GMAIL_CLIENT_SECRET for fintual-api}"
-      GMAIL_REFRESH_TOKEN: "${GMAIL_REFRESH_TOKEN:-}"
       GMAIL_USER_EMAIL: "${GMAIL_USER_EMAIL:-}"
+      GMAIL_APP_PASSWORD: "${GMAIL_APP_PASSWORD:-}"
       FINTUAL_2FA_SENDER: "${FINTUAL_2FA_SENDER:-notificaciones@fintual.com}"
       FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
     labels:
