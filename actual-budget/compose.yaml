@@ -47,13 +47,15 @@ services:
     restart: always
 
   fintual-api:
-    image: samaluk/fintual-api:v2.0.2@sha256:e1a5beb052ba10f805a3addbe8fe8bbe72a67b6cbf1fa7997bf2e1789f0b6df1
+    image: samaluk/fintual-api:v2.0.3
     container_name: fintual-api
     command: ["sleep", "infinity"]
     ports:
       - '127.0.0.1:3000:3000'
     environment:
       TZ: America/Santiago
+      # Prefer IPv4 for outbound IMAP (some Docker hosts have broken IPv6 to Gmail)
+      NODE_OPTIONS: --dns-result-order=ipv4first
       ACTUAL_SERVER_URL: http://actual-server:5007
       ACTUAL_PASSWORD: "${ACTUAL_MAIN_PASSWORD:?Missing ACTUAL_MAIN_PASSWORD for fintual-api}"
       ACTUAL_SYNC_ID: "${ACTUAL_SYNC_ID:?Missing ACTUAL_SYNC_ID for fintual-api}"
@@ -65,6 +67,8 @@ services:
       FINTUAL_GOAL_ID: "${FINTUAL_GOAL_ID:?Missing FINTUAL_GOAL_ID for fintual-api}"
       GMAIL_USER_EMAIL: "${GMAIL_USER_EMAIL:-}"
       GMAIL_APP_PASSWORD: "${GMAIL_APP_PASSWORD:-}"
+      # Set to 1 in Komodo secrets when debugging IMAP (mailbox uid counts)
+      GMAIL_IMAP_DEBUG: "${GMAIL_IMAP_DEBUG:-}"
       FINTUAL_2FA_SENDER: "${FINTUAL_2FA_SENDER:-notificaciones@fintual.com}"
       FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
     labels:
