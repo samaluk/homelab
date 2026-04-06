@@ -1,6 +1,6 @@
 services:
   app:
-    image: mauriceboe/trek:latest
+    image: mauriceboe/trek:2.9.10@sha256:38ef5e8ea7b81a5bef18fbad7f59c670825f25866081b055a0bc712509ae2431
     container_name: trek
     read_only: true
     security_opt:
