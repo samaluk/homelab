@@ -10,5 +10,5 @@ services:
       PGID: 100
       TZ: America/Santiago
     network_mode: host
-    privileged: true
     restart: unless-stopped
+    privileged: true

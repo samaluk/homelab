@@ -1,7 +1,6 @@
 services:
   seerr:
     image: seerr/seerr:v3.1.0@sha256:b35ba0461c4a1033d117ac1e5968fd4cbe777899e4cbfbdeaf3d10a42a0eb7e9
-    init: true
     container_name: seerr
     volumes:
       - /volume1/docker/seerr:/app/config
@@ -12,10 +11,11 @@ services:
       - PGID=100
     ports:
       - '5055:5055'
+    restart: unless-stopped
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
       start_period: 20s
       timeout: 3s
       interval: 15s
       retries: 3
-    restart: unless-stopped
+    init: true
