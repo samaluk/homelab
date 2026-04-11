@@ -1,7 +1,30 @@
 services:
+
+  db:
+    image: postgres:17-alpine@sha256:6f30057d31f5861b66f3545d4821f987aacf1dd920765f0acadea0c58ff975b1
+    container_name: lidarr-db
+    volumes:
+      - /volume1/docker/lidarr/db:/var/lib/postgresql/data
+      - /volume1/docker/lidarr/multiple-databases.sh:/docker-entrypoint-initdb.d/10-multiple-databases.sh:ro
+    environment:
+      POSTGRES_USER: lidarr
+      POSTGRES_PASSWORD: lidarr
+      POSTGRES_DB: lidarr-main
+      POSTGRES_MULTIPLE_DATABASES: lidarr-log
+    ports:
+      - '5433:5432'
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U lidarr -d postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   lidarr:
     image: linuxserver/lidarr:3.1.0@sha256:dc03c122899c9ffda8a7f2dded803701491b6040e6842329281a44c6a6c298db
     container_name: lidarr
+    depends_on:
+      db:
+        condition: service_healthy
     volumes:
       - /volume1/homes/plex/Music:/music
       - /volume1/downloads:/downloads
@@ -13,30 +36,7 @@ services:
     ports:
       - '8686:8686'
     restart: on-failure:5
-    depends_on:
-      db:
-        condition: service_healthy
     healthcheck:
       test: curl -f http://localhost:8686/ || exit 1
     security_opt:
       - no-new-privileges:true
-
-  db:
-    image: postgres:17-alpine@sha256:6f30057d31f5861b66f3545d4821f987aacf1dd920765f0acadea0c58ff975b1
-    container_name: lidarr-db
-    restart: unless-stopped
-    volumes:
-      - /volume1/docker/lidarr/db:/var/lib/postgresql/data
-      - /volume1/docker/lidarr/multiple-databases.sh:/docker-entrypoint-initdb.d/10-multiple-databases.sh:ro
-    environment:
-      POSTGRES_USER: lidarr
-      POSTGRES_PASSWORD: lidarr
-      POSTGRES_DB: lidarr-main
-      POSTGRES_MULTIPLE_DATABASES: lidarr-log
-    ports:
-      - 5433:5432
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U lidarr -d postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5

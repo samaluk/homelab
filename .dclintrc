@@ -2,7 +2,9 @@
   "rules": {
     "require-project-name-field": 0,
     "service-image-require-explicit-tag": 0,
-    "no-unbound-port-interfaces": 0
+    "no-unbound-port-interfaces": 0,
+    "service-keys-order": 2,
+    "require-quotes-in-ports": 1
   },
   "$schema": "./node_modules/dclint/schemas/linter-config.schema.json"
 }

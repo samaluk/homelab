@@ -11,71 +11,34 @@ x-icloudpd-common: &icloudpd-common
 
 services:
   icloudpd:
-    <<: *icloudpd-common
     container_name: icloudpd
-    hostname: icloudpd
-    command: >-
-      icloudpd
-      --directory /data/PrimarySync
-      --username ${APPLE_USERNAME}
-      --cookie-directory /config/cookies
-      --library "PrimarySync"
-      --folder-structure none
-      --file-match-policy name-size-dedup-with-suffix
-      --live-photo-mov-filename-policy suffix
-      --align-raw as-is
-      --size original
-      --live-photo-size original
-      --auto-delete
-      --watch-with-interval 3600
-      --password-provider webui
-      --mfa-provider webui
-      --no-progress-bar
     ports:
-      - 8085:8080
-    restart: unless-stopped
-
-  icloudpd-shared:
-    <<: *icloudpd-common
-    container_name: icloudpd-shared
-    hostname: icloudpd-shared
+      - '8085:8080'
     command: >-
-      icloudpd
-      --directory /data/SharedSync-11FA8566-11D0-4EF2-9A8B-352341D031CE
-      --username ${APPLE_USERNAME}
-      --cookie-directory /config/cookies
-      --library "SharedSync-11FA8566-11D0-4EF2-9A8B-352341D031CE"
-      --folder-structure none
-      --file-match-policy name-size-dedup-with-suffix
-      --live-photo-mov-filename-policy suffix
-      --align-raw as-is
-      --size original
-      --live-photo-size original
-      --auto-delete
-      --watch-with-interval 3600
-      --password-provider webui
-      --mfa-provider webui
-      --no-progress-bar
+      icloudpd --directory /data/PrimarySync --username ${APPLE_USERNAME} --cookie-directory /config/cookies --library "PrimarySync" --folder-structure none --file-match-policy name-size-dedup-with-suffix --live-photo-mov-filename-policy suffix --align-raw as-is --size original --live-photo-size original --auto-delete --watch-with-interval 3600 --password-provider webui --mfa-provider webui --no-progress-bar
     restart: unless-stopped
+    <<: *icloudpd-common
+    hostname: icloudpd
 
   icloudpd-auth:
-    <<: *icloudpd-common
     container_name: icloudpd-auth
+    ports:
+      - '8086:8080'
+    command: >-
+      icloudpd --directory /data --username ${APPLE_USERNAME} --cookie-directory /config/cookies --auth-only --password-provider webui --mfa-provider webui --no-progress-bar
+    restart: "no"
+    <<: *icloudpd-common
     hostname: icloudpd-auth
     profiles:
       - auth
+
+  icloudpd-shared:
+    container_name: icloudpd-shared
     command: >-
-      icloudpd
-      --directory /data
-      --username ${APPLE_USERNAME}
-      --cookie-directory /config/cookies
-      --auth-only
-      --password-provider webui
-      --mfa-provider webui
-      --no-progress-bar
-    ports:
-      - 8086:8080
-    restart: "no"
+      icloudpd --directory /data/SharedSync-11FA8566-11D0-4EF2-9A8B-352341D031CE --username ${APPLE_USERNAME} --cookie-directory /config/cookies --library "SharedSync-11FA8566-11D0-4EF2-9A8B-352341D031CE" --folder-structure none --file-match-policy name-size-dedup-with-suffix --live-photo-mov-filename-policy suffix --align-raw as-is --size original --live-photo-size original --auto-delete --watch-with-interval 3600 --password-provider webui --mfa-provider webui --no-progress-bar
+    restart: unless-stopped
+    <<: *icloudpd-common
+    hostname: icloudpd-shared
 
 networks:
   icloudpd_bridge:
