@@ -7,4 +7,3 @@ services:
     ports:
       - '9090:8080'
     restart: unless-stopped
-    user: 1026:100
