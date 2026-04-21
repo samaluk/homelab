@@ -2,6 +2,8 @@ services:
   watchstate:
     image: arabcoders/watchstate:v1.0.8@sha256:47143eaa49135dfcdb3bbc351046c81ec1cfa7bf3c6a0141b08ed7b9c32b03d7
     container_name: watchstate
+    environment:
+      - DISABLE_CACHE=1
     volumes:
       - /volume1/docker/watchstate:/config:rw
     ports:
