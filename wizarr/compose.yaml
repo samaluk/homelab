@@ -1,0 +1,20 @@
+services:
+  wizarr:
+    image: ghcr.io/wizarrrr/wizarr:v2026.4.0@sha256:19da537e01b5470cb34b083b5ac64cb534dd27084d9d66bc634e96c1f3976884
+    container_name: wizarr
+    volumes:
+      - /volume1/docker/wizarr:/data
+    environment:
+      - PUID=1026
+      - PGID=100
+      - DISABLE_BUILTIN_AUTH=false
+      - TZ=America/Santiago
+    ports:
+      - '5690:5690'
+    restart: unless-stopped
+    healthcheck:
+      test: curl -f http://localhost:5690/ || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
