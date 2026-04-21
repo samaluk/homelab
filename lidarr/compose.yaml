@@ -1,5 +1,4 @@
 services:
-
   db:
     image: postgres:17-alpine@sha256:778d0b486d6daa02b77434d0358ec57a1b21fd8b6d22ac2eef56a33e816928f6
     container_name: lidarr-db
