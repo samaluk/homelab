@@ -1,0 +1,12 @@
+services:
+  jellyplex-watched:
+    image: luigi311/jellyplex-watched:8.5.1@sha256:e7d37b649ba8c92eca16f9f4a97e0c3ceabf326bd9f1dbe59cd44f13d2875afd
+    container_name: jellyplex-watched
+    volumes:
+      - /volume1/docker/jellyplex-watched:/app/data
+    environment:
+      - PUID=1026
+      - PGID=100
+      - TZ=America/Santiago
+    env_file: .env
+    restart: unless-stopped
