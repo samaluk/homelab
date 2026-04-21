@@ -1,14 +1,12 @@
 services:
   watchstate:
-    image: arabcoders/watchstate:lastest
+    image: arabcoders/watchstate:v1.0.8@sha256:47143eaa49135dfcdb3bbc351046c81ec1cfa7bf3c6a0141b08ed7b9c32b03d7
     container_name: watchstate
     volumes:
       - /volume1/docker/watchstate:/config:rw
-    environment:
-      - DISABLE_CACHE=1
-      - PHPC_JIT=0
-      - PHP_OPCACHE_JIT_BUFFER_SIZE=0
     ports:
       - '9090:8080'
     restart: unless-stopped
     user: 1026:100
+    entrypoint: ["/bin/sh"]
+    command: ["-c", "echo 'hello'"]
