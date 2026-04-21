@@ -8,5 +8,4 @@ services:
       - '9090:8080'
     restart: unless-stopped
     user: 1026:100
-    entrypoint: ["/bin/sh"]
-    command: ["-c", "echo 'hello'"]
+    command: ["sleep", "infinity"]
