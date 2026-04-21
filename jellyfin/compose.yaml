@@ -1,0 +1,20 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    volumes:
+      - /volume1/docker/jellyfin/config:/config
+      - /volume1/docker/jellyfin/cache:/cache
+      - /volume1/homes/plex/TV Shows:/tv
+      - type: bind
+        source: /volume1/homes/plex
+        target: /media
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://jellyfin.malukzedan.synology.me
+    ports:
+      - '7359:7359/udp'
+      - '8096:8096/tcp'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    restart: 'unless-stopped'
+    user: 1026:100
