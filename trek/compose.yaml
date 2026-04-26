@@ -1,6 +1,6 @@
 services:
   app:
-    image: mauriceboe/trek:3.0.7@sha256:0606a347ecb26138b2e8f9058e6784c62523df882387dd893a136bb26515ae46
+    image: mauriceboe/trek:3.0.8@sha256:80ab2628a83306ab280afc97fb183d19aba96a5ae4040b12f6253fa9158664e9
     container_name: trek
     volumes:
       - /volume1/docker/trek/data:/app/data
