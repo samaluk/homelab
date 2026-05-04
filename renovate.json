@@ -28,6 +28,16 @@
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "samaluk/fintual-api",
+        "docker.io/samaluk/fintual-api"
+      ],
+      "minimumReleaseAge": "0 days"
+    },
+    {
       "matchFileNames": [
         "immich/compose.yaml"
       ],
