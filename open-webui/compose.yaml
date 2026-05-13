@@ -10,6 +10,10 @@ services:
       - CORS_ALLOW_ORIGIN=https://llm.malukzedan.synology.me
       - ENABLE_SIGNUP=false
       - ENABLE_COMPRESSION_MIDDLEWARE=false
+      - WEBUI_SESSION_COOKIE_SECURE=true
+      - WEBUI_AUTH_COOKIE_SECURE=true
+      - WEBUI_SESSION_COOKIE_SAME_SITE=lax
+      - WEBUI_AUTH_COOKIE_SAME_SITE=lax
     ports:
       - '8087:8080'
     restart: unless-stopped
