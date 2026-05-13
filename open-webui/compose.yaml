@@ -7,7 +7,6 @@ services:
     environment:
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
       - WEBUI_URL=https://llm.malukzedan.synology.me
-      - ENABLE_SIGNUP=false
     ports:
       - '8087:8080'
     restart: unless-stopped
