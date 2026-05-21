@@ -33,7 +33,7 @@ services:
       retries: 10
 
   redis:
-    image: redis@sha256:e628485c98f8cfe942d8b6f34d461dabf069884bf18932ccbdd9dd9af20b1acc
+    image: redis@sha256:4d25e2fe601f7ffaeb4437cb6ced3518bc36edf34ebe98863c80836943d94529
     container_name: infisical-dev-redis
     volumes:
       - /volume1/docker/infisical/redis_data:/data
