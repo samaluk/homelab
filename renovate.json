@@ -87,6 +87,16 @@
         "docker"
       ],
       "matchPackageNames": [
+        "mcuadros/ofelia",
+        "docker.io/mcuadros/ofelia"
+      ],
+      "allowedVersions": "!/^v3\\.0\\.8$/"
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
         "plexinc/pms-docker"
       ],
       "allowedVersions": "/^\\d+\\.\\d+\\.\\d+\\.\\d+-[a-f0-9]+$/",
