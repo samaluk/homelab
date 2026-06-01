@@ -32,6 +32,12 @@
         "docker"
       ],
       "matchPackageNames": [
+        "ghcr.io/matheusvellone/actual-ical",
+        "matheusvellone/actual-ical",
+        "actualbudget/actual-server",
+        "docker.io/actualbudget/actual-server",
+        "mattyfaz/actualtap",
+        "docker.io/mattyfaz/actualtap",
         "samaluk/fintual-api",
         "docker.io/samaluk/fintual-api"
       ],
