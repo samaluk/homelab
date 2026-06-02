@@ -7,6 +7,8 @@ description: Use this skill when working in this homelab repo and needing to ins
 
 This repo deploys Docker Compose stacks to the user's Synology host via Komodo. Use **homelab-komodo** for deploy/restart/pull and Komodo-side config; use this skill for SSH + Docker inspection on the host, then read stack-local documentation for service-specific commands.
 
+The **Komodo Core + Periphery** stack is managed only on the NAS at `/volume1/docker/komodo` (`ferretdb.compose.yaml`, `compose.env`) — not tracked in git.
+
 ## Workflow
 
 1. Identify the stack folder from the user's prompt or by searching the repo.
