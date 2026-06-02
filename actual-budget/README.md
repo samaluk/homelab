@@ -40,13 +40,15 @@ ssh synology "sudo -n /usr/local/bin/docker logs --since 96h --timestamps fintua
 
 ## Manual Fintual Sync
 
-Run the same sync command documented by the Fintual API local compose workflow, but inside the production container:
+Run the same command Ofelia runs on schedule:
 
 ```bash
 ssh synology "sudo -n /usr/local/bin/docker exec fintual-api ./bin/run-sync.sh"
 ```
 
 Use a longer command timeout because Fintual login, Gmail IMAP 2FA retrieval, and Actual Budget sync can take over a minute.
+
+Do not use Komodo Actions for this job on the Synology host. Komodo Actions run through Deno in `komodo-core`, and this machine can abort with `getentropy failed` on its older kernel.
 
 ## Interpreting A Fintual Sync Run
 
