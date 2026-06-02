@@ -2,3 +2,4 @@
 immich/cache
 .env*
 node_modules
+**/.komodo/

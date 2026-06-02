@@ -1,11 +1,11 @@
 ---
 name: homelab-synology
-description: Use this skill when working in this homelab repo and needing to inspect, debug, or manually operate Docker Compose stacks on the Synology host. Trigger this for prompts about Synology, Container Manager, Komodo-deployed compose stacks, remote Docker logs, container status, or manually executing commands inside homelab containers. Load stack-specific README files from the relevant service folder before acting on service-specific details.
+description: Use this skill when working in this homelab repo and needing to inspect, debug, or manually operate Docker Compose stacks on the Synology host. Trigger this for prompts about Synology, Container Manager, remote Docker logs, container status, or manually executing commands inside homelab containers. For Komodo deploys, restarts, stack logs, or Komodo secrets, use homelab-komodo instead. Load stack-specific README files from the relevant service folder before acting on service-specific details.
 ---
 
 # Homelab Synology
 
-This repo deploys Docker Compose stacks to the user's Synology host. Use this skill for the shared Synology and Docker workflow, then read the stack-local documentation for service-specific commands.
+This repo deploys Docker Compose stacks to the user's Synology host via Komodo. Use **homelab-komodo** for deploy/restart/pull and Komodo-side config; use this skill for SSH + Docker inspection on the host, then read stack-local documentation for service-specific commands.
 
 ## Workflow
 
