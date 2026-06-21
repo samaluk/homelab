@@ -5,7 +5,7 @@ x-icloudpd-common: &icloudpd-common
     TZ: America/Santiago
   volumes:
     - /volume1/docker/icloud2/config:/config
-    - /volume1/homes/SMaluk/Photos/icloud:/data
+    - ${ICLOUD_DATA_PATH}:/data
   networks:
     - icloudpd_bridge
 
@@ -35,7 +35,7 @@ services:
   icloudpd-shared:
     container_name: icloudpd-shared
     command: >-
-      icloudpd --directory /data/SharedSync-11FA8566-11D0-4EF2-9A8B-352341D031CE --username ${APPLE_USERNAME} --cookie-directory /config/cookies --library "SharedSync-11FA8566-11D0-4EF2-9A8B-352341D031CE" --folder-structure none --file-match-policy name-size-dedup-with-suffix --live-photo-mov-filename-policy suffix --align-raw as-is --size original --live-photo-size original --auto-delete --watch-with-interval 3600 --password-provider webui --mfa-provider webui --no-progress-bar
+      icloudpd --directory /data/${ICLOUD_SHARED_LIBRARY_ID} --username ${APPLE_USERNAME} --cookie-directory /config/cookies --library "${ICLOUD_SHARED_LIBRARY_ID}" --folder-structure none --file-match-policy name-size-dedup-with-suffix --live-photo-mov-filename-policy suffix --align-raw as-is --size original --live-photo-size original --auto-delete --watch-with-interval 3600 --password-provider webui --mfa-provider webui --no-progress-bar
     restart: unless-stopped
     <<: *icloudpd-common
     hostname: icloudpd-shared
