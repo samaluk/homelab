@@ -53,7 +53,7 @@ services:
       TZ: America/Santiago
       # Prefer IPv4 for outbound IMAP (some Docker hosts have broken IPv6 to Gmail)
       NODE_OPTIONS: --dns-result-order=ipv4first
-      ACTUAL_SERVER_URL: https://budget.malukzedan.synology.me
+      ACTUAL_SERVER_URL: ${ACTUAL_SERVER_URL}
       ACTUAL_PASSWORD: "${ACTUAL_MAIN_PASSWORD:?Missing ACTUAL_MAIN_PASSWORD for fintual-api}"
       ACTUAL_SYNC_ID: "${ACTUAL_SYNC_ID:?Missing ACTUAL_SYNC_ID for fintual-api}"
       ACTUAL_FINTUAL_ACCOUNT: "${ACTUAL_FINTUAL_ACCOUNT:?Missing ACTUAL_FINTUAL_ACCOUNT for fintual-api}"

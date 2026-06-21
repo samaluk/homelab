@@ -47,7 +47,7 @@ services:
       # Do not edit the next line. If you want to change the media storage location on your system, edit the value of UPLOAD_LOCATION in the .env file
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
-      - /volume1/homes/SMaluk/Photos/icloud:/volume1/homes/SMaluk/Photos/icloud:ro
+      - ${ICLOUD_EXTERNAL_LIBRARY_PATH}:${ICLOUD_EXTERNAL_LIBRARY_PATH}:ro
     environment:
       TZ: America/Santiago
       DB_USERNAME: ${DB_USERNAME}

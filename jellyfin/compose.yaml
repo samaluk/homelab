@@ -10,7 +10,7 @@ services:
         source: /volume1/homes/plex
         target: /media
     environment:
-      - JELLYFIN_PublishedServerUrl=https://jellyfin.malukzedan.synology.me
+      - JELLYFIN_PublishedServerUrl=${JELLYFIN_PUBLISHED_SERVER_URL}
     ports:
       - '7359:7359/udp'
       - '8096:8096/tcp'

@@ -6,8 +6,8 @@ services:
       - /volume1/docker/open-webui/data:/app/backend/data
     environment:
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
-      - WEBUI_URL=https://llm.malukzedan.synology.me
-      - CORS_ALLOW_ORIGIN=https://llm.malukzedan.synology.me
+      - WEBUI_URL=${WEBUI_URL}
+      - CORS_ALLOW_ORIGIN=${CORS_ALLOW_ORIGIN}
       - ENABLE_SIGNUP=false
       - ENABLE_COMPRESSION_MIDDLEWARE=false
       - WEBUI_SESSION_COOKIE_SECURE=true

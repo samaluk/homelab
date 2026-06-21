@@ -13,7 +13,7 @@ services:
       - TZ=America/Santiago
       - PUID=1026
       - PGID=100
-      - serverIP=192.168.1.12
+      - serverIP=${TDARR_SERVER_IP}
       - serverPort=8266
       - webUIPort=8265
       - internalNode=false
