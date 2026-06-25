@@ -10,7 +10,7 @@ on:
 jobs:
   dclint:
     name: dclint
-    runs-on: ${{ fromJSON(vars.USE_SELF_HOSTED_RUNNERS == 'true' && vars.SELF_HOSTED_RUNNER_LABELS || '["ubuntu-latest"]') }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - name: Get Bun version from package.json
