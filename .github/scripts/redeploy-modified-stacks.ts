@@ -13,6 +13,7 @@
  *                 KOMODO_DEPLOY_POLL ("1" to wait for each deploy to finish)
  *                 KOMODO_DRY_RUN ("1" to log without deploying)
  */
+import { appendFile } from "node:fs/promises";
 import { ensureLocalStorage } from "../../.agents/skills/homelab-komodo/scripts/komodo/polyfill.ts";
 
 ensureLocalStorage();
@@ -40,14 +41,14 @@ const komodo = KomodoClient(url, {
 
 const skipped: string[] = [];
 const deployed: string[] = [];
-const unchanged: string[] = [];
+const wouldDeploy: string[] = [];
 const failed: { name: string; error: string }[] = [];
 
 console.log(`Komodo: ${url}`);
 console.log(`Exclusion tag: "${exclusionTagName}"${dryRun ? "  (DRY RUN)" : ""}\n`);
 
-// GetTag throws if the tag name is not found. Treat a missing tag as "exclude nothing"
-// so a typo never silently deploys templates, but warn loudly.
+// GetTag throws if the tag name is not found. Fail closed so a typo never
+// silently deploys templates.
 let exclusionTagId: string | null = null;
 try {
   const tag = await komodo.read("GetTag", { tag: exclusionTagName });
@@ -82,7 +83,7 @@ for (const stack of stacks) {
 
   if (dryRun) {
     console.log(`Would deploy ${name}`);
-    deployed.push(name);
+    wouldDeploy.push(name);
     continue;
   }
 
@@ -117,8 +118,11 @@ for (const stack of stacks) {
 }
 
 console.log("");
+const headline = dryRun
+  ? `${wouldDeploy.length} would deploy`
+  : `${deployed.length} deployed`;
 console.log(
-  `Summary: ${deployed.length} deployed, ${unchanged.length} unchanged, ${skipped.length} skipped, ${failed.length} failed`,
+  `Summary: ${headline}, ${skipped.length} skipped, ${failed.length} failed`,
 );
 
 if (process.env.GITHUB_STEP_SUMMARY) {
@@ -127,8 +131,12 @@ if (process.env.GITHUB_STEP_SUMMARY) {
   lines.push("");
   lines.push(`- Trigger: ${process.env.GITHUB_EVENT_NAME ?? "manual"}`);
   lines.push(`- Exclusion tag: \`${exclusionTagName}\` (\`${exclusionTagId}\`)`);
-  lines.push(`- Deployed: **${deployed.length}** · Skipped: **${skipped.length}** · Failed: **${failed.length}**`);
-  if (deployed.length) lines.push(`\n**Deployed:** ${deployed.join(", ")}`);
+  const countLine = dryRun
+    ? `- Would deploy: **${wouldDeploy.length}** · Skipped: **${skipped.length}** · Failed: **${failed.length}**`
+    : `- Deployed: **${deployed.length}** · Skipped: **${skipped.length}** · Failed: **${failed.length}**`;
+  lines.push(countLine);
+  if (dryRun && wouldDeploy.length) lines.push(`\n**Would deploy:** ${wouldDeploy.join(", ")}`);
+  if (!dryRun && deployed.length) lines.push(`\n**Deployed:** ${deployed.join(", ")}`);
   if (skipped.length) lines.push(`\n**Skipped (excluded):** ${skipped.join(", ")}`);
   if (failed.length) {
     lines.push(`\n**Failed:**`);
@@ -136,7 +144,7 @@ if (process.env.GITHUB_STEP_SUMMARY) {
     lines.push("|---|---|");
     for (const f of failed) lines.push(`| ${f.name} | ${f.error.replace(/\|/g, "\\|")} |`);
   }
-  await Bun.write(process.env.GITHUB_STEP_SUMMARY, lines.join("\n") + "\n", { append: true });
+  await appendFile(process.env.GITHUB_STEP_SUMMARY, lines.join("\n") + "\n", "utf8");
 }
 
 if (failed.length > 0) process.exit(1);
