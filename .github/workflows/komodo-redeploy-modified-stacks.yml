@@ -53,7 +53,7 @@ jobs:
             echo "changed=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          files=$(git diff --name-only --diff-filter=AMR "$before" "$after" -- 2>/dev/null || true)
+          files=$(git diff --name-only --diff-filter=AMRD "$before" "$after" -- 2>/dev/null || true)
           {
             echo "changed<<EOF"
             echo "$files"

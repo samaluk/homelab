@@ -199,7 +199,9 @@ if (process.env.GITHUB_STEP_SUMMARY) {
     lines.push("| Stack | Changed file(s) |");
     lines.push("|---|---|");
     const sanitize = (s: string) => s.replace(/[\r\n]+/g, " ").replace(/\|/g, "\\|");
-    for (const t of targets) {
+    const queuedSet = new Set(queued);
+    const rows = dryRun ? targets : targets.filter((t) => queuedSet.has(t.name));
+    for (const t of rows) {
       lines.push(`| ${sanitize(t.name)} | ${driftMode ? "_(drift)_" : sanitize(t.changed.join(", "))} |`);
     }
   }
