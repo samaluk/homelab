@@ -45,9 +45,12 @@ jobs:
         # single diff, so leave CHANGED_FILES empty — the script runs in drift
         # mode and queues every non-excluded stack for reconciliation.
         if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.event.after }}
         run: |
-          before="${{ github.event.before }}"
-          after="${{ github.event.after }}"
+          before="$BEFORE"
+          after="$AFTER"
           # Force-pushed / first commit: fall back to drift mode.
           if [ "$before" = "0000000000000000000000000000000000000000" ]; then
             echo "changed=" >> "$GITHUB_OUTPUT"
