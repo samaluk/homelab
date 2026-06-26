@@ -1,0 +1,46 @@
+name: Komodo redeploy modified stacks
+
+# Replaces the Komodo Action "ad-hoc: redeploy modified stacks".
+# Komodo Actions abort with `getentropy failed` on this host's 3.10.x kernel
+# (Deno inside komodo-core needs getrandom(2), added in Linux 3.17). The Komodo
+# deploy API is unaffected, so this workflow drives Komodo from a modern kernel.
+#
+# Required repo/org secrets: KOMODO_URL, KOMODO_API_KEY, KOMODO_API_SECRET
+# Optional repo variables:
+#   KOMODO_EXCLUSION_TAG (default: "template") — stacks with this tag are skipped
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 06:00 UTC daily — drift reconciliation independent of pushes
+    - cron: "0 6 * * *"
+  workflow_dispatch: # manual run from the Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.5
+
+      - name: Install deps
+        run: bun install --frozen-lockfile
+
+      - name: Redeploy modified stacks
+        env:
+          KOMODO_URL: ${{ secrets.KOMODO_URL }}
+          KOMODO_API_KEY: ${{ secrets.KOMODO_API_KEY }}
+          KOMODO_API_SECRET: ${{ secrets.KOMODO_API_SECRET }}
+          KOMODO_EXCLUSION_TAG: ${{ vars.KOMODO_EXCLUSION_TAG }}
+          KOMODO_DEPLOY_POLL: "1"
+        run: bun .github/scripts/redeploy-modified-stacks.ts
