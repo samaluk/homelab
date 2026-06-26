@@ -29,6 +29,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+          fetch-depth: 0 # need history to diff before..after on push
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -38,10 +39,37 @@ jobs:
       - name: Install deps
         run: bun install --frozen-lockfile
 
+      - name: Compute changed files
+        id: diff
+        # On push, diff before..after. For scheduled/manual runs there is no
+        # single diff, so leave CHANGED_FILES empty — the script runs in drift
+        # mode and queues every non-excluded stack for reconciliation.
+        if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.event.after }}
+        run: |
+          before="$BEFORE"
+          after="$AFTER"
+          echo "computed=1" >> "$GITHUB_OUTPUT"
+          # Force-pushed / first commit: no before SHA to diff against.
+          if [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            echo "changed=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Let real git errors fail the job instead of being treated as drift.
+          files=$(git diff --name-only --diff-filter=AMRD "$before" "$after")
+          {
+            echo "changed<<EOF"
+            echo "$files"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Redeploy modified stacks
         env:
           KOMODO_URL: ${{ secrets.KOMODO_URL }}
           KOMODO_API_KEY: ${{ secrets.KOMODO_API_KEY }}
           KOMODO_API_SECRET: ${{ secrets.KOMODO_API_SECRET }}
-          KOMODO_DEPLOY_POLL: "1"
+          CHANGED_FILES: ${{ steps.diff.outputs.changed }}
+          DIFF_COMPUTED: ${{ steps.diff.outputs.computed }}
         run: bun .github/scripts/redeploy-modified-stacks.ts
