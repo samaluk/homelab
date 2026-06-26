@@ -142,7 +142,8 @@ if (process.env.GITHUB_STEP_SUMMARY) {
     lines.push(`\n**Failed:**`);
     lines.push("| Stack | Error |");
     lines.push("|---|---|");
-    for (const f of failed) lines.push(`| ${f.name} | ${f.error.replace(/\|/g, "\\|")} |`);
+    const sanitize = (s: string) => s.replace(/[\r\n]+/g, " ").replace(/\|/g, "\\|");
+    for (const f of failed) lines.push(`| ${sanitize(f.name)} | ${sanitize(f.error)} |`);
   }
   await appendFile(process.env.GITHUB_STEP_SUMMARY, lines.join("\n") + "\n", "utf8");
 }
