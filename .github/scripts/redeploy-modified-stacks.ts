@@ -30,7 +30,7 @@ if (!url || !key || !secret) {
   process.exit(1);
 }
 
-const exclusionTagName = process.env.KOMODO_EXCLUSION_TAG ?? "template";
+const exclusionTagName = process.env.KOMODO_EXCLUSION_TAG?.trim() || "template";
 const poll = process.env.KOMODO_DEPLOY_POLL === "1";
 const dryRun = process.env.KOMODO_DRY_RUN === "1";
 
