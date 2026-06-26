@@ -51,12 +51,14 @@ jobs:
         run: |
           before="$BEFORE"
           after="$AFTER"
-          # Force-pushed / first commit: fall back to drift mode.
+          echo "computed=1" >> "$GITHUB_OUTPUT"
+          # Force-pushed / first commit: no before SHA to diff against.
           if [ "$before" = "0000000000000000000000000000000000000000" ]; then
             echo "changed=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          files=$(git diff --name-only --diff-filter=AMRD "$before" "$after" -- 2>/dev/null || true)
+          # Let real git errors fail the job instead of being treated as drift.
+          files=$(git diff --name-only --diff-filter=AMRD "$before" "$after")
           {
             echo "changed<<EOF"
             echo "$files"
@@ -69,4 +71,5 @@ jobs:
           KOMODO_API_KEY: ${{ secrets.KOMODO_API_KEY }}
           KOMODO_API_SECRET: ${{ secrets.KOMODO_API_SECRET }}
           CHANGED_FILES: ${{ steps.diff.outputs.changed }}
+          DIFF_COMPUTED: ${{ steps.diff.outputs.computed }}
         run: bun .github/scripts/redeploy-modified-stacks.ts

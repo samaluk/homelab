@@ -55,7 +55,10 @@ const changedFiles = (process.env.CHANGED_FILES ?? "")
   .split(/[\n\0]/)
   .map((p) => p.trim())
   .filter(Boolean);
-const driftMode = changedFiles.length === 0;
+// Drift mode = no push diff was computed (schedule / workflow_dispatch). A push
+// whose diff genuinely matched no watched files is NOT drift — it deploys nothing.
+const diffComputed = process.env.DIFF_COMPUTED === "1";
+const driftMode = !diffComputed && changedFiles.length === 0;
 const changedSet = new Set(changedFiles);
 
 const komodo = KomodoClient(url, {
