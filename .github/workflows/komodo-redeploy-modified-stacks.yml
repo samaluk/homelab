@@ -43,6 +43,5 @@ jobs:
           KOMODO_URL: ${{ secrets.KOMODO_URL }}
           KOMODO_API_KEY: ${{ secrets.KOMODO_API_KEY }}
           KOMODO_API_SECRET: ${{ secrets.KOMODO_API_SECRET }}
-          KOMODO_EXCLUSION_TAG: ${{ vars.KOMODO_EXCLUSION_TAG }}
           KOMODO_DEPLOY_POLL: "1"
         run: bun .github/scripts/redeploy-modified-stacks.ts
