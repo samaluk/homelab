@@ -10,8 +10,12 @@
  *
  * Env (required): KOMODO_URL, KOMODO_API_KEY, KOMODO_API_SECRET
  * Env (optional): KOMODO_EXCLUSION_TAG (default: "template")
- *                 KOMODO_DEPLOY_POLL ("1" to wait for each deploy to finish)
  *                 KOMODO_DRY_RUN ("1" to log without deploying)
+ *
+ * Uses fire-and-forget `execute` rather than `execute_and_poll`: Komodo's
+ * /execute response carries no update `_id`, so the client's poll helper
+ * returns immediately without actually polling. We hand the deploy to Komodo
+ * and trust it to apply it (same behavior as the original Komodo Action).
  */
 import { appendFile } from "node:fs/promises";
 import { ensureLocalStorage } from "../../.agents/skills/homelab-komodo/scripts/komodo/polyfill.ts";
@@ -31,7 +35,6 @@ if (!url || !key || !secret) {
 }
 
 const exclusionTagName = process.env.KOMODO_EXCLUSION_TAG?.trim() || "template";
-const poll = process.env.KOMODO_DEPLOY_POLL === "1";
 const dryRun = process.env.KOMODO_DRY_RUN === "1";
 
 const komodo = KomodoClient(url, {
@@ -40,7 +43,7 @@ const komodo = KomodoClient(url, {
 });
 
 const skipped: string[] = [];
-const deployed: string[] = [];
+const queued: string[] = [];
 const wouldDeploy: string[] = [];
 const failed: { name: string; error: string }[] = [];
 
@@ -89,22 +92,9 @@ for (const stack of stacks) {
 
   console.log(`Deploying ${name}`);
   try {
-    if (poll) {
-      const result = await komodo.execute_and_poll("DeployStackIfChanged", {
-        stack: id,
-      });
-      const status = "status" in result ? String((result as { status?: unknown }).status) : "";
-      if (String(status).toLowerCase().includes("error")) {
-        console.log(`  -> ERROR (${status})`);
-        failed.push({ name, error: String(status) });
-      } else {
-        console.log(`  -> ${status || "done"}`);
-        deployed.push(name);
-      }
-    } else {
-      await komodo.execute("DeployStackIfChanged", { stack: id });
-      deployed.push(name);
-    }
+    await komodo.execute("DeployStackIfChanged", { stack: id });
+    console.log(`  -> queued`);
+    queued.push(name);
   } catch (err) {
     const msg =
       err && typeof err === "object" && "result" in err
@@ -120,7 +110,7 @@ for (const stack of stacks) {
 console.log("");
 const headline = dryRun
   ? `${wouldDeploy.length} would deploy`
-  : `${deployed.length} deployed`;
+  : `${queued.length} queued`;
 console.log(
   `Summary: ${headline}, ${skipped.length} skipped, ${failed.length} failed`,
 );
@@ -133,10 +123,10 @@ if (process.env.GITHUB_STEP_SUMMARY) {
   lines.push(`- Exclusion tag: \`${exclusionTagName}\` (\`${exclusionTagId}\`)`);
   const countLine = dryRun
     ? `- Would deploy: **${wouldDeploy.length}** · Skipped: **${skipped.length}** · Failed: **${failed.length}**`
-    : `- Deployed: **${deployed.length}** · Skipped: **${skipped.length}** · Failed: **${failed.length}**`;
+    : `- Queued: **${queued.length}** · Skipped: **${skipped.length}** · Failed: **${failed.length}**`;
   lines.push(countLine);
   if (dryRun && wouldDeploy.length) lines.push(`\n**Would deploy:** ${wouldDeploy.join(", ")}`);
-  if (!dryRun && deployed.length) lines.push(`\n**Deployed:** ${deployed.join(", ")}`);
+  if (!dryRun && queued.length) lines.push(`\n**Queued:** ${queued.join(", ")}`);
   if (skipped.length) lines.push(`\n**Skipped (excluded):** ${skipped.join(", ")}`);
   if (failed.length) {
     lines.push(`\n**Failed:**`);
