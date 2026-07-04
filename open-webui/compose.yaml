@@ -1,6 +1,6 @@
 services:
   open-webui:
-    image: openwebui/open-webui:0.10.1@sha256:080a25a7cfc995ad64013a3827a54e681d4a4d70e5a5f79c1209206aefe13265
+    image: openwebui/open-webui:0.10.2@sha256:9fcea9c6e32ab60b0498f3986c6cdf651ddbe61db48d2213a3d28048ddd673d4
     container_name: open-webui
     volumes:
       - /volume1/docker/open-webui/data:/app/backend/data
