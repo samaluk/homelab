@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
 
   actualtap:
-    image: mattyfaz/actualtap:v1.0.33@sha256:c3e1d8dd52a1d9ce1c7754f2ec2538ba32cd929beda2065d92e32c0a870f18a8
+    image: mattyfaz/actualtap:v1.0.34@sha256:8add8c2d5f8dbdd4db4ffd0796a34a503da0af682eae88cdc799362825500ab4
     container_name: actualtap
     volumes:
       - /volume1/docker/actual-tap:/app/data
