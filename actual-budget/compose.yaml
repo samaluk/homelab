@@ -47,7 +47,7 @@ services:
     restart: always
 
   fintual-api:
-    image: samaluk/fintual-api:v2.1.11@sha256:c67aa05b275fb668a40da3a9656d61163b345f998a0f8b23262a486b99584f40
+    image: samaluk/fintual-api:v2.1.12@sha256:5f9fac8c02dc943da8b2ccc798e7e0b417482b45dd2dcaee4487940fb106a8e2
     container_name: fintual-api
     environment:
       TZ: America/Santiago
