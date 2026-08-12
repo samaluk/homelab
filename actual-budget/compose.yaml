@@ -74,6 +74,4 @@ services:
       GMAIL_IMAP_DEBUG: "${GMAIL_IMAP_DEBUG:-}"
       FINTUAL_2FA_SENDER: "${FINTUAL_2FA_SENDER:-notificaciones@fintual.com}"
       FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
-    ports:
-      - '127.0.0.1:3000:3000'
     restart: unless-stopped
