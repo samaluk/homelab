@@ -47,10 +47,15 @@ services:
     restart: always
 
   fintual-api:
-    image: samaluk/fintual-api:v2.1.12@sha256:5f9fac8c02dc943da8b2ccc798e7e0b417482b45dd2dcaee4487940fb106a8e2
+    image: docker.io/samaluk/fintual-api:v3.0.0@sha256:33a0b2a83d0dac133d0f42e53ee308b06fa1845c72dbdc0d04e26e3e86854bd8
     container_name: fintual-api
     environment:
       TZ: America/Santiago
+      # v3 runs an in-process cron scheduler by default (replaces the former Ofelia job-exec)
+      RUN_MODE: schedule
+      SYNC_CRON: "0 0 22 * * 1-5"
+      SYNC_TIMEZONE: America/Santiago
+      SYNC_NO_OVERLAP: "true"
       # Prefer IPv4 for outbound IMAP (some Docker hosts have broken IPv6 to Gmail)
       NODE_OPTIONS: --dns-result-order=ipv4first
       # Use the internal service endpoint to avoid reverse-proxy/hairpin failures during sync.
@@ -69,28 +74,4 @@ services:
       GMAIL_IMAP_DEBUG: "${GMAIL_IMAP_DEBUG:-}"
       FINTUAL_2FA_SENDER: "${FINTUAL_2FA_SENDER:-notificaciones@fintual.com}"
       FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
-    ports:
-      - '127.0.0.1:3000:3000'
-    command: [ "sleep", "infinity" ]
-    restart: unless-stopped
-    labels:
-      ofelia.enabled: "true"
-      ofelia.job-exec.fintual-sync.schedule: "0 0 22 * * 1-5"
-      ofelia.job-exec.fintual-sync.command: "./bin/run-sync.sh"
-      ofelia.job-exec.fintual-sync.no-overlap: "true"
-
-  ofelia:
-    image: mcuadros/ofelia:0.4.0-beta.2@sha256:e8e5eb1525b8d5698f08df9d22939015495986afd10f1f8acc292128d1cff5c6
-    container_name: ofelia
-    depends_on:
-      - fintual-api
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    environment:
-      TZ: America/Santiago
-    command:
-      - daemon
-      - --docker
-      - -f
-      - label=com.docker.compose.project=${COMPOSE_PROJECT_NAME:-actual-budget}
     restart: unless-stopped
