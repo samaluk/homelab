@@ -53,7 +53,7 @@ services:
       TZ: America/Santiago
       # v3 runs an in-process cron scheduler by default (replaces the former Ofelia job-exec)
       RUN_MODE: schedule
-      SYNC_CRON: "0 */2 * * * *"
+      SYNC_CRON: "0 */3 * * * *"
       SYNC_TIMEZONE: America/Santiago
       SYNC_NO_OVERLAP: "true"
       # Prefer IPv4 for outbound IMAP (some Docker hosts have broken IPv6 to Gmail)
