@@ -47,7 +47,7 @@ services:
     restart: always
 
   fintual-api:
-    image: docker.io/samaluk/fintual-api:v3.0.0@sha256:33a0b2a83d0dac133d0f42e53ee308b06fa1845c72dbdc0d04e26e3e86854bd8
+    image: docker.io/samaluk/fintual-api:v3.1.0@sha256:d90c8b6d425eae983e72c0b8a4ec9305474f36045fe25e95d572d24fd0b2f562
     container_name: fintual-api
     environment:
       TZ: America/Santiago
