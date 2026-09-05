@@ -1,6 +1,6 @@
 {
   "name": "homelab",
-  "packageManager": "bun@1.4.1",
+  "packageManager": "bun@1.4.2",
   "devDependencies": {
     "dclint": "^3.1.0",
     "komodo_client": "^2.1.1"
