@@ -11,14 +11,20 @@ commands on the Synology host as an administrator, and preserve any existing
 files:
 
 ~~~sh
-sudo mkdir -p /volume1/SMaluk/swingvault/published
-sudo chown 1026:100 /volume1/SMaluk/swingvault/published
-sudo chmod 755 /volume1/SMaluk/swingvault/published
+if [ ! -d /volume1/SMaluk/swingvault/published ]; then
+  sudo mkdir -p /volume1/SMaluk/swingvault/published
+  sudo chown 1026:100 /volume1/SMaluk/swingvault/published
+  sudo chmod 755 /volume1/SMaluk/swingvault/published
+else
+  ls -ld /volume1/SMaluk/swingvault/published
+fi
 ~~~
 
 The compose file defaults SWINGVAULT_PUBLISHED_PATH to
 /volume1/SMaluk/swingvault/published. Set that stack variable in Komodo or
 Infisical only when the deployment uses a different, pre-created host path.
+For an existing directory, retain its current publisher ownership and ACLs;
+do not run chown or chmod unless an ownership change has been reviewed.
 Inside the container, SwingVault's published tree is always
 /data/swingvault/published; configure that exact path as a read-only Immich
 external library.
