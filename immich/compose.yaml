@@ -48,6 +48,8 @@ services:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
       - ${ICLOUD_EXTERNAL_LIBRARY_PATH}:${ICLOUD_EXTERNAL_LIBRARY_PATH}:ro
+      # SwingVault publishes verified clips here; keep this bind read-only.
+      - ${SWINGVAULT_PUBLISHED_PATH:-/volume1/SMaluk/swingvault/published}:/data/swingvault/published:ro
     environment:
       TZ: America/Santiago
       DB_USERNAME: ${DB_USERNAME}
