@@ -1,0 +1,22 @@
+services:
+  sitebin:
+    image: ghcr.io/ittrail/sitebin.io:latest@sha256:5ce254c2cedff902287bb3a9be44f3f697b50c8344118ddd6b6453ea74546a96
+    container_name: sitebin
+    volumes:
+      - data:/data
+    environment:
+      SITEBIN_BASE_DOMAIN: ${SITEBIN_HOST:?Missing SITEBIN_HOST}
+      SITEBIN_HTTP_ONLY: 'true'
+      SITEBIN_VIEW_ACCESS: path
+      SITEBIN_WEBDAV_ENABLED: 'false'
+      SITEBIN_MCP_ENABLED: 'false'
+      SITEBIN_TRACK_VIEWS: 'false'
+      GOMEMLIMIT: 192MiB
+    ports:
+      - '127.0.0.1:8090:80'
+    restart: unless-stopped
+    mem_limit: 384m
+    security_opt: [ no-new-privileges:true ]
+
+volumes:
+  data:
