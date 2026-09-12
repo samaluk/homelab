@@ -16,7 +16,10 @@ DSM's existing reverse proxy routes HTTPS `reports.malukzedan.synology.me:443`
 to HTTP `127.0.0.1:8090`, with the matching certificate and HSTS. Sitebin's
 backend port is bound to NAS loopback. `SITEBIN_HTTP_ONLY=true` keeps Sitebin's
 bundled Caddy listener on HTTP for that internal hop; DSM remains responsible
-for public TLS termination. Komodo deploys after the PR reaches main.
+for public TLS termination. Do not enable `no-new-privileges`: the image grants
+its non-root Caddy binary the capability required to bind port 80, and that
+security option prevents the capability from taking effect. Komodo deploys
+after the PR reaches main.
 
 The `/volume1/docker/sitebin` host directory is mounted at `/data` and holds
 reports and signing keys. Before the first deploy, create it on the NAS with
