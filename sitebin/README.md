@@ -14,11 +14,22 @@ config files or ignored services are needed. Store
 
 DSM's existing reverse proxy routes HTTPS `reports.malukzedan.synology.me:443`
 to HTTP `127.0.0.1:8090`, with the matching certificate and HSTS. Sitebin's
-backend port is bound to NAS loopback. Komodo deploys after the PR reaches main.
+backend port is bound to NAS loopback. `SITEBIN_HTTP_ONLY=true` keeps Sitebin's
+bundled Caddy listener on HTTP for that internal hop; DSM remains responsible
+for public TLS termination. Komodo deploys after the PR reaches main.
 
-The Docker `data` volume holds reports and signing keys at `/data` (normally
-`sitebin_data` on the host). Preserve and back up that volume; the image supplies
-its initial ownership. No separate data initializer is needed.
+The `/volume1/docker/sitebin` host directory is mounted at `/data` and holds
+reports and signing keys. Before the first deploy, create it on the NAS with
+the ownership expected by Sitebin's non-root UID/GID 1000:
+
+```sh
+sudo mkdir -p /volume1/docker/sitebin
+sudo chown 1000:1000 /volume1/docker/sitebin
+sudo chmod 0700 /volume1/docker/sitebin
+```
+
+Preserve and back up that directory. No named Docker volume or separate data
+initializer is needed.
 
 ## Use
 
