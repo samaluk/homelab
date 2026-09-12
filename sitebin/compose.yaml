@@ -1,57 +1,9 @@
 services:
-  gateway:
-    image: nginx:1.28.2-alpine@sha256:5b4900b042ccfa8b0a73df622c3a60f2322faeb2be800cbee5aa7b44d241649e
-    container_name: sitebin-gateway
-    depends_on:
-      sitebin:
-        condition: service_healthy
-    volumes:
-      - ./gateway:/etc/sitebin:ro
-      - ./web:/srv/drop:ro
-    environment:
-      SITEBIN_HOST: ${SITEBIN_HOST:?Missing SITEBIN_HOST}
-      SITEBIN_OWNER_HTPASSWD_B64: ${SITEBIN_OWNER_HTPASSWD_B64:?Missing SITEBIN_OWNER_HTPASSWD_B64}
-    ports:
-      - '127.0.0.1:8090:8080'
-    entrypoint: [ '/bin/sh', '/etc/sitebin/start.sh' ]
-    restart: unless-stopped
-    healthcheck:
-      test: [ 'CMD', 'wget', '-q', '-O', '/dev/null', 'http://127.0.0.1:8080/healthz' ]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    user: '101:101'
-    cap_drop: [ ALL ]
-    mem_limit: 64m
-    read_only: true
-    security_opt: [ no-new-privileges:true ]
-    tmpfs:
-      - /tmp:uid=101,gid=101,mode=0700
-
-  init-data:
-    image: ghcr.io/ittrail/sitebin.io:latest@sha256:5ce254c2cedff902287bb3a9be44f3f697b50c8344118ddd6b6453ea74546a96
-    volumes:
-      - /volume1/docker/sitebin:/data
-    network_mode: none
-    entrypoint: [ '/bin/sh', '-ec', 'chown 1000:1000 /data && chmod 0700 /data' ]
-    restart: 'no'
-    healthcheck:
-      disable: true
-    user: '0:0'
-    cap_add: [ CHOWN, FOWNER ]
-    cap_drop: [ ALL ]
-    mem_limit: 32m
-    read_only: true
-    security_opt: [ no-new-privileges:true ]
-
   sitebin:
     image: ghcr.io/ittrail/sitebin.io:latest@sha256:5ce254c2cedff902287bb3a9be44f3f697b50c8344118ddd6b6453ea74546a96
     container_name: sitebin
-    depends_on:
-      init-data:
-        condition: service_completed_successfully
     volumes:
-      - /volume1/docker/sitebin:/data
+      - data:/data
     environment:
       SITEBIN_BASE_DOMAIN: ${SITEBIN_HOST:?Missing SITEBIN_HOST}
       SITEBIN_HTTP_ONLY: 'true'
@@ -60,12 +12,11 @@ services:
       SITEBIN_MCP_ENABLED: 'false'
       SITEBIN_TRACK_VIEWS: 'false'
       GOMEMLIMIT: 192MiB
+    ports:
+      - '127.0.0.1:8090:80'
     restart: unless-stopped
-    healthcheck:
-      test: [ 'CMD', 'sitebin', 'healthcheck' ]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 20s
     mem_limit: 384m
     security_opt: [ no-new-privileges:true ]
+
+volumes:
+  data:
