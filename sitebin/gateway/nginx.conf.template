@@ -1,0 +1,88 @@
+worker_processes 1;
+pid /tmp/nginx.pid;
+error_log /dev/stderr warn;
+events { worker_connections 256; }
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    access_log off;
+    server_tokens off;
+    client_body_temp_path /tmp/client;
+    proxy_temp_path /tmp/proxy;
+    fastcgi_temp_path /tmp/fastcgi;
+    uwsgi_temp_path /tmp/uwsgi;
+    scgi_temp_path /tmp/scgi;
+    client_max_body_size 10m;
+    limit_req_zone $binary_remote_addr zone=unlock:1m rate=10r/m;
+    # Follow Docker DNS when the backend is recreated by an image update.
+    resolver 127.0.0.11 valid=10s ipv6=off;
+    upstream sitebin_backend {
+        zone sitebin_backend 64k;
+        server sitebin:80 resolve;
+    }
+
+    # Apply isolation to report content, including partial responses. The 401
+    # password form must retain forms/scripts so that guests can unlock it.
+    map $upstream_status $report_csp {
+        default "";
+        ~^(2[0-9][0-9]|304)$ "sandbox allow-scripts allow-modals allow-downloads; default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; form-action 'none'; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'";
+    }
+    # Browser writes must originate from the owner portal. Agents may omit Origin.
+    map $http_origin $invalid_origin {
+        default 1;
+        "" 0;
+        "https://${SITEBIN_HOST}" 0;
+    }
+
+    server {
+        listen 8080;
+        server_name ${SITEBIN_HOST};
+        auth_basic "Private reports · owner";
+        auth_basic_user_file /tmp/owner.htpasswd;
+        include /etc/sitebin/headers.conf;
+
+        proxy_pass_request_headers on;
+        proxy_set_header Host ${SITEBIN_HOST};
+        proxy_set_header Authorization "";
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Accept-Encoding "";
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        proxy_hide_header Referrer-Policy;
+        proxy_cookie_flags ~ secure httponly samesite=lax;
+        proxy_redirect http://${SITEBIN_HOST}/ https://${SITEBIN_HOST}/;
+
+        location = /healthz {
+            auth_basic off;
+            access_log off;
+            return 200 'ok';
+        }
+        location = / { root /srv/drop; try_files /index.html =404; }
+        location = /drop.css { root /srv/drop; }
+        location = /drop.js { root /srv/drop; }
+
+        location ~ "^/v/[a-z2-7]{26}/" {
+            auth_basic off;
+            include /etc/sitebin/headers.conf;
+            add_header Content-Security-Policy $report_csp always;
+            proxy_pass http://sitebin_backend;
+        }
+        location = /_sitebin/unlock {
+            auth_basic off;
+            limit_req zone=unlock burst=5 nodelay;
+            limit_req_status 429;
+            proxy_pass http://sitebin_backend;
+        }
+        location /api/ {
+            if ($invalid_origin) { return 403; }
+            # Sitebin HTTP_ONLY builds HTTP links, although DSM terminates TLS.
+            # Rewrite JSON metadata only; never rewrite uploaded report content.
+            sub_filter_types application/json;
+            sub_filter_once off;
+            sub_filter 'http://${SITEBIN_HOST}/' 'https://${SITEBIN_HOST}/';
+            proxy_pass http://sitebin_backend;
+        }
+        location / { proxy_pass http://sitebin_backend; }
+    }
+}

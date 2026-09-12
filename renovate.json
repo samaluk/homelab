@@ -12,6 +12,11 @@
   ],
   "packageRules": [
     {
+      "description": "Sitebin publishes a rolling latest channel; update its pinned digest without switching to commit tags.",
+      "matchPackageNames": ["ghcr.io/ittrail/sitebin.io"],
+      "allowedVersions": "/^latest$/"
+    },
+    {
       "matchUpdateTypes": [
         "digest",
         "minor",

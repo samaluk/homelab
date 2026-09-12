@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'self'">
+  <title>Folio — private reports</title>
+  <link rel="stylesheet" href="/drop.css">
+  <script src="/drop.js" defer></script>
+</head>
+<body>
+  <header><a href="/" class="brand">f<span>o</span>lio<span class="dot">.</span></a><span class="badge">YOUR PRIVATE SHELF</span></header>
+  <main>
+    <div class="intro"><p class="eyebrow">A little less admin.</p><h1>Drop a report.<br>Pick it up anywhere.</h1><p>Private HTML pages, ready for your phone. Share a password and a link that expires when you choose.</p></div>
+    <form id="publish">
+      <label class="drop" id="drop" for="file"><span class="plus" aria-hidden="true">＋</span><strong id="filename">Drop your HTML here</strong><span id="filehint">or tap to choose a file · up to 8 MB</span><input id="file" type="file" accept=".html,.htm,text/html" required></label>
+      <div class="settings">
+        <label>Viewer password<span class="password-row"><input id="password" type="text" autocomplete="off" minlength="12" required aria-describedby="password-hint"><button type="button" id="regenerate" class="quiet">New</button></span><small id="password-hint">A separate password for this report.</small></label>
+        <label>Available for<select id="expiry"><option value="1">24 hours</option><option value="7" selected>7 days</option><option value="30">30 days</option><option value="0">Until I delete it</option></select><small>Expiry also blocks previously unlocked views.</small></label>
+      </div>
+      <div class="publish-row"><span>Self-contained HTML. No external assets.</span><button id="submit" type="submit">Publish private report <span aria-hidden="true">↗</span></button></div>
+      <p id="status" role="status" aria-live="polite"></p>
+    </form>
+    <section id="result" hidden aria-labelledby="result-title">
+      <p class="eyebrow">Ready when you are</p><h2 id="result-title">Your report has a home.</h2>
+      <p id="expires"></p>
+      <label>Share link<div class="copy-row"><a id="view" target="_blank" rel="noopener noreferrer"></a><button type="button" data-copy="view">Copy link</button></div></label>
+      <label>Viewer password<div class="copy-row"><code id="viewer-password"></code><button type="button" data-copy="viewer-password">Copy password</button></div></label>
+      <details><summary>Keep the management details</summary><p>Save this receipt to extend expiry, change the password, or delete the report. Management also requires your owner login.</p><a id="edit" target="_blank" rel="noopener noreferrer">Manage report ↗</a><label>Edit password<div class="copy-row"><code id="edit-password"></code><button type="button" data-copy="edit-password">Copy</button></div></label><button type="button" id="receipt" class="quiet">Download private receipt</button></details>
+    </section>
+    <footer><span>On your Synology. Under your control.</span><span>Keep the original · expiry is not a backup</span></footer>
+  </main>
+</body>
+</html>

@@ -28,6 +28,7 @@ Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https:
 | `qbittorrent` | qBittorrent |
 | `radarr` | Radarr movies |
 | `seerr` | Seerr requests |
+| `sitebin` | Private HTML reports with owner login and expiring shares |
 | `sonarr` | Sonarr TV |
 | `tautulli` | Tautulli Plex stats |
 | `tdarr` | Tdarr transcoding |
@@ -58,6 +59,7 @@ Stacks with required secrets beyond host bind-mount paths:
 | `miniflux` | `POSTGRES_*`, `ADMIN_*` |
 | `open-webui` | `WEBUI_SECRET_KEY`, `WEBUI_URL`, `CORS_ALLOW_ORIGIN` |
 | `pihole` | `PIHOLE_WEB_PASSWORD` |
+| `sitebin` | `SITEBIN_HOST`, `SITEBIN_OWNER_PASSWORD`, `SITEBIN_OWNER_HTPASSWD_B64` |
 | `tdarr` | `TDARR_SERVER_IP` |
 | `trek` | `APP_URL` |
 
