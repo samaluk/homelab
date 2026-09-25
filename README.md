@@ -60,12 +60,10 @@ Stacks with required secrets beyond host bind-mount paths:
 | `miniflux` | `POSTGRES_*`, `ADMIN_*` |
 | `open-webui` | `WEBUI_SECRET_KEY`, `WEBUI_URL`, `CORS_ALLOW_ORIGIN` |
 | `pihole` | `PIHOLE_WEB_PASSWORD` |
+| `reactive-resume` | `APP_URL`, `POSTGRES_PASSWORD`, `AUTH_SECRET`, optional `SMTP_*` |
 | `sitebin` | `SITEBIN_HOST` |
 | `tdarr` | `TDARR_SERVER_IP` |
 | `trek` | `APP_URL` |
-
-Reactive Resume uses Komodo secret variables instead of an Infisical folder; see
-[its runtime configuration](reactive-resume/README.md#runtime-configuration).
 
 Never commit `.env` files or secret values to git.
 
