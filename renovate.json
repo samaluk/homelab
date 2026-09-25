@@ -69,7 +69,8 @@
     },
     {
       "matchFileNames": [
-        "miniflux/compose.yaml"
+        "miniflux/compose.yaml",
+        "reactive-resume/compose.yaml"
       ],
       "matchPackageNames": [
         "postgres"
