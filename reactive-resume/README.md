@@ -21,8 +21,14 @@ hook unchanged and leave Komodo's stack environment empty.
 | `FLAG_DISABLE_SIGNUPS` | Optional; defaults to `false`, set to `true` after creating the intended accounts |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_SECURE` | Optional email delivery configuration |
 
+For an existing installation, preserve the current `POSTGRES_PASSWORD` and
+`AUTH_SECRET` when moving them into Infisical; generate new values only for a
+fresh installation. Changing the secret store does not rotate the database
+role password.
+
 Use a hex database password because it is interpolated into a PostgreSQL URL.
-Store secrets only in Infisical, never in git. Without SMTP, verification and reset emails
+Store secrets only in Infisical, never in git. Without SMTP, verification and
+reset emails
 are written to application logs; treat those logs as sensitive.
 
 ## NAS setup
