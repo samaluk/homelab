@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:17-bookworm@sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652
+    container_name: reactive-resume-db
+    volumes:
+      - /volume1/docker/reactive-resume/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: reactive_resume
+      POSTGRES_USER: reactive_resume
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, pg_isready, -U, reactive_resume, -d, reactive_resume]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  reactive-resume:
+    image: ghcr.io/reactive-resume/reactive-resume:v5.3.1@sha256:2f5205f30121c2ce8247baf80dbc105516033f5cd42dba872fc6f459622169d9
+    container_name: reactive-resume
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - /volume1/docker/reactive-resume/data:/app/data
+    environment:
+      APP_URL: ${APP_URL:?Missing APP_URL}
+      AUTH_SECRET: ${AUTH_SECRET:?Missing AUTH_SECRET}
+      DATABASE_URL: postgresql://reactive_resume:${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}@postgres:5432/reactive_resume
+      LOCAL_STORAGE_PATH: /app/data
+      PORT: '3000'
+      TZ: America/Santiago
+      FLAG_DISABLE_SIGNUPS: ${FLAG_DISABLE_SIGNUPS:-false}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-Reactive Resume <noreply@malukzedan.synology.me>}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+    ports:
+      - '127.0.0.1:8091:3000'
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/api/health').then((r) => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1));"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

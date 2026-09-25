@@ -27,6 +27,7 @@ Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https:
 | `prowlarr` | Prowlarr indexer manager |
 | `qbittorrent` | qBittorrent |
 | `radarr` | Radarr movies |
+| `reactive-resume` | Reactive Resume builder |
 | `seerr` | Seerr requests |
 | `sitebin` | HTML reports with per-report passwords and expiry |
 | `sonarr` | Sonarr TV |
@@ -62,6 +63,9 @@ Stacks with required secrets beyond host bind-mount paths:
 | `sitebin` | `SITEBIN_HOST` |
 | `tdarr` | `TDARR_SERVER_IP` |
 | `trek` | `APP_URL` |
+
+Reactive Resume uses Komodo secret variables instead of an Infisical folder; see
+[its runtime configuration](reactive-resume/README.md#runtime-configuration).
 
 Never commit `.env` files or secret values to git.
 
