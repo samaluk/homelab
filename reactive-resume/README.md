@@ -9,11 +9,9 @@ enabled.
 
 Komodo stack `reactive-resume` tracks this repository's `main` branch,
 run directory `reactive-resume`, and watched file `compose.yaml`. It uses
-`no_env_template` with configuration in Komodo, because the current Infisical
-deployment identity cannot create folders. The pre-deploy hook is empty.
-`POSTGRES_PASSWORD` references the Komodo secret `REACTIVE_RESUME_POSTGRES_PASSWORD`;
-`AUTH_SECRET` references `REACTIVE_RESUME_AUTH_SECRET`. The stack environment also
-sets `APP_URL`.
+`env_template`'s pre-deploy hook to populate `.env` from Infisical
+**prod /reactive-resume**, matching the stack directory. Keep the template's
+hook unchanged and leave Komodo's stack environment empty.
 
 | Variable | Value |
 |----------|-------|
@@ -24,7 +22,7 @@ sets `APP_URL`.
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_SECURE` | Optional email delivery configuration |
 
 Use a hex database password because it is interpolated into a PostgreSQL URL.
-Store secrets in Komodo secret variables, never in git. Without SMTP, verification and reset emails
+Store secrets only in Infisical, never in git. Without SMTP, verification and reset emails
 are written to application logs; treat those logs as sensitive.
 
 ## NAS setup
@@ -63,7 +61,7 @@ URL and create the initial account. App startup runs database migrations.
 Back up both the uploads directory and the database (using `pg_dump` for a live
 database). Preserve `AUTH_SECRET` and the database password. Take a backup before
 application upgrades because startup can migrate the schema. Database password
-rotation also requires changing the database role password; changing the Komodo secret
+rotation also requires changing the database role password; changing Infisical
 alone does not update an initialized database.
 
 Upstream deployment reference:
