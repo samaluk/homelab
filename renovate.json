@@ -29,7 +29,7 @@
         "docker"
       ],
       "additionalBranchPrefix": "{{parentDir}}-",
-      "minimumReleaseAge": "3 days",
+      "minimumReleaseAge": "1 day",
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
