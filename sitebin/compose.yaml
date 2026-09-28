@@ -1,6 +1,6 @@
 services:
   sitebin:
-    image: ghcr.io/ittrail/sitebin.io:latest@sha256:6b04aeb25a7d19fc6f67cf83f8738ffac9bebbeb266d9d866a68bc5483ed53eb
+    image: ghcr.io/ittrail/sitebin.io:latest@sha256:b8c735fbc3d91caab7a3c9c702a91f4a6c77f4d64ba0bb70d702aee3e1d20c05
     container_name: sitebin
     volumes:
       - /volume1/docker/sitebin:/data
