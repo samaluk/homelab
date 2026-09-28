@@ -16,9 +16,7 @@ permissions:
 
 jobs:
   pullfrog:
-    # Docker runner only. PULLFROG_RUNNER_LABELS is a JSON array, e.g.
-    # ["self-hosted","Linux","X64","homelab-pullfrog"].
-    runs-on: ${{ vars.PULLFROG_RUNNER_LABELS && fromJSON(vars.PULLFROG_RUNNER_LABELS) || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
