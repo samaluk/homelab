@@ -14,6 +14,7 @@ services:
     command: [ "/opt/cpa/cpa-gateway", "-config", "/data/gateway.json" ]
     restart: unless-stopped
     healthcheck:
+      # The core's public root returns 200; this also checks proxy reachability.
       test: [ "CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8080/" ]
       interval: 30s
       timeout: 5s
@@ -34,6 +35,13 @@ services:
       GOMEMLIMIT: 384MiB
     command: [ "/opt/cpa/cli-proxy-api", "-config", "/data/config.yaml" ]
     restart: unless-stopped
+    # Explicit here as well as in the image so the dependency gate is visible.
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8317/" ]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
     logging:
       driver: json-file
       options:
