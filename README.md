@@ -10,6 +10,7 @@ Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https:
 | `bazarr` | Bazarr subtitles |
 | `bentopdf` | BentoPDF |
 | `changedetection` | ChangeDetection.io |
+| `easy-cli-proxy` | Shared AI subscription gateway and scoped catalog sync over Tailscale |
 | `home-assistant` | Home Assistant |
 | `icloudpd` | iCloud Photos sync |
 | `immich` | Immich photo library |

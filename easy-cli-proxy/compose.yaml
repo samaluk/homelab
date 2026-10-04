@@ -1,0 +1,51 @@
+services:
+  catalog:
+    image: ghcr.io/samaluk/cpa-gateway:20261004-tailnet-1@sha256:0720c169031e11609fd3adf85d719b6cc498525e090c17480541e267d5955506
+    container_name: easy-cli-proxy-catalog
+    depends_on:
+      cpa:
+        condition: service_healthy
+    volumes:
+      - /volume1/docker/easy-cli-proxy/data:/data:ro
+    environment:
+      GOMEMLIMIT: 96MiB
+    ports:
+      - '127.0.0.1:8317:8080'
+    command: [ "/opt/cpa/cpa-gateway", "-config", "/data/gateway.json" ]
+    restart: unless-stopped
+    healthcheck:
+      # The core's public root returns 200; this also checks proxy reachability.
+      test: [ "CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8080/" ]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    mem_limit: 128m
+  cpa:
+    image: ghcr.io/samaluk/cpa-gateway:20261004-tailnet-1@sha256:0720c169031e11609fd3adf85d719b6cc498525e090c17480541e267d5955506
+    container_name: easy-cli-proxy-core
+    volumes:
+      - /volume1/docker/easy-cli-proxy/data:/data
+    environment:
+      GOMEMLIMIT: 384MiB
+    command: [ "/opt/cpa/cli-proxy-api", "-config", "/data/config.yaml" ]
+    restart: unless-stopped
+    # Explicit here as well as in the image so the dependency gate is visible.
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8317/" ]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    mem_limit: 512m
+    stop_grace_period: 60s
