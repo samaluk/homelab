@@ -243,6 +243,10 @@ connection failures and unexpected proxy 5xx responses do not.
 Use `python3 traefik/check-reachability.py --websockets --output results.json`
 for the 39-hostname inventory and unauthenticated WebSocket handshakes. Retired
 routes are reported separately and do not hide failures on active routes.
+Run `gh workflow run verify-public-ingress.yml --ref main` for the same check
+from a GitHub-hosted runner outside the LAN. The manual workflow uses public
+DNS and trusted TLS, reports each result in Actions logs, and fails on active
+route errors.
 WebSocket 401/403 replies are marked `AUTH`: the route is reachable but its
 upgrade still requires an authenticated check. Successful upgrades also require
 the expected `Sec-WebSocket-Accept` response.
