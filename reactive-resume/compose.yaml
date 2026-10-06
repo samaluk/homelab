@@ -30,6 +30,7 @@ services:
       DATABASE_URL: postgresql://reactive_resume:${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}@postgres:5432/reactive_resume
       LOCAL_STORAGE_PATH: /app/data
       PORT: '3000'
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:?Missing TRUSTED_PROXIES}
       TZ: America/Santiago
       FLAG_DISABLE_SIGNUPS: ${FLAG_DISABLE_SIGNUPS:-false}
       SMTP_HOST: ${SMTP_HOST:-}
