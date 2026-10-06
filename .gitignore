@@ -1,5 +1,6 @@
 .DS_Store
 immich/cache
 .env*
+!.agents/skills/homelab-komodo/scripts/komodo/.env.schema
 node_modules
 **/.komodo/

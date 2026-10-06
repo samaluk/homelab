@@ -1,8 +1,12 @@
 {
   "name": "homelab",
   "packageManager": "bun@1.4.2",
+  "scripts": {
+    "komodo": "varlock run --path .agents/skills/homelab-komodo/scripts/komodo --inject vars -- bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts"
+  },
   "devDependencies": {
     "dclint": "^3.1.0",
-    "komodo_client": "^2.1.1"
+    "komodo_client": "^2.1.1",
+    "varlock": "1.21.1"
   }
 }

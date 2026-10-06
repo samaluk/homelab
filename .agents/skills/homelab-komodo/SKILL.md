@@ -57,14 +57,22 @@ Verify with the project ID from Infisical:
 
 ```bash
 cd /path/to/homelab
-infisical login --domain=https://infisical.malukzedan.synology.me
+infisical login --domain=https://infisical.malukzedan.synology.me --profile=homelab
 infisical run --domain=https://infisical.malukzedan.synology.me \
-  --projectId=YOUR_PROJECT_ID --env=prod --path=/homelab-admin -- \
-  bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts version
+  --profile=homelab --projectId=YOUR_PROJECT_ID --env=prod \
+  --path=/homelab-admin --silent --telemetry=false -- bun run komodo version
 ```
 
-Use the same wrapper for other commands below. A named Infisical profile can
-be selected with `--profile` or `INFISICAL_PROFILE`. For a CLI on a remote Linux
+`bun run komodo` uses Varlock to validate all three variables against
+`scripts/komodo/.env.schema` before starting the client and redact matching
+credentials from captured stdout/stderr; interactive terminal output uses TTY
+passthrough. Infisical remains the secret store;
+the schema contains no secret values. Redaction is not process isolation, and
+the client still receives the real credentials. Do not use unredacted
+`varlock load --format json`, `env`, or `shell` output in agent transcripts.
+
+Use the same Infisical/Varlock wrapper for other commands below. A named Infisical
+profile can be selected with `--profile` or `INFISICAL_PROFILE`. For a CLI on a remote Linux
 machine, browser login may need an SSH tunnel from the browser's machine to the
 CLI's localhost callback port; keep login tokens out of chat. Never commit
 `.env` or print secrets in chat output.
@@ -74,7 +82,7 @@ CLI's localhost callback port; keep login tokens out of chat. Never commit
 From repo root:
 
 ```bash
-bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts <command> [args]
+bun run komodo <command> [args]
 ```
 
 | Command | Purpose |
