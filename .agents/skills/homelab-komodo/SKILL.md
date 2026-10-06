@@ -47,17 +47,27 @@ Avoid `RunAction`, action scripts, Deno action cache workarounds, and terminal-e
 
 1. Dependencies are already in repo root `package.json` (`komodo_client`). Install with `bun install` from the repo root.
 2. In Komodo UI: **Settings → API Keys** → create a key with permission to read/execute the stacks you need.
-3. Set in repo root `.env` (gitignored): `KOMODO_URL` (no trailing slash), `KOMODO_API_KEY`, `KOMODO_API_SECRET`.
+3. Store client credentials `KOMODO_URL`, `KOMODO_API_KEY`, and
+   `KOMODO_API_SECRET` in Infisical **prod /homelab-admin**, then authenticate the
+   Infisical CLI separately on each machine. Inject all three together with
+   `infisical run`; the legacy gitignored repo-root `.env` remains supported
+   when no credentials are injected.
 
-Verify:
+Verify with the project ID from Infisical:
 
 ```bash
 cd /path/to/homelab
-bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts version
-bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts stacks
+infisical login --domain=https://infisical.malukzedan.synology.me
+infisical run --domain=https://infisical.malukzedan.synology.me \
+  --projectId=YOUR_PROJECT_ID --env=prod --path=/homelab-admin -- \
+  bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts version
 ```
 
-Never commit `.env` or print secrets in chat output.
+Use the same wrapper for other commands below. A named Infisical profile can
+be selected with `--profile` or `INFISICAL_PROFILE`. For a CLI on a remote Linux
+machine, browser login may need an SSH tunnel from the browser's machine to the
+CLI's localhost callback port; keep login tokens out of chat. Never commit
+`.env` or print secrets in chat output.
 
 ## CLI (preferred for agents)
 
@@ -125,6 +135,7 @@ For the full request catalog, see [reference.md](reference.md) and [Komodo clien
 
 - **401 / permission errors:** API key scope or wrong secret; regenerate key in Komodo.
 - **Unknown stack:** run `stacks`; name may differ from repo directory.
+- **Missing/incomplete credentials:** inject all three `KOMODO_*` variables together; partial injection fails without falling back to a local file.
 - **Import `localStorage` error:** use `scripts/komodo/client.ts` or call `ensureLocalStorage()` from `scripts/komodo/polyfill.ts` before importing `komodo_client`.
 - **`getentropy failed`:** this is why Komodo Actions are unsupported on this host. Use stack orchestration through Komodo and runtime/container debugging through **homelab-synology**.
 
