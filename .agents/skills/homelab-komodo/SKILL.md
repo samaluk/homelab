@@ -45,15 +45,14 @@ Avoid `RunAction`, action scripts, Deno action cache workarounds, and terminal-e
 
 ## Setup (once per machine)
 
-1. Dependencies are already in repo root `package.json` (`komodo_client`). Install with `bun install` from the repo root.
+1. Dependencies are already in repo root `package.json` (`komodo_client`, `varlock`). Install with `bun install --frozen-lockfile` from the repo root.
 2. In Komodo UI: **Settings → API Keys** → create a key with permission to read/execute the stacks you need.
 3. Store client credentials `KOMODO_URL`, `KOMODO_API_KEY`, and
    `KOMODO_API_SECRET` in Infisical **prod /homelab-admin**, then authenticate the
    Infisical CLI separately on each machine. Inject all three together with
-   `infisical run`; the legacy gitignored repo-root `.env` remains supported
-   when no credentials are injected.
+   `infisical run` and validate them through Varlock with `bun run komodo`.
 
-Verify with the project ID from Infisical:
+Verify with the project ID shown in Infisical:
 
 ```bash
 cd /path/to/homelab
@@ -66,8 +65,10 @@ infisical run --domain=https://infisical.malukzedan.synology.me \
 `bun run komodo` uses Varlock to validate all three variables against
 `scripts/komodo/.env.schema` before starting the client and redact matching
 credentials from captured stdout/stderr; interactive terminal output uses TTY
-passthrough. Infisical remains the secret store;
-the schema contains no secret values. Redaction is not process isolation, and
+passthrough. Infisical remains the secret store, and the schema contains no secret
+values. This flow uses the existing CLI login, without additional bootstrap
+credentials or local secrets files. Missing or incomplete credentials fail
+immediately. Redaction is not process isolation, and
 the client still receives the real credentials. Do not use unredacted
 `varlock load --format json`, `env`, or `shell` output in agent transcripts.
 
@@ -76,6 +77,10 @@ profile can be selected with `--profile` or `INFISICAL_PROFILE`. For a CLI on a 
 machine, browser login may need an SSH tunnel from the browser's machine to the
 CLI's localhost callback port; keep login tokens out of chat. Never commit
 `.env` or print secrets in chat output.
+
+For unattended tooling, use a dedicated Infisical machine identity with access
+limited to the folders it needs. NAS SSH access is configured separately;
+each machine keeps its own private key.
 
 ## CLI (preferred for agents)
 

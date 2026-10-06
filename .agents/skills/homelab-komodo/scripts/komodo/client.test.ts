@@ -28,6 +28,12 @@ test("injected credentials work without a local env file", () => {
   });
 });
 
+test("missing credentials direct the caller to Infisical and Varlock", () => {
+  expect(loadKomodoEnv).toThrow(
+    "Load them through Infisical and Varlock with bun run komodo.",
+  );
+});
+
 test("incomplete injected credentials fail without falling back to another source", () => {
   process.env.KOMODO_API_SECRET = "test-api-secret";
   expect(loadKomodoEnv).toThrow(
