@@ -88,6 +88,7 @@ networks:
     ipam:
       config:
         - subnet: ${TRAEFIK_PROXY_SUBNET:?Missing TRAEFIK_PROXY_SUBNET}
+          ip_range: ${TRAEFIK_PROXY_DYNAMIC_RANGE:?Missing TRAEFIK_PROXY_DYNAMIC_RANGE}
   docker-api:
     internal: true
     ipam:

@@ -64,8 +64,10 @@ Infisical folder:
 
 - `TRAEFIK_ACME_EMAIL`: certificate account email.
 - `TRAEFIK_PROXY_SUBNET`: unused CIDR for `homelab-proxy`.
+- `TRAEFIK_PROXY_DYNAMIC_RANGE`: smaller CIDR within that subnet for automatic
+  application addresses. Keep Traefik's reserved address outside this range.
 - `TRAEFIK_PROXY_IP`: reserved address within that CIDR for Traefik, excluding
-  its network, broadcast and Docker gateway addresses; applications
+  its network, broadcast, Docker gateway and dynamic allocation range; applications
   can trust this exact proxy address instead of the whole shared network.
 - `TRAEFIK_DOCKER_API_SUBNET`: different unused CIDR for the internal API network.
 - `TRAEFIK_NAS_HOST`: NAS LAN address, used by explicit host backends.
@@ -87,6 +89,24 @@ nearly exhausted Docker's default address pools, so explicit unused CIDRs avoid
 allocation failure. Additional file dependencies must name files, not the
 mounted directory: register `dynamic/common.yaml`, `socket-proxy/haproxy.cfg`
 and subsequent route files.
+
+The deployed proxy subnet is `172.16.10.0/24`, with Traefik at `172.16.10.2`
+and automatic allocations restricted to `172.16.10.128/25`. Without that
+restriction, Docker can give Traefik's address to an application while the
+proxy is being recreated, causing an `Address already in use` startup failure.
+Docker's [IPAM configuration](https://docs.docker.com/reference/compose-file/networks/#ipam)
+supports this separation without changing application labels or trusted proxies.
+
+An existing network must be recreated to apply the allocation range. Perform
+this before public cutover, or restore DSM forwarding first. Record its IPAM,
+labels, attached container IDs and network aliases. Confirm each application
+also retains its private network, then disconnect only `homelab-proxy` from
+those containers. Remove the empty proxy network and recreate it with the
+same name, subnet, gateway and Compose labels, plus the dynamic range. Reconnect
+the existing application containers with their recorded aliases; redeploy only
+Traefik through Komodo. Verify its fixed address and that application addresses
+fall inside the dynamic range. Application containers, private networks,
+published ports and persistent data do not need recreation for this repair.
 
 Store runtime configuration in Infisical **prod /traefik**, matching the stack
 name. Keep certificate accounts and private keys under
