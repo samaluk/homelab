@@ -9,7 +9,21 @@ services:
       TZ: America/Santiago
     ports:
       - '3444:3001'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'uptime-kuma'
+      traefik.http.routers.uptime-kuma.middlewares: 'hsts@file'
+      traefik.http.services.uptime-kuma.loadbalancer.server.port: '3001'
     cpu_shares: 1024
     hostname: uptimekuma
     mem_limit: 4g
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

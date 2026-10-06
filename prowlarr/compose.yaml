@@ -10,8 +10,22 @@ services:
       PUID: 1026
     ports:
       - '9696:9696'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
     healthcheck:
       test: curl -f http://localhost:9696/ || exit 1
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'prowlarr'
+      traefik.http.routers.prowlarr.middlewares: 'hsts@file'
+      traefik.http.services.prowlarr.loadbalancer.server.port: '9696'
     security_opt:
       - no-new-privileges:true
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

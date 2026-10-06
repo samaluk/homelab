@@ -16,6 +16,9 @@ services:
       - WEBUI_AUTH_COOKIE_SAME_SITE=lax
     ports:
       - '8087:8080'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
     healthcheck:
       test: [ "CMD", "curl", "-fsS", "http://127.0.0.1:8080/health" ]
@@ -23,4 +26,15 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'llm'
+      traefik.http.routers.llm.middlewares: 'hsts@file,streaming@file'
+      traefik.http.services.llm.loadbalancer.server.port: '8080'
     pull_policy: always
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

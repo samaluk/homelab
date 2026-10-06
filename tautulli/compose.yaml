@@ -10,4 +10,18 @@ services:
       - TZ=America/Santiago
     ports:
       - '8181:8181'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'tautulli'
+      traefik.http.routers.tautulli.middlewares: 'hsts@file'
+      traefik.http.services.tautulli.loadbalancer.server.port: '8181'
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

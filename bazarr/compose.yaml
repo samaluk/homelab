@@ -11,8 +11,22 @@ services:
       - PUID=1026
     ports:
       - '6767:6767'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
     healthcheck:
       test: curl -f http://localhost:6767/ || exit 1
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'bazarr'
+      traefik.http.routers.bazarr.middlewares: 'hsts@file'
+      traefik.http.services.bazarr.loadbalancer.server.port: '6767'
     security_opt:
       - no-new-privileges:false
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

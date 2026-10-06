@@ -33,6 +33,9 @@ services:
       # - ADMIN_PASSWORD=changeme      # Initial admin password — only used on first boot when no users exist
     ports:
       - '3500:3000'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:3000/api/health" ]
@@ -40,6 +43,11 @@ services:
       timeout: 10s
       retries: 3
       start_period: 15s
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'trek'
+      traefik.http.routers.trek.middlewares: 'hsts@file'
+      traefik.http.services.trek.loadbalancer.server.port: '3000'
     cap_add:
       - CHOWN
       - SETUID
@@ -51,3 +59,9 @@ services:
       - no-new-privileges:true
     tmpfs:
       - /tmp:noexec,nosuid,size=64m
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

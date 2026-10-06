@@ -10,4 +10,18 @@ services:
       - PUID=1026
     ports:
       - '5900:5000'
+    networks:
+      - default
+      - proxy
     restart: always
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'changedetection'
+      traefik.http.routers.changedetection.middlewares: 'hsts@file'
+      traefik.http.services.changedetection.loadbalancer.server.port: '5000'
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

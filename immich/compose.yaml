@@ -57,12 +57,20 @@ services:
       DB_DATABASE_NAME: ${DB_DATABASE_NAME}
     ports:
       - '2283:2283'
+    networks:
+      - default
+      - proxy
     restart: always
     healthcheck:
       disable: false
     # extends:
     #   file: hwaccel.transcoding.yml
     #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'immich'
+      traefik.http.routers.immich.middlewares: 'hsts@file'
+      traefik.http.services.immich.loadbalancer.server.port: '2283'
     user: 1026:100
   redis:
     image: docker.io/valkey/valkey:9@sha256:546304417feac0874c3dd576e0952c6bb8f06bb4093ea0c9ca303c73cf458f63
@@ -76,3 +84,9 @@ services:
     restart: always
     healthcheck:
       test: redis-cli ping || exit 1
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

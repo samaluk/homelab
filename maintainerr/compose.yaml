@@ -8,5 +8,19 @@ services:
       - TZ=America/Santiago
     ports:
       - '6246:6246'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'maintainerr'
+      traefik.http.routers.maintainerr.middlewares: 'hsts@file'
+      traefik.http.services.maintainerr.loadbalancer.server.port: '6246'
     user: 1026:100
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

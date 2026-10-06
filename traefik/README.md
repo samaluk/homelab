@@ -13,12 +13,35 @@ beside DSM. The UDM eventually forwards public TCP **80 → NAS:8880** and
 switching HTTPS. Keep DSM's existing rules and application port bindings for
 rollback; changing router forwarding is a separate operational step.
 
-Application containers opt in with `traefik.enable=true`, explicit hostname
-rules and internal backend ports. They join the external `homelab-proxy`
+Application containers opt in with `traefik.enable=true`, a hostname label
+and an internal backend port. They join the external `homelab-proxy`
 network while retaining their existing default/private networks. Databases and
 worker containers stay on their original networks. Traefik creates the shared
 network before application migration; do not run Compose down on its stack
 while applications use that network.
+
+Traefik defines the Docker network, hostname suffix, HTTPS entrypoint,
+certificate resolver and standard 60-second backend timeouts once. A normal
+application needs four labels, for example:
+
+```yaml
+labels:
+  traefik.enable: 'true'
+  homelab.hostname: 'budget'
+  traefik.http.routers.budget.middlewares: 'hsts@file'
+  traefik.http.services.budget.loadbalancer.server.port: '5007'
+```
+
+The Docker provider builds the hostname from `homelab.hostname` and
+`TRAEFIK_DOMAIN`; its single service is assigned to the router automatically.
+Give every opted-in container a hostname label and keep router/service names
+unique across stacks. Additional labels express exceptions: Seerr's second
+hostname, Actual iCal's longer timeout, Lidarr's media timeout, and Open WebUI's
+streaming middleware. HSTS stays explicit to preserve Pi-hole's existing
+file-provider route without HSTS. See Traefik's
+[Docker default rule](https://doc.traefik.io/traefik/reference/install-configuration/providers/docker/#defaultrule),
+[automatic service assignment](https://doc.traefik.io/traefik/reference/routing-configuration/other-providers/docker/#service-definition)
+and [entrypoint defaults](https://doc.traefik.io/traefik/reference/install-configuration/entrypoints/).
 
 The Docker provider talks to a restricted socket proxy on a separate internal
 network. Only the socket proxy mounts the Docker socket. Discovery permits
@@ -47,6 +70,17 @@ Infisical folder:
 - `TRAEFIK_DOCKER_API_SUBNET`: different unused CIDR for the internal API network.
 - `TRAEFIK_NAS_HOST`: NAS LAN address, used by explicit host backends.
 - `TRAEFIK_DOMAIN`: optional hostname suffix; defaults to the existing DDNS name.
+- `TRAEFIK_OPENCODE_HOST`, `TRAEFIK_T3CODE_HOST`: optional LAN hosts for the
+  currently unavailable external backends. Unset values use container loopback,
+  where their ports have no listener, preserving an unavailable route without
+  blocking startup of ingress for active applications. Set the original LAN
+  hosts in Infisical to reconnect them.
+- `TRAEFIK_CERT_RESOLVER`: optional; defaults to `letsencrypt`. Set `staging`
+  in the Traefik stack for a certificate test. All Docker routes inherit this
+  entrypoint default, and file-provider routes use the same stack setting.
+  Normal application stacks need no Traefik domain or certificate variables;
+  Seerr's explicit alias rule accepts the optional `TRAEFIK_DOMAIN` override
+  in its own stack as well.
 
 Check the NAS routes and Docker networks before choosing subnets. This NAS has
 nearly exhausted Docker's default address pools, so explicit unused CIDRs avoid
@@ -96,6 +130,20 @@ their containers directly through the shared network, preserving loopback
 bindings as DSM fallback. Home Assistant, Pi-hole, and Plex retain host
 networking. The Tailscale-only `easy-cli-proxy` is outside this migration.
 
+Before routing Home Assistant, add Traefik's reserved address to its HTTP
+trusted proxies while retaining the existing DSM loopback entry. See
+`home-assistant/README.md`. Add the same reserved address to Reactive Resume's
+Infisical `TRUSTED_PROXIES` while retaining its verified DSM bridge gateway.
+These runtime settings preserve client attribution without trusting every
+container on the shared network.
+
+Register `dynamic/host-services.yaml` as a Komodo config dependency requiring
+Traefik redeployment when the service migration PR reaches main. DSM's HTTPS
+backend uses the public DSM hostname for TLS SNI and normal CA verification.
+WebSocket upgrades pass through automatically; no hop-by-hop Upgrade or
+Connection headers are forced. Open WebUI's streaming middleware sets response
+headers, and no response buffering middleware is enabled.
+
 ## Deployment and cutover
 
 1. Merge the documentation PR, then the infrastructure PR. Provision the
@@ -131,3 +179,14 @@ when available; do not invent secrets to satisfy rendering. Record the
 pre-migration and post-migration HTTP status for every inventoried hostname.
 Expected login redirects or authentication responses count as reachability;
 connection failures and unexpected proxy 5xx responses do not.
+
+Use `python3 traefik/check-reachability.py --websockets --output results.json`
+for the 39-hostname inventory and unauthenticated WebSocket handshakes. Retired
+routes are reported separately and do not hide failures on active routes.
+WebSocket 401/403 replies are marked `AUTH`: the route is reachable but its
+upgrade still requires an authenticated check. Successful upgrades also require
+the expected `Sec-WebSocket-Accept` response.
+Before cutover, add `--connect NAS_IP --port 8443` to test Traefik directly with
+the original Host header, TLS SNI and certificate verification. Run from both
+an external client and the LAN. Keep results outside git; application sign-in,
+authenticated uploads and streaming still require their own functional checks.

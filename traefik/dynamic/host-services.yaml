@@ -1,0 +1,167 @@
+# Preserve DSM routes, including retired backends documented in README.md.
+# The legacy Minecraft HTTPS rule remains HTTP; game TCP forwarding is separate.
+http:
+  routers:
+    dsm:
+      rule: 'Host(`dsm.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: dsm
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    home:
+      rule: 'Host(`home.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: home
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    komodo:
+      rule: 'Host(`komodo.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: komodo
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    pihole:
+      rule: 'Host(`pihole.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: pihole
+      # Preserve the existing DSM route's disabled HSTS policy.
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    plex:
+      rule: 'Host(`plex.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: plex
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    portainer:
+      rule: 'Host(`portainer.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: portainer
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    actual-ical-maluk:
+      rule: 'Host(`actual-ical-maluk.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: actual-ical-maluk
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    actual-tap-py:
+      rule: 'Host(`actual-tap-py.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: actual-tap-py
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    firefly:
+      rule: 'Host(`firefly.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: firefly
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    freshrss:
+      rule: 'Host(`freshrss.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: freshrss
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    opencode:
+      rule: 'Host(`opencode.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: opencode
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    t3code:
+      rule: 'Host(`t3code.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: t3code
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+    minecraft:
+      rule: 'Host(`minecraft.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: minecraft
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
+  services:
+    dsm:
+      loadBalancer:
+        serversTransport: dsm
+        servers:
+          - url: 'https://{{ env "TRAEFIK_NAS_HOST" }}:5001'
+    home:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:8123'
+    komodo:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:9120'
+    pihole:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:8080'
+    plex:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:32400'
+    portainer:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:9000'
+    actual-ical-maluk:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:9030'
+    actual-tap-py:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:8005'
+    firefly:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:6182'
+    freshrss:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:8081'
+    opencode:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_OPENCODE_HOST" }}:4096'
+    t3code:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_T3CODE_HOST" }}:3773'
+    minecraft:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_NAS_HOST" }}:25565'
+  serversTransports:
+    dsm:
+      serverName: 'dsm.{{ env "TRAEFIK_DOMAIN" }}'
+      forwardingTimeouts:
+        dialTimeout: 60s
+        responseHeaderTimeout: 60s

@@ -18,7 +18,7 @@ hook unchanged and leave Komodo's stack environment empty.
 | `APP_URL` | `https://resume.malukzedan.synology.me` |
 | `POSTGRES_PASSWORD` | Generate a unique password with `openssl rand -hex 32` |
 | `AUTH_SECRET` | Generate a separate secret with `openssl rand -hex 32` |
-| `TRUSTED_PROXIES` | Required for v6 behind DSM; comma-separated proxy IPs/CIDRs verified from the app's incoming connection (see below) |
+| `TRUSTED_PROXIES` | Required for v6; comma-separated verified proxy IPs (see below), including Traefik's reserved `TRAEFIK_PROXY_IP` |
 | `FLAG_DISABLE_SIGNUPS` | Optional; defaults to `false`, set to `true` after creating the intended accounts |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_SECURE` | Optional email delivery configuration |
 
@@ -54,10 +54,11 @@ replace an existing database directory or change its major version in place.
 The mount targets PostgreSQL 17's actual data directory, avoiding an anonymous
 volume. Renovate database major upgrades are disabled for this stack.
 
-Configure DSM's reverse proxy with HTTPS `resume.malukzedan.synology.me:443`
-forwarding to HTTP `127.0.0.1:8091`, preserving the host and forwarded protocol
-headers. Assign a certificate covering the hostname and ensure DNS resolves to
-the NAS's public ingress. PostgreSQL has no published host port.
+Traefik routes HTTPS `resume.malukzedan.synology.me` directly to the app's port
+3000 through `homelab-proxy`. The app also retains its default network for
+PostgreSQL. Keep DSM's existing loopback route to `127.0.0.1:8091` during the
+rollback window. PostgreSQL has no published host port and does not join the
+proxy network.
 
 For v6, set `TRUSTED_PROXIES` in Infisical **prod /reactive-resume** before
 merging the upgrade. Confirm the immediate peer address seen inside the app
@@ -73,7 +74,10 @@ actual client address to any incoming header. It also sets `X-Real-IP` to
 `$remote_addr` and `X-Forwarded-Proto` to `$scheme`. During a request through
 the public HTTPS endpoint, the app's TCP connection peer was verified as
 `192.168.128.1`, the gateway of `reactive-resume_default`. Infisical's
-`TRUSTED_PROXIES` is set to that exact IP, without a broader private CIDR.
+`TRUSTED_PROXIES` must retain that exact IP during the rollback window and add
+Traefik's reserved `TRAEFIK_PROXY_IP` from Infisical **prod /traefik** before
+the migration deploy. Verify that peer after deployment; do not broaden trust
+to all private networks or the shared proxy subnet.
 
 v6 uses the trusted proxy chain for per-visitor API and authentication rate
 limits, stopping at the first untrusted client hop. Repeat the peer and

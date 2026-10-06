@@ -29,3 +29,17 @@ services:
     env_file: .env
     ports:
       - '7006:8080'
+    networks:
+      - default
+      - proxy
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'miniflux'
+      traefik.http.routers.miniflux.middlewares: 'hsts@file'
+      traefik.http.services.miniflux.loadbalancer.server.port: '8080'
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

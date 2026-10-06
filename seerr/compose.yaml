@@ -11,6 +11,9 @@ services:
       - PGID=100
     ports:
       - '5055:5055'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
@@ -18,4 +21,16 @@ services:
       timeout: 3s
       interval: 15s
       retries: 3
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'seerr'
+      traefik.http.routers.seerr.rule: 'Host(`seerr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`) || Host(`overseerr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.seerr.middlewares: 'hsts@file'
+      traefik.http.services.seerr.loadbalancer.server.port: '5055'
     init: true
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

@@ -12,8 +12,22 @@ services:
       PUID: 1026
     ports:
       - '8989:8989'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
     healthcheck:
       test: curl -f http://localhost:8989/ || exit 1
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'sonarr'
+      traefik.http.routers.sonarr.middlewares: 'hsts@file'
+      traefik.http.services.sonarr.loadbalancer.server.port: '8989'
     security_opt:
       - no-new-privileges:true
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

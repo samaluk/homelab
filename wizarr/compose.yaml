@@ -11,6 +11,9 @@ services:
       - TZ=America/Santiago
     ports:
       - '5690:5690'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
     healthcheck:
       test: curl -f http://localhost:5690/ || exit 1
@@ -18,3 +21,14 @@ services:
       timeout: 5s
       interval: 30s
       retries: 3
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'wizarr'
+      traefik.http.routers.wizarr.middlewares: 'hsts@file'
+      traefik.http.services.wizarr.loadbalancer.server.port: '5690'
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

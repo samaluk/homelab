@@ -14,7 +14,21 @@ services:
     ports:
       - '7359:7359/udp'
       - '8096:8096/tcp'
+    networks:
+      - default
+      - proxy
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     restart: 'unless-stopped'
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'jellyfin'
+      traefik.http.routers.jellyfin.middlewares: 'hsts@file'
+      traefik.http.services.jellyfin.loadbalancer.server.port: '8096'
     user: 1026:100
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

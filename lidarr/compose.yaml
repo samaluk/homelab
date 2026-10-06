@@ -34,8 +34,24 @@ services:
       PUID: 1026
     ports:
       - '8686:8686'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
     healthcheck:
       test: curl -f http://localhost:8686/ || exit 1
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'lidarr'
+      traefik.http.routers.lidarr.middlewares: 'hsts@file'
+      traefik.http.services.lidarr.loadbalancer.server.port: '8686'
+      # Preserve this DSM route's 120-second timeout (other arr routes use 60).
+      traefik.http.services.lidarr.loadbalancer.serverstransport: 'media@file'
     security_opt:
       - no-new-privileges:true
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

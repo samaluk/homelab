@@ -10,6 +10,9 @@ services:
       - TZ=America/Santiago
     ports:
       - '6741:80'
+    networks:
+      - default
+      - proxy
     command:
       - serve
     restart: on-failure:5
@@ -19,3 +22,14 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'ntfy'
+      traefik.http.routers.ntfy.middlewares: 'hsts@file'
+      traefik.http.services.ntfy.loadbalancer.server.port: '80'
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

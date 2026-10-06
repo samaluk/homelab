@@ -13,11 +13,25 @@ services:
     ports:
       - '9865:9865'
       - '27581:27581'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
     healthcheck:
       test: curl -f http://localhost:9865/ || exit 1
 
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'qbittorrent'
+      traefik.http.routers.qbittorrent.middlewares: 'hsts@file'
+      traefik.http.services.qbittorrent.loadbalancer.server.port: '9865'
     security_opt:
       - no-new-privileges:true
     # network_mode: "service:gluetun"
     tty: true
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

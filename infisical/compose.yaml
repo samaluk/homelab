@@ -14,7 +14,13 @@ services:
       - '8002:8080'
     networks:
       - infisical
+      - proxy
     restart: unless-stopped
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'infisical'
+      traefik.http.routers.infisical.middlewares: 'hsts@file'
+      traefik.http.services.infisical.loadbalancer.server.port: '8080'
     pull_policy: always
 
   db:
@@ -48,6 +54,9 @@ services:
 
 networks:
   infisical:
+  proxy:
+    external: true
+    name: homelab-proxy
 
 volumes:
   pg_data:

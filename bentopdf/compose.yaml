@@ -4,4 +4,18 @@ services:
     container_name: bentopdf
     ports:
       - '5959:8080'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'bentopdf'
+      traefik.http.routers.bentopdf.middlewares: 'hsts@file'
+      traefik.http.services.bentopdf.loadbalancer.server.port: '8080'
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy
