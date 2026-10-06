@@ -23,15 +23,9 @@ services:
       retries: 3
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.wizarr.rule: 'Host(`wizarr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.wizarr.entrypoints: 'websecure'
-      traefik.http.routers.wizarr.tls: 'true'
-      traefik.http.routers.wizarr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'wizarr'
       traefik.http.routers.wizarr.middlewares: 'hsts@file'
-      traefik.http.routers.wizarr.service: 'wizarr'
       traefik.http.services.wizarr.loadbalancer.server.port: '5690'
-      traefik.http.services.wizarr.loadbalancer.serverstransport: 'default@file'
 
 networks:
   default:

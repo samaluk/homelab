@@ -16,15 +16,9 @@ services:
     restart: always
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.changedetection.rule: 'Host(`changedetection.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.changedetection.entrypoints: 'websecure'
-      traefik.http.routers.changedetection.tls: 'true'
-      traefik.http.routers.changedetection.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'changedetection'
       traefik.http.routers.changedetection.middlewares: 'hsts@file'
-      traefik.http.routers.changedetection.service: 'changedetection'
       traefik.http.services.changedetection.loadbalancer.server.port: '5000'
-      traefik.http.services.changedetection.loadbalancer.serverstransport: 'default@file'
 
 networks:
   default:

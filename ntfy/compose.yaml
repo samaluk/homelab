@@ -24,15 +24,9 @@ services:
       start_period: 40s
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.ntfy.rule: 'Host(`ntfy.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.ntfy.entrypoints: 'websecure'
-      traefik.http.routers.ntfy.tls: 'true'
-      traefik.http.routers.ntfy.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'ntfy'
       traefik.http.routers.ntfy.middlewares: 'hsts@file'
-      traefik.http.routers.ntfy.service: 'ntfy'
       traefik.http.services.ntfy.loadbalancer.server.port: '80'
-      traefik.http.services.ntfy.loadbalancer.serverstransport: 'default@file'
 
 networks:
   default:

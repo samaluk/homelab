@@ -28,15 +28,9 @@ services:
       start_period: 60s
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.llm.rule: 'Host(`llm.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.llm.entrypoints: 'websecure'
-      traefik.http.routers.llm.tls: 'true'
-      traefik.http.routers.llm.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'llm'
       traefik.http.routers.llm.middlewares: 'hsts@file,streaming@file'
-      traefik.http.routers.llm.service: 'llm'
       traefik.http.services.llm.loadbalancer.server.port: '8080'
-      traefik.http.services.llm.loadbalancer.serverstransport: 'default@file'
     pull_policy: always
 
 networks:

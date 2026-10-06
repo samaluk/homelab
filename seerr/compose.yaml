@@ -23,15 +23,10 @@ services:
       retries: 3
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
+      homelab.hostname: 'seerr'
       traefik.http.routers.seerr.rule: 'Host(`seerr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`) || Host(`overseerr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.seerr.entrypoints: 'websecure'
-      traefik.http.routers.seerr.tls: 'true'
-      traefik.http.routers.seerr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
       traefik.http.routers.seerr.middlewares: 'hsts@file'
-      traefik.http.routers.seerr.service: 'seerr'
       traefik.http.services.seerr.loadbalancer.server.port: '5055'
-      traefik.http.services.seerr.loadbalancer.serverstransport: 'default@file'
     init: true
 
 networks:

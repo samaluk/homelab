@@ -14,15 +14,9 @@ services:
     restart: unless-stopped
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.maintainerr.rule: 'Host(`maintainerr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.maintainerr.entrypoints: 'websecure'
-      traefik.http.routers.maintainerr.tls: 'true'
-      traefik.http.routers.maintainerr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'maintainerr'
       traefik.http.routers.maintainerr.middlewares: 'hsts@file'
-      traefik.http.routers.maintainerr.service: 'maintainerr'
       traefik.http.services.maintainerr.loadbalancer.server.port: '6246'
-      traefik.http.services.maintainerr.loadbalancer.serverstransport: 'default@file'
     user: 1026:100
 
 networks:

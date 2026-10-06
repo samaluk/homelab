@@ -20,15 +20,9 @@ services:
       test: curl -f http://localhost:7878/ || exit 1
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.radarr.rule: 'Host(`radarr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.radarr.entrypoints: 'websecure'
-      traefik.http.routers.radarr.tls: 'true'
-      traefik.http.routers.radarr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'radarr'
       traefik.http.routers.radarr.middlewares: 'hsts@file'
-      traefik.http.routers.radarr.service: 'radarr'
       traefik.http.services.radarr.loadbalancer.server.port: '7878'
-      traefik.http.services.radarr.loadbalancer.serverstransport: 'default@file'
     security_opt:
       - no-new-privileges:true
 

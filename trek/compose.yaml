@@ -45,15 +45,9 @@ services:
       start_period: 15s
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.trek.rule: 'Host(`trek.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.trek.entrypoints: 'websecure'
-      traefik.http.routers.trek.tls: 'true'
-      traefik.http.routers.trek.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'trek'
       traefik.http.routers.trek.middlewares: 'hsts@file'
-      traefik.http.routers.trek.service: 'trek'
       traefik.http.services.trek.loadbalancer.server.port: '3000'
-      traefik.http.services.trek.loadbalancer.serverstransport: 'default@file'
     cap_add:
       - CHOWN
       - SETUID

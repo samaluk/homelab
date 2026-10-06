@@ -13,12 +13,35 @@ beside DSM. The UDM eventually forwards public TCP **80 → NAS:8880** and
 switching HTTPS. Keep DSM's existing rules and application port bindings for
 rollback; changing router forwarding is a separate operational step.
 
-Application containers opt in with `traefik.enable=true`, explicit hostname
-rules and internal backend ports. They join the external `homelab-proxy`
+Application containers opt in with `traefik.enable=true`, a hostname label
+and an internal backend port. They join the external `homelab-proxy`
 network while retaining their existing default/private networks. Databases and
 worker containers stay on their original networks. Traefik creates the shared
 network before application migration; do not run Compose down on its stack
 while applications use that network.
+
+Traefik defines the Docker network, hostname suffix, HTTPS entrypoint,
+certificate resolver and standard 60-second backend timeouts once. A normal
+application needs four labels, for example:
+
+```yaml
+labels:
+  traefik.enable: 'true'
+  homelab.hostname: 'budget'
+  traefik.http.routers.budget.middlewares: 'hsts@file'
+  traefik.http.services.budget.loadbalancer.server.port: '5007'
+```
+
+The Docker provider builds the hostname from `homelab.hostname` and
+`TRAEFIK_DOMAIN`; its single service is assigned to the router automatically.
+Give every opted-in container a hostname label and keep router/service names
+unique across stacks. Additional labels express exceptions: Seerr's second
+hostname, Actual iCal's longer timeout, Lidarr's media timeout, and Open WebUI's
+streaming middleware. HSTS stays explicit to preserve Pi-hole's existing
+file-provider route without HSTS. See Traefik's
+[Docker default rule](https://doc.traefik.io/traefik/reference/install-configuration/providers/docker/#defaultrule),
+[automatic service assignment](https://doc.traefik.io/traefik/reference/routing-configuration/other-providers/docker/#service-definition)
+and [entrypoint defaults](https://doc.traefik.io/traefik/reference/install-configuration/entrypoints/).
 
 The Docker provider talks to a restricted socket proxy on a separate internal
 network. Only the socket proxy mounts the Docker socket. Discovery permits
@@ -53,8 +76,11 @@ Infisical folder:
   blocking startup of ingress for active applications. Set the original LAN
   hosts in Infisical to reconnect them.
 - `TRAEFIK_CERT_RESOLVER`: optional; defaults to `letsencrypt`. Set `staging`
-  for a certificate test. Docker routes use the same optional setting in their
-  own stack environments; unset values select production.
+  in the Traefik stack for a certificate test. All Docker routes inherit this
+  entrypoint default, and file-provider routes use the same stack setting.
+  Normal application stacks need no Traefik domain or certificate variables;
+  Seerr's explicit alias rule accepts the optional `TRAEFIK_DOMAIN` override
+  in its own stack as well.
 
 Check the NAS routes and Docker networks before choosing subnets. This NAS has
 nearly exhausted Docker's default address pools, so explicit unused CIDRs avoid

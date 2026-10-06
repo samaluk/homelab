@@ -68,15 +68,9 @@ services:
     #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.immich.rule: 'Host(`immich.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.immich.entrypoints: 'websecure'
-      traefik.http.routers.immich.tls: 'true'
-      traefik.http.routers.immich.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'immich'
       traefik.http.routers.immich.middlewares: 'hsts@file'
-      traefik.http.routers.immich.service: 'immich'
       traefik.http.services.immich.loadbalancer.server.port: '2283'
-      traefik.http.services.immich.loadbalancer.serverstransport: 'default@file'
     user: 1026:100
   redis:
     image: docker.io/valkey/valkey:9@sha256:546304417feac0874c3dd576e0952c6bb8f06bb4093ea0c9ca303c73cf458f63

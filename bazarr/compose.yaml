@@ -19,15 +19,9 @@ services:
       test: curl -f http://localhost:6767/ || exit 1
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.bazarr.rule: 'Host(`bazarr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.bazarr.entrypoints: 'websecure'
-      traefik.http.routers.bazarr.tls: 'true'
-      traefik.http.routers.bazarr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'bazarr'
       traefik.http.routers.bazarr.middlewares: 'hsts@file'
-      traefik.http.routers.bazarr.service: 'bazarr'
       traefik.http.services.bazarr.loadbalancer.server.port: '6767'
-      traefik.http.services.bazarr.loadbalancer.serverstransport: 'default@file'
     security_opt:
       - no-new-privileges:false
 

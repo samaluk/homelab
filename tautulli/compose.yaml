@@ -16,15 +16,9 @@ services:
     restart: unless-stopped
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.tautulli.rule: 'Host(`tautulli.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.tautulli.entrypoints: 'websecure'
-      traefik.http.routers.tautulli.tls: 'true'
-      traefik.http.routers.tautulli.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'tautulli'
       traefik.http.routers.tautulli.middlewares: 'hsts@file'
-      traefik.http.routers.tautulli.service: 'tautulli'
       traefik.http.services.tautulli.loadbalancer.server.port: '8181'
-      traefik.http.services.tautulli.loadbalancer.serverstransport: 'default@file'
 
 networks:
   default:

@@ -10,15 +10,9 @@ services:
     restart: unless-stopped
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.bentopdf.rule: 'Host(`bentopdf.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.bentopdf.entrypoints: 'websecure'
-      traefik.http.routers.bentopdf.tls: 'true'
-      traefik.http.routers.bentopdf.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'bentopdf'
       traefik.http.routers.bentopdf.middlewares: 'hsts@file'
-      traefik.http.routers.bentopdf.service: 'bentopdf'
       traefik.http.services.bentopdf.loadbalancer.server.port: '8080'
-      traefik.http.services.bentopdf.loadbalancer.serverstransport: 'default@file'
 
 networks:
   default:

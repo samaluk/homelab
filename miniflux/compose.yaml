@@ -34,15 +34,9 @@ services:
       - proxy
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.miniflux.rule: 'Host(`miniflux.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.miniflux.entrypoints: 'websecure'
-      traefik.http.routers.miniflux.tls: 'true'
-      traefik.http.routers.miniflux.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'miniflux'
       traefik.http.routers.miniflux.middlewares: 'hsts@file'
-      traefik.http.routers.miniflux.service: 'miniflux'
       traefik.http.services.miniflux.loadbalancer.server.port: '8080'
-      traefik.http.services.miniflux.loadbalancer.serverstransport: 'default@file'
 
 networks:
   default:

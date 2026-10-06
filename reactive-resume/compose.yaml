@@ -53,15 +53,9 @@ services:
       start_period: 60s
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.resume.rule: 'Host(`resume.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.resume.entrypoints: 'websecure'
-      traefik.http.routers.resume.tls: 'true'
-      traefik.http.routers.resume.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'resume'
       traefik.http.routers.resume.middlewares: 'hsts@file'
-      traefik.http.routers.resume.service: 'resume'
       traefik.http.services.resume.loadbalancer.server.port: '3000'
-      traefik.http.services.resume.loadbalancer.serverstransport: 'default@file'
 
 networks:
   default:

@@ -20,15 +20,9 @@ services:
       test: curl -f http://localhost:8989/ || exit 1
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'homelab-proxy'
-      traefik.http.routers.sonarr.rule: 'Host(`sonarr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
-      traefik.http.routers.sonarr.entrypoints: 'websecure'
-      traefik.http.routers.sonarr.tls: 'true'
-      traefik.http.routers.sonarr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      homelab.hostname: 'sonarr'
       traefik.http.routers.sonarr.middlewares: 'hsts@file'
-      traefik.http.routers.sonarr.service: 'sonarr'
       traefik.http.services.sonarr.loadbalancer.server.port: '8989'
-      traefik.http.services.sonarr.loadbalancer.serverstransport: 'default@file'
     security_opt:
       - no-new-privileges:true
 
