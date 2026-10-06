@@ -124,8 +124,23 @@ Store runtime configuration in Infisical **prod /traefik**, matching the stack
 name. Keep certificate accounts and private keys under
 `/volume1/docker/traefik`; never commit them or expose them in logs.
 Traefik runs as container root (UID/GID 0:0). Pre-create its state directory
-with mode 0700 and ACME JSON files with mode 0600; Docker's root process can
-write the bind without changing ownership of existing application directories.
+with mode 0700. Below it, create `letsencrypt/` and `staging/` directories with
+mode 0700, each containing `production.json` and `staging.json` with mode 0600.
+Docker's root process can write the bind without changing ownership of existing
+application directories.
+
+Both ACME providers read only the directory selected by
+`TRAEFIK_CERT_RESOLVER`. Production uses `letsencrypt/production.json`; staging
+uses `staging/staging.json`. Leave the other provider's file in each directory
+empty. Traefik loads certificates from configured providers into a shared TLS
+store, so merely changing the router resolver can keep serving saved staging
+certificates and prevent production issuance. Separate directories prevent the
+inactive mode's certificates from entering that store. When upgrading from the
+old flat layout, privately copy existing `production.json` into
+`letsencrypt/production.json` and existing `staging.json` into
+`staging/staging.json`, preserving permissions and account data. Keep the flat
+files for rollback; do not copy staging certificates into the production
+directory or delete existing production state.
 
 Use individual-hostname ACME HTTP-01 certificates, independently of DSM's
 certificate renewal. Public TCP 80 must reach Traefik during issuance and
