@@ -18,6 +18,7 @@ hook unchanged and leave Komodo's stack environment empty.
 | `APP_URL` | `https://resume.malukzedan.synology.me` |
 | `POSTGRES_PASSWORD` | Generate a unique password with `openssl rand -hex 32` |
 | `AUTH_SECRET` | Generate a separate secret with `openssl rand -hex 32` |
+| `TRUSTED_PROXIES` | Required for v6 behind DSM; comma-separated proxy IPs/CIDRs verified from the app's incoming connection (see below) |
 | `FLAG_DISABLE_SIGNUPS` | Optional; defaults to `false`, set to `true` after creating the intended accounts |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_SECURE` | Optional email delivery configuration |
 
@@ -57,6 +58,28 @@ Configure DSM's reverse proxy with HTTPS `resume.malukzedan.synology.me:443`
 forwarding to HTTP `127.0.0.1:8091`, preserving the host and forwarded protocol
 headers. Assign a certificate covering the hostname and ensure DNS resolves to
 the NAS's public ingress. PostgreSQL has no published host port.
+
+For v6, set `TRUSTED_PROXIES` in Infisical **prod /reactive-resume** before
+merging the upgrade. Confirm the immediate peer address seen inside the app
+container during a request through DSM: Docker's loopback port forwarding can
+make the peer a bridge gateway rather than `127.0.0.1`. Trust that specific
+address (and any verified intermediate proxy hops), using exact IPs or narrow
+CIDRs. Do not trust public client networks or all private networks.
+
+The current DSM server block in
+`/etc/nginx/sites-enabled/server.ReverseProxy.conf` uses
+`proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for`, which appends the
+actual client address to any incoming header. It also sets `X-Real-IP` to
+`$remote_addr` and `X-Forwarded-Proto` to `$scheme`. During a request through
+the public HTTPS endpoint, the app's TCP connection peer was verified as
+`192.168.128.1`, the gateway of `reactive-resume_default`. Infisical's
+`TRUSTED_PROXIES` is set to that exact IP, without a broader private CIDR.
+
+v6 uses the trusted proxy chain for per-visitor API and authentication rate
+limits, stopping at the first untrusted client hop. Repeat the peer and
+forwarded-header checks if the Docker network or proxy topology changes, and
+update Infisical before redeploying. Compose refuses to deploy without
+`TRUSTED_PROXIES`.
 
 Merge the stack PR into `main` to trigger the normal Komodo deployment workflow.
 Verify both containers are healthy, then check `/api/health` through the public

@@ -17,7 +17,7 @@ services:
       start_period: 30s
 
   reactive-resume:
-    image: ghcr.io/reactive-resume/reactive-resume:v5.3.2@sha256:b433dbe2fa2c23bfb7734d16380e4d703a05349db096113a18cb13b16f4c1fa0
+    image: ghcr.io/reactive-resume/reactive-resume:v6.0.0@sha256:29f418bd46d23f1d7cd9a73ec7f6bc46681926cb1ff617ac388064f45ee790d0
     container_name: reactive-resume
     depends_on:
       postgres:
@@ -30,6 +30,7 @@ services:
       DATABASE_URL: postgresql://reactive_resume:${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}@postgres:5432/reactive_resume
       LOCAL_STORAGE_PATH: /app/data
       PORT: '3000'
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:?Missing TRUSTED_PROXIES}
       TZ: America/Santiago
       FLAG_DISABLE_SIGNUPS: ${FLAG_DISABLE_SIGNUPS:-false}
       SMTP_HOST: ${SMTP_HOST:-}
