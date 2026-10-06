@@ -20,7 +20,8 @@ Commands:
   servers                     List Komodo-managed servers
   update <id>                 Fetch update record by id
 
-Env: repo root .env (KOMODO_URL, KOMODO_API_KEY, KOMODO_API_SECRET). Never commit secrets.
+Env: inject KOMODO_URL, KOMODO_API_KEY, and KOMODO_API_SECRET (e.g. infisical run),
+or use the legacy repo root .env. Never commit secrets.
 `);
   process.exit(command ? 1 : 0);
 }

@@ -31,15 +31,32 @@ function findRepoRoot(): string {
   );
 }
 
-const REPO_ROOT = findRepoRoot();
-const ENV_CANDIDATES = [
-  resolve(REPO_ROOT, ".env"),
-  resolve(REPO_ROOT, "komodo.local.env"),
-  resolve(REPO_ROOT, ".env.komodo"),
-];
-
 export function loadKomodoEnv(): KomodoEnv {
-  const path = ENV_CANDIDATES.find((candidate) => existsSync(candidate));
+  const injected = {
+    url: process.env.KOMODO_URL,
+    key: process.env.KOMODO_API_KEY,
+    secret: process.env.KOMODO_API_SECRET,
+  };
+  if (Object.values(injected).some((value) => value !== undefined)) {
+    if (!injected.url || !injected.key || !injected.secret) {
+      throw new Error(
+        "The process environment must define KOMODO_URL, KOMODO_API_KEY, and KOMODO_API_SECRET together.",
+      );
+    }
+    return {
+      url: injected.url.replace(/\/$/, ""),
+      key: injected.key,
+      secret: injected.secret,
+    };
+  }
+
+  const repoRoot = findRepoRoot();
+  const envCandidates = [
+    resolve(repoRoot, ".env"),
+    resolve(repoRoot, "komodo.local.env"),
+    resolve(repoRoot, ".env.komodo"),
+  ];
+  const path = envCandidates.find((candidate) => existsSync(candidate));
   if (!path) {
     throw new Error(
       "Komodo credentials not found. Set KOMODO_URL, KOMODO_API_KEY, and KOMODO_API_SECRET in .env (repo root).",

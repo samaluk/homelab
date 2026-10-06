@@ -42,7 +42,27 @@ Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https:
 
 Stacks are deployed on a Synology NAS through Komodo. Compose files use environment variable placeholders; values are injected at deploy time from [Infisical](https://infisical.com) (self-hosted) or Komodo stack variables.
 
-Local development and agent tooling use the Komodo API client under `.agents/skills/homelab-komodo/`. See that skill for setup (`KOMODO_URL`, `KOMODO_API_KEY`, `KOMODO_API_SECRET` in a gitignored `.env` at the repo root).
+Local development and agent tooling use the Komodo API client under
+`.agents/skills/homelab-komodo/`. Inject `KOMODO_URL`, `KOMODO_API_KEY`, and
+`KOMODO_API_SECRET` together through the process environment. The legacy
+gitignored `.env` setup at the repo root remains supported when no credentials
+are injected.
+
+To share client credentials across machines, store them in Infisical
+`prod /homelab-admin`, separate from stack deployment secrets. Authenticate the
+Infisical CLI on each machine, then fetch the credentials for a command without
+exporting a secrets file:
+
+```bash
+infisical login --domain=https://infisical.malukzedan.synology.me
+infisical run --domain=https://infisical.malukzedan.synology.me \
+  --projectId=YOUR_PROJECT_ID --env=prod --path=/homelab-admin -- \
+  bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts version
+```
+
+Use the project ID shown in Infisical. For unattended tooling, use a dedicated
+machine identity with access limited to the folders it needs. NAS SSH access
+is configured separately; each machine can keep its own private key.
 
 ## Secrets (Infisical)
 
