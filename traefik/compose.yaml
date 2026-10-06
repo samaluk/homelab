@@ -41,8 +41,9 @@ services:
       - '8443:443'
       - '8880:80'
     networks:
-      - proxy
-      - docker-api
+      proxy:
+        ipv4_address: ${TRAEFIK_PROXY_IP:?Missing TRAEFIK_PROXY_IP}
+      docker-api:
     command:
       - --global.checknewversion=false
       - --global.sendanonymoususage=false

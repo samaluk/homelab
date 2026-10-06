@@ -37,6 +37,8 @@ Infisical folder:
 
 - `TRAEFIK_ACME_EMAIL`: certificate account email.
 - `TRAEFIK_PROXY_SUBNET`: unused CIDR for `homelab-proxy`.
+- `TRAEFIK_PROXY_IP`: reserved address within that CIDR for Traefik; applications
+  can trust this exact proxy address instead of the whole shared network.
 - `TRAEFIK_DOCKER_API_SUBNET`: different unused CIDR for the internal API network.
 - `TRAEFIK_NAS_HOST`: NAS LAN address, used by explicit host backends.
 - `TRAEFIK_DOMAIN`: optional hostname suffix; defaults to the existing DDNS name.
