@@ -11,8 +11,28 @@ services:
       - PUID=1026
     ports:
       - '6767:6767'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
     healthcheck:
       test: curl -f http://localhost:6767/ || exit 1
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.bazarr.rule: 'Host(`bazarr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.bazarr.entrypoints: 'websecure'
+      traefik.http.routers.bazarr.tls: 'true'
+      traefik.http.routers.bazarr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.bazarr.middlewares: 'hsts@file'
+      traefik.http.routers.bazarr.service: 'bazarr'
+      traefik.http.services.bazarr.loadbalancer.server.port: '6767'
+      traefik.http.services.bazarr.loadbalancer.serverstransport: 'default@file'
     security_opt:
       - no-new-privileges:false
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

@@ -12,11 +12,11 @@ existing `env_template` unchanged. Only `compose.yaml` needs watching; no extra
 config files or ignored services are needed. Store
 `SITEBIN_HOST=reports.malukzedan.synology.me` in Infisical **prod /sitebin**.
 
-DSM's existing reverse proxy routes HTTPS `reports.malukzedan.synology.me:443`
-to HTTP `127.0.0.1:8090`, with the matching certificate and HSTS. Sitebin's
-backend port is bound to NAS loopback. `SITEBIN_HTTP_ONLY=true` keeps Sitebin's
-bundled Caddy listener on HTTP for that internal hop; DSM remains responsible
-for public TLS termination. Do not enable `no-new-privileges`: the image grants
+Traefik routes HTTPS `reports.malukzedan.synology.me` to Sitebin's HTTP port 80
+through `homelab-proxy`, with ACME TLS and HSTS. The NAS loopback binding and
+DSM route remain available for rollback. `SITEBIN_HTTP_ONLY=true` keeps
+Sitebin's bundled Caddy listener on HTTP for the internal hop.
+Do not enable `no-new-privileges`: the image grants
 its non-root Caddy binary the capability required to bind port 80, and that
 security option prevents the capability from taking effect. Komodo deploys
 after the PR reaches main.
@@ -42,7 +42,7 @@ in **Options** before publishing. Both are optional in Sitebin: set them for
 private, temporary reports. Save the claim ticket's edit URL and password
 privately. Share only the view URL and view password.
 
-In HTTP-only mode, Sitebin generates `http://` URLs even behind DSM HTTPS.
+In HTTP-only mode, Sitebin generates `http://` URLs even behind Traefik HTTPS.
 Change copied view and edit URLs to `https://` before using or sharing them.
 Agents must make the same correction to API responses.
 

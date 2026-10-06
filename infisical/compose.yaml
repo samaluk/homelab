@@ -14,7 +14,19 @@ services:
       - '8002:8080'
     networks:
       - infisical
+      - proxy
     restart: unless-stopped
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.infisical.rule: 'Host(`infisical.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.infisical.entrypoints: 'websecure'
+      traefik.http.routers.infisical.tls: 'true'
+      traefik.http.routers.infisical.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.infisical.middlewares: 'hsts@file'
+      traefik.http.routers.infisical.service: 'infisical'
+      traefik.http.services.infisical.loadbalancer.server.port: '8080'
+      traefik.http.services.infisical.loadbalancer.serverstransport: 'default@file'
     pull_policy: always
 
   db:
@@ -48,6 +60,9 @@ services:
 
 networks:
   infisical:
+  proxy:
+    external: true
+    name: homelab-proxy
 
 volumes:
   pg_data:

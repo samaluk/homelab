@@ -41,6 +41,9 @@ services:
       SMTP_SECURE: ${SMTP_SECURE:-false}
     ports:
       - '127.0.0.1:8091:3000'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
     healthcheck:
       test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/api/health').then((r) => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1));"]
@@ -48,3 +51,20 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.resume.rule: 'Host(`resume.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.resume.entrypoints: 'websecure'
+      traefik.http.routers.resume.tls: 'true'
+      traefik.http.routers.resume.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.resume.middlewares: 'hsts@file'
+      traefik.http.routers.resume.service: 'resume'
+      traefik.http.services.resume.loadbalancer.server.port: '3000'
+      traefik.http.services.resume.loadbalancer.serverstransport: 'default@file'
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

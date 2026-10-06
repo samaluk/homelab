@@ -34,8 +34,28 @@ services:
       PUID: 1026
     ports:
       - '8686:8686'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
     healthcheck:
       test: curl -f http://localhost:8686/ || exit 1
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.lidarr.rule: 'Host(`lidarr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.lidarr.entrypoints: 'websecure'
+      traefik.http.routers.lidarr.tls: 'true'
+      traefik.http.routers.lidarr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.lidarr.middlewares: 'hsts@file'
+      traefik.http.routers.lidarr.service: 'lidarr'
+      traefik.http.services.lidarr.loadbalancer.server.port: '8686'
+      traefik.http.services.lidarr.loadbalancer.serverstransport: 'media@file'
     security_opt:
       - no-new-privileges:true
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

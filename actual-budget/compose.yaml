@@ -15,6 +15,21 @@ services:
     env_file: .env
     ports:
       - '3030:3000'
+    networks:
+      - default
+      - proxy
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.actual-ics.rule: 'Host(`actual-ics.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.actual-ics.entrypoints: 'websecure'
+      traefik.http.routers.actual-ics.tls: 'true'
+      traefik.http.routers.actual-ics.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.actual-ics.middlewares: 'hsts@file'
+      traefik.http.routers.actual-ics.service: 'actual-ics'
+      traefik.http.services.actual-ics.loadbalancer.server.port: '3000'
+      traefik.http.services.actual-ics.loadbalancer.serverstransport: 'extended@file'
+
   actual-server:
     image: actualbudget/actual-server:26.10.0@sha256:24645e971da6bb1a1f953d6859e307a0b29be1e8b4130a35b3220c209b5b860c
     container_name: actual-server
@@ -28,7 +43,21 @@ services:
       - ACTUAL_UPLOAD_FILE_SIZE_LIMIT_MB=50
     ports:
       - '5007:5007'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.budget.rule: 'Host(`budget.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.budget.entrypoints: 'websecure'
+      traefik.http.routers.budget.tls: 'true'
+      traefik.http.routers.budget.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.budget.middlewares: 'hsts@file'
+      traefik.http.routers.budget.service: 'budget'
+      traefik.http.services.budget.loadbalancer.server.port: '5007'
+      traefik.http.services.budget.loadbalancer.serverstransport: 'default@file'
 
   actualtap:
     image: mattyfaz/actualtap:v1.0.37@sha256:0e6f415397009760a45efc66492d8b661f01d9c87fa6cdd47c8751be623e3e2a
@@ -44,7 +73,21 @@ services:
     env_file: .env
     ports:
       - '3333:3001'
+    networks:
+      - default
+      - proxy
     restart: always
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.actualtap.rule: 'Host(`actualtap.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.actualtap.entrypoints: 'websecure'
+      traefik.http.routers.actualtap.tls: 'true'
+      traefik.http.routers.actualtap.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.actualtap.middlewares: 'hsts@file'
+      traefik.http.routers.actualtap.service: 'actualtap'
+      traefik.http.services.actualtap.loadbalancer.server.port: '3001'
+      traefik.http.services.actualtap.loadbalancer.serverstransport: 'default@file'
 
   fintual-api:
     image: docker.io/samaluk/fintual-api:v3.1.2@sha256:77599ef708b8b9a50b96757f5c93d105835331dd18c5a9d6517b59932fcc65a6
@@ -75,3 +118,9 @@ services:
       FINTUAL_2FA_SENDER: "${FINTUAL_2FA_SENDER:-notificaciones@fintual.com}"
       FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
     restart: unless-stopped
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

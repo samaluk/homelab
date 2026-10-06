@@ -9,7 +9,27 @@ services:
       TZ: America/Santiago
     ports:
       - '3444:3001'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.uptime-kuma.rule: 'Host(`uptime-kuma.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.uptime-kuma.entrypoints: 'websecure'
+      traefik.http.routers.uptime-kuma.tls: 'true'
+      traefik.http.routers.uptime-kuma.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.uptime-kuma.middlewares: 'hsts@file'
+      traefik.http.routers.uptime-kuma.service: 'uptime-kuma'
+      traefik.http.services.uptime-kuma.loadbalancer.server.port: '3001'
+      traefik.http.services.uptime-kuma.loadbalancer.serverstransport: 'default@file'
     cpu_shares: 1024
     hostname: uptimekuma
     mem_limit: 4g
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

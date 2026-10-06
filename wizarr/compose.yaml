@@ -11,6 +11,9 @@ services:
       - TZ=America/Santiago
     ports:
       - '5690:5690'
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
     healthcheck:
       test: curl -f http://localhost:5690/ || exit 1
@@ -18,3 +21,20 @@ services:
       timeout: 5s
       interval: 30s
       retries: 3
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.wizarr.rule: 'Host(`wizarr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.wizarr.entrypoints: 'websecure'
+      traefik.http.routers.wizarr.tls: 'true'
+      traefik.http.routers.wizarr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.wizarr.middlewares: 'hsts@file'
+      traefik.http.routers.wizarr.service: 'wizarr'
+      traefik.http.services.wizarr.loadbalancer.server.port: '5690'
+      traefik.http.services.wizarr.loadbalancer.serverstransport: 'default@file'
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

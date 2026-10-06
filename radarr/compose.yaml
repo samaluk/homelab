@@ -12,8 +12,28 @@ services:
       PUID: 1026
     ports:
       - '7878:7878'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
     healthcheck:
       test: curl -f http://localhost:7878/ || exit 1
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.radarr.rule: 'Host(`radarr.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.radarr.entrypoints: 'websecure'
+      traefik.http.routers.radarr.tls: 'true'
+      traefik.http.routers.radarr.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.radarr.middlewares: 'hsts@file'
+      traefik.http.routers.radarr.service: 'radarr'
+      traefik.http.services.radarr.loadbalancer.server.port: '7878'
+      traefik.http.services.radarr.loadbalancer.serverstransport: 'default@file'
     security_opt:
       - no-new-privileges:true
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy

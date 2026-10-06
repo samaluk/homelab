@@ -47,6 +47,10 @@ Infisical folder:
 - `TRAEFIK_DOCKER_API_SUBNET`: different unused CIDR for the internal API network.
 - `TRAEFIK_NAS_HOST`: NAS LAN address, used by explicit host backends.
 - `TRAEFIK_DOMAIN`: optional hostname suffix; defaults to the existing DDNS name.
+- `TRAEFIK_OPENCODE_HOST`, `TRAEFIK_T3CODE_HOST`: existing LAN backend hosts.
+- `TRAEFIK_CERT_RESOLVER`: optional; defaults to `letsencrypt`. Set `staging`
+  for a certificate test. Docker routes use the same optional setting in their
+  own stack environments; unset values select production.
 
 Check the NAS routes and Docker networks before choosing subnets. This NAS has
 nearly exhausted Docker's default address pools, so explicit unused CIDRs avoid
@@ -96,6 +100,20 @@ their containers directly through the shared network, preserving loopback
 bindings as DSM fallback. Home Assistant, Pi-hole, and Plex retain host
 networking. The Tailscale-only `easy-cli-proxy` is outside this migration.
 
+Before routing Home Assistant, add Traefik's reserved address to its HTTP
+trusted proxies while retaining the existing DSM loopback entry. See
+`home-assistant/README.md`. Add the same reserved address to Reactive Resume's
+Infisical `TRUSTED_PROXIES` while retaining its verified DSM bridge gateway.
+These runtime settings preserve client attribution without trusting every
+container on the shared network.
+
+Register `dynamic/host-services.yaml` as a Komodo config dependency requiring
+Traefik redeployment when the service migration PR reaches main. DSM's HTTPS
+backend uses the public DSM hostname for TLS SNI and normal CA verification.
+WebSocket upgrades pass through automatically; no hop-by-hop Upgrade or
+Connection headers are forced. Open WebUI's streaming middleware sets response
+headers, and no response buffering middleware is enabled.
+
 ## Deployment and cutover
 
 1. Merge the documentation PR, then the infrastructure PR. Provision the
@@ -131,3 +149,11 @@ when available; do not invent secrets to satisfy rendering. Record the
 pre-migration and post-migration HTTP status for every inventoried hostname.
 Expected login redirects or authentication responses count as reachability;
 connection failures and unexpected proxy 5xx responses do not.
+
+Use `python3 traefik/check-reachability.py --websockets --output results.json`
+for the 39-hostname inventory and unauthenticated WebSocket handshakes. Retired
+routes are reported separately and do not hide failures on active routes.
+Before cutover, add `--connect NAS_IP --port 8443` to test Traefik directly with
+the original Host header, TLS SNI and certificate verification. Run from both
+an external client and the LAN. Keep results outside git; application sign-in,
+authenticated uploads and streaming still require their own functional checks.

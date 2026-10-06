@@ -13,11 +13,31 @@ services:
     ports:
       - '9865:9865'
       - '27581:27581'
+    networks:
+      - default
+      - proxy
     restart: on-failure:5
     healthcheck:
       test: curl -f http://localhost:9865/ || exit 1
 
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'homelab-proxy'
+      traefik.http.routers.qbittorrent.rule: 'Host(`qbittorrent.${TRAEFIK_DOMAIN:-malukzedan.synology.me}`)'
+      traefik.http.routers.qbittorrent.entrypoints: 'websecure'
+      traefik.http.routers.qbittorrent.tls: 'true'
+      traefik.http.routers.qbittorrent.tls.certresolver: '${TRAEFIK_CERT_RESOLVER:-letsencrypt}'
+      traefik.http.routers.qbittorrent.middlewares: 'hsts@file'
+      traefik.http.routers.qbittorrent.service: 'qbittorrent'
+      traefik.http.services.qbittorrent.loadbalancer.server.port: '9865'
+      traefik.http.services.qbittorrent.loadbalancer.serverstransport: 'default@file'
     security_opt:
       - no-new-privileges:true
     # network_mode: "service:gluetun"
     tty: true
+
+networks:
+  default:
+  proxy:
+    external: true
+    name: homelab-proxy
