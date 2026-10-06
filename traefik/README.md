@@ -123,16 +123,20 @@ recreation for this repair.
 Store runtime configuration in Infisical **prod /traefik**, matching the stack
 name. Keep certificate accounts and private keys under
 `/volume1/docker/traefik`; never commit them or expose them in logs.
-Traefik runs as container root (UID/GID 0:0). Pre-create its state directory
-with mode 0700. Below it, create `letsencrypt/` and `staging/` directories with
-mode 0700, each containing `production.json` and `staging.json` with mode 0600.
+Traefik runs as container root (UID/GID 0:0). Pre-create
+`/volume1/docker/traefik/acme/` with mode 0700. Below that mounted directory,
+create `/volume1/docker/traefik/acme/letsencrypt/` and
+`/volume1/docker/traefik/acme/staging/` with mode 0700, each containing
+`production.json` and `staging.json` with mode 0600.
 Docker's root process can write the bind without changing ownership of existing
 application directories.
 
 Both ACME providers read only the directory selected by
 `TRAEFIK_CERT_RESOLVER`. Production uses `letsencrypt/production.json`; staging
-uses `staging/staging.json`. Leave the other provider's file in each directory
-empty. Traefik loads certificates from configured providers into a shared TLS
+uses `staging/staging.json`. The other provider's file in each directory must
+exist with zero bytes and mode 0600. Create missing files with `touch`; an empty
+store is not a `{}` document or a deleted file. Preserve populated active files.
+Traefik loads certificates from configured providers into a shared TLS
 store, so merely changing the router resolver can keep serving saved staging
 certificates and prevent production issuance. Separate directories prevent the
 inactive mode's certificates from entering that store. When upgrading from the
