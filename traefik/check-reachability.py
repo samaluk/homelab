@@ -3,6 +3,7 @@
 import argparse
 import base64
 import concurrent.futures
+import hashlib
 import http.client
 import json
 import os
@@ -45,7 +46,15 @@ def check(name, args, websocket=False):
         conn.request("GET", WEBSOCKETS[name] if websocket else PATHS.get(name, "/"), headers=headers)
         response = conn.getresponse()
         result["status"] = response.status
-        result["ok"] = (response.status == 101 if websocket else
+        if websocket:
+            expected_accept = base64.b64encode(hashlib.sha1(
+                (headers["Sec-WebSocket-Key"] +
+                 "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode()
+            ).digest()).decode()
+            result["upgraded"] = (response.status == 101 and
+                                  response.getheader("Sec-WebSocket-Accept") == expected_accept)
+            result["auth_required"] = response.status in (401, 403)
+        result["ok"] = (result["upgraded"] or result["auth_required"] if websocket else
                         200 <= response.status < 400 or response.status in (401, 403))
         # Checking headers avoids consuming large pages or endless streams.
     except (OSError, http.client.HTTPException) as exc:
@@ -71,12 +80,16 @@ def main():
         results = list(pool.map(lambda job: check(job[0], args, job[1]), jobs))
     for item in results:
         status = item.get("status", item.get("error"))
-        label = "OK" if item["ok"] else "RETIRED" if item["retired"] else "FAIL"
+        label = ("AUTH" if item.get("auth_required") else "OK" if item["ok"] else
+                 "RETIRED" if item["retired"] else "FAIL")
         print(f"{label:7} {item['kind']:9} {item['hostname']} {status}")
     if args.output:
         args.output.write_text(json.dumps(results, indent=2) + "\n")
     failures = [item for item in results if not item["ok"] and not item["retired"]]
     print(f"{len(results)} checks, {len(failures)} failures on active routes")
+    auth_required = sum(bool(item.get("auth_required")) for item in results)
+    if auth_required:
+        print(f"{auth_required} WebSocket routes reached authentication; upgrades remain unverified")
     return bool(failures)
 
 

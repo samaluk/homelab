@@ -153,6 +153,9 @@ connection failures and unexpected proxy 5xx responses do not.
 Use `python3 traefik/check-reachability.py --websockets --output results.json`
 for the 39-hostname inventory and unauthenticated WebSocket handshakes. Retired
 routes are reported separately and do not hide failures on active routes.
+WebSocket 401/403 replies are marked `AUTH`: the route is reachable but its
+upgrade still requires an authenticated check. Successful upgrades also require
+the expected `Sec-WebSocket-Accept` response.
 Before cutover, add `--connect NAS_IP --port 8443` to test Traefik directly with
 the original Host header, TLS SNI and certificate verification. Run from both
 an external client and the LAN. Keep results outside git; application sign-in,

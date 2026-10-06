@@ -27,6 +27,7 @@ http:
       rule: 'Host(`pihole.{{ env "TRAEFIK_DOMAIN" }}`)'
       entryPoints: [websecure]
       service: pihole
+      # Preserve the existing DSM route's disabled HSTS policy.
       tls:
         certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
     plex:
