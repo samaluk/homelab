@@ -5,8 +5,7 @@ on:
       - main
       - 'renovate/**'
   pull_request:
-    branches:
-      - main
+    # Run for every base branch, including stacked PRs targeting feature branches.
 jobs:
   dclint:
     name: dclint
