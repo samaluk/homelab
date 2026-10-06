@@ -4,10 +4,9 @@ http:
       headers:
         stsSeconds: 15768000
         stsIncludeSubdomains: true
-        stsPreload: true
     streaming:
       headers:
-        customRequestHeaders:
+        customResponseHeaders:
           X-Accel-Buffering: 'no'
           Cache-Control: no-cache
   serversTransports:
@@ -19,3 +18,7 @@ http:
       forwardingTimeouts:
         dialTimeout: 300s
         responseHeaderTimeout: 300s
+    media:
+      forwardingTimeouts:
+        dialTimeout: 120s
+        responseHeaderTimeout: 120s
