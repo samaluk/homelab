@@ -42,7 +42,8 @@ Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https:
 
 Stacks are deployed on a Synology NAS through Komodo. Compose files use environment variable placeholders; values are injected at deploy time from [Infisical](https://infisical.com) (self-hosted) or Komodo stack variables.
 
-Local development and agent tooling use the Komodo API client under `.agents/skills/homelab-komodo/`. See that skill for setup (`KOMODO_URL`, `KOMODO_API_KEY`, `KOMODO_API_SECRET` in a gitignored `.env` at the repo root).
+For local Komodo access, follow the [Komodo skill](.agents/skills/homelab-komodo/SKILL.md).
+It loads credentials from Infisical and validates them with [Varlock](https://varlock.dev/).
 
 ## Secrets (Infisical)
 

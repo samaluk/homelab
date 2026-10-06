@@ -4,7 +4,7 @@ import { createKomodoClient } from "./client.ts";
 const [command, ...args] = process.argv.slice(2);
 
 function usage(): never {
-  console.error(`Usage: bun scripts/komodo/cli.ts <command> [args]
+  console.error(`Usage: bun run komodo <command> [args]
 
 Commands:
   version                     Komodo core version
@@ -20,7 +20,8 @@ Commands:
   servers                     List Komodo-managed servers
   update <id>                 Fetch update record by id
 
-Env: repo root .env (KOMODO_URL, KOMODO_API_KEY, KOMODO_API_SECRET). Never commit secrets.
+Env: load KOMODO_URL, KOMODO_API_KEY, and KOMODO_API_SECRET from Infisical,
+then validate them through Varlock using bun run komodo. Never commit secrets.
 `);
   process.exit(command ? 1 : 0);
 }

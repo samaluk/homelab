@@ -45,26 +45,49 @@ Avoid `RunAction`, action scripts, Deno action cache workarounds, and terminal-e
 
 ## Setup (once per machine)
 
-1. Dependencies are already in repo root `package.json` (`komodo_client`). Install with `bun install` from the repo root.
+1. Dependencies are already in repo root `package.json` (`komodo_client`, `varlock`). Install with `bun install --frozen-lockfile` from the repo root.
 2. In Komodo UI: **Settings → API Keys** → create a key with permission to read/execute the stacks you need.
-3. Set in repo root `.env` (gitignored): `KOMODO_URL` (no trailing slash), `KOMODO_API_KEY`, `KOMODO_API_SECRET`.
+3. Store client credentials `KOMODO_URL`, `KOMODO_API_KEY`, and
+   `KOMODO_API_SECRET` in Infisical **prod /homelab-admin**, then authenticate the
+   Infisical CLI separately on each machine. Inject all three together with
+   `infisical run` and validate them through Varlock with `bun run komodo`.
 
-Verify:
+Verify with the project ID shown in Infisical:
 
 ```bash
 cd /path/to/homelab
-bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts version
-bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts stacks
+infisical login --domain=https://infisical.malukzedan.synology.me --profile=homelab
+infisical run --domain=https://infisical.malukzedan.synology.me \
+  --profile=homelab --projectId=YOUR_PROJECT_ID --env=prod \
+  --path=/homelab-admin --silent --telemetry=false -- bun run komodo version
 ```
 
-Never commit `.env` or print secrets in chat output.
+`bun run komodo` uses Varlock to validate all three variables against
+`scripts/komodo/.env.schema` before starting the client and redact matching
+credentials from captured stdout/stderr; interactive terminal output uses TTY
+passthrough. Infisical remains the secret store, and the schema contains no secret
+values. This flow uses the existing CLI login, without additional bootstrap
+credentials or local secrets files. Missing or incomplete credentials fail
+immediately. Redaction is not process isolation, and
+the client still receives the real credentials. Do not use unredacted
+`varlock load --format json`, `env`, or `shell` output in agent transcripts.
+
+Use the same Infisical/Varlock wrapper for other commands below. A named Infisical
+profile can be selected with `--profile` or `INFISICAL_PROFILE`. For a CLI on a remote Linux
+machine, browser login may need an SSH tunnel from the browser's machine to the
+CLI's localhost callback port; keep login tokens out of chat. Never commit
+`.env` or print secrets in chat output.
+
+For unattended tooling, use a dedicated Infisical machine identity with access
+limited to the folders it needs. NAS SSH access is configured separately;
+each machine keeps its own private key.
 
 ## CLI (preferred for agents)
 
 From repo root:
 
 ```bash
-bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts <command> [args]
+bun run komodo <command> [args]
 ```
 
 | Command | Purpose |
@@ -125,6 +148,7 @@ For the full request catalog, see [reference.md](reference.md) and [Komodo clien
 
 - **401 / permission errors:** API key scope or wrong secret; regenerate key in Komodo.
 - **Unknown stack:** run `stacks`; name may differ from repo directory.
+- **Missing/incomplete credentials:** inject all three `KOMODO_*` variables together; partial injection fails without falling back to a local file.
 - **Import `localStorage` error:** use `scripts/komodo/client.ts` or call `ensureLocalStorage()` from `scripts/komodo/polyfill.ts` before importing `komodo_client`.
 - **`getentropy failed`:** this is why Komodo Actions are unsupported on this host. Use stack orchestration through Komodo and runtime/container debugging through **homelab-synology**.
 
