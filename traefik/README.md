@@ -52,6 +52,12 @@ behavior in the pinned upstream image. Container inspection still reveals
 environment metadata; only Traefik joins this API network. The dashboard is
 disabled.
 
+The container healthcheck uses the image's lightweight `wget` to probe
+Traefik's loopback ping endpoint. Launching the Traefik CLI for each probe can
+exceed the healthcheck timeout under NAS disk pressure even while the running
+proxy responds normally. The ping port is not published to the host, and the
+dashboard remains disabled.
+
 Host-network applications, DSM, Komodo, Portainer, and services on other LAN
 machines use explicitly configured file-provider backends. Preserve their
 existing access policy and HTTPS backend verification. Do not change a
