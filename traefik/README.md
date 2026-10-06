@@ -47,7 +47,11 @@ Infisical folder:
 - `TRAEFIK_DOCKER_API_SUBNET`: different unused CIDR for the internal API network.
 - `TRAEFIK_NAS_HOST`: NAS LAN address, used by explicit host backends.
 - `TRAEFIK_DOMAIN`: optional hostname suffix; defaults to the existing DDNS name.
-- `TRAEFIK_OPENCODE_HOST`, `TRAEFIK_T3CODE_HOST`: existing LAN backend hosts.
+- `TRAEFIK_OPENCODE_HOST`, `TRAEFIK_T3CODE_HOST`: optional LAN hosts for the
+  currently unavailable external backends. Unset values use container loopback,
+  where their ports have no listener, preserving an unavailable route without
+  blocking startup of ingress for active applications. Set the original LAN
+  hosts in Infisical to reconnect them.
 - `TRAEFIK_CERT_RESOLVER`: optional; defaults to `letsencrypt`. Set `staging`
   for a certificate test. Docker routes use the same optional setting in their
   own stack environments; unset values select production.
