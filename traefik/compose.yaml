@@ -59,10 +59,10 @@ services:
       - --entrypoints.websecure.transport.respondingtimeouts.readtimeout=0
       - --entrypoints.websecure.transport.respondingtimeouts.writetimeout=0
       - --certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_ACME_EMAIL:?Missing TRAEFIK_ACME_EMAIL}
-      - --certificatesresolvers.letsencrypt.acme.storage=/acme/production.json
+      - --certificatesresolvers.letsencrypt.acme.storage=/acme/${TRAEFIK_CERT_RESOLVER:-letsencrypt}/production.json
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
       - --certificatesresolvers.staging.acme.email=${TRAEFIK_ACME_EMAIL:?Missing TRAEFIK_ACME_EMAIL}
-      - --certificatesresolvers.staging.acme.storage=/acme/staging.json
+      - --certificatesresolvers.staging.acme.storage=/acme/${TRAEFIK_CERT_RESOLVER:-letsencrypt}/staging.json
       - --certificatesresolvers.staging.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       - --certificatesresolvers.staging.acme.httpchallenge.entrypoint=web
       - --serverstransport.forwardingtimeouts.dialtimeout=60s
