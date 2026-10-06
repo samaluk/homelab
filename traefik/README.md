@@ -91,7 +91,9 @@ mounted directory: register `dynamic/common.yaml`, `socket-proxy/haproxy.cfg`
 and subsequent route files.
 
 The deployed proxy subnet is `172.16.10.0/24`, with Traefik at `172.16.10.2`
-and automatic allocations restricted to `172.16.10.128/25`. Without that
+and automatic allocations restricted to `172.16.10.128/25`. Docker selects
+`172.16.10.128` as this network's gateway; application addresses start after it.
+Without that
 restriction, Docker can give Traefik's address to an application while the
 proxy is being recreated, causing an `Address already in use` startup failure.
 Docker's [IPAM configuration](https://docs.docker.com/reference/compose-file/networks/#ipam)
@@ -101,12 +103,22 @@ An existing network must be recreated to apply the allocation range. Perform
 this before public cutover, or restore DSM forwarding first. Record its IPAM,
 labels, attached container IDs and network aliases. Confirm each application
 also retains its private network, then disconnect only `homelab-proxy` from
-those containers. Remove the empty proxy network and recreate it with the
-same name, subnet, gateway and Compose labels, plus the dynamic range. Reconnect
-the existing application containers with their recorded aliases; redeploy only
-Traefik through Komodo. Verify its fixed address and that application addresses
-fall inside the dynamic range. Application containers, private networks,
-published ports and persistent data do not need recreation for this repair.
+those containers. Remove the empty proxy network and deploy only Traefik through
+Komodo to recreate the network from the merged Compose configuration. Check the
+resulting gateway rather than assuming the previous network's gateway: adding
+an allocation range can change Docker's automatic choice. If Compose reuses a
+previously created Traefik container without its proxy endpoint, reconnect it
+with the configured reserved address and verify its published ports.
+
+Reconnect the existing application containers with their recorded aliases.
+After every application is attached, restart only the Traefik stack through
+Komodo to refresh Docker discovery. Network connection changes can leave cached
+backend addresses pointing at application private networks, and containers that
+were unhealthy during discovery can have missing routes. Verify Traefik's fixed
+address, application addresses inside the dynamic range, original private
+network IDs, container health and every active HTTP/WebSocket route. Application
+containers, private networks, published ports and persistent data do not need
+recreation for this repair.
 
 Store runtime configuration in Infisical **prod /traefik**, matching the stack
 name. Keep certificate accounts and private keys under
