@@ -2,7 +2,9 @@
 
 Traefik replaces DSM's HTTPS reverse proxy while retaining Synology DDNS and
 the existing `*.malukzedan.synology.me` application URLs. Komodo deploys the
-`traefik` stack from this repository's `main` branch.
+`traefik` stack from this repository's `main` branch once the infrastructure PR
+lands. This document describes the planned migration; the Compose stack,
+Komodo resource, Infisical folder, and root README entries arrive with that PR.
 
 ## Migration architecture
 
@@ -34,13 +36,21 @@ host-network application's network mode just to integrate the proxy.
 Store runtime configuration in Infisical **prod /traefik**, matching the stack
 name. Keep certificate accounts and private keys under
 `/volume1/docker/traefik`; never commit them or expose them in logs.
+Traefik runs as container root (UID/GID 0:0). Pre-create its state directory
+with mode 0700 and ACME JSON files with mode 0600; Docker's root process can
+write the bind without changing ownership of existing application directories.
 
 Use individual-hostname ACME HTTP-01 certificates, independently of DSM's
 certificate renewal. Public TCP 80 must reach Traefik during issuance and
 renewal. Test with Let's Encrypt staging and a separate storage file before
 using production. Certificate verification must succeed without `curl -k`
 before public HTTPS cutover. Account for DSM's own certificate renewal when
-changing the public HTTP forwarding rule.
+changing the public HTTP forwarding rule. Check DSM certificate expiry and
+renew it before the validation window if needed. Keep that window short and
+restore its original TCP 80 forwarding if HTTPS cutover is deferred. Once
+Traefik permanently owns public TCP 80, DSM HTTP-01 renewal needs a separate
+plan before DSM's certificate expires; the existing DSM HTTPS certificate is
+only a time-limited rollback option.
 
 Komodo watches `compose.yaml` and additional mounted configuration files.
 Register additional files in `config_files`, with redeploy required for
@@ -49,7 +59,8 @@ they change. Preserve the shared Infisical pre-deploy hook.
 
 ## Existing route inventory
 
-DSM currently has 39 HTTPS routes. Most point to repository-managed web
+As of 2026-10-06 UTC, `/usr/syno/etc/www/ReverseProxy.json` contains 39 HTTPS
+routes. Most point to repository-managed web
 containers. The `seerr` and `overseerr` names both point to Seerr. External
 routes include DSM, Komodo, Portainer, OpenCode, and T3 Code.
 
@@ -76,7 +87,8 @@ networking. The Tailscale-only `easy-cli-proxy` is outside this migration.
 3. Test every hostname against Traefik directly, supplying the original Host
    header and TLS SNI. Verify backend responses, redirects, streaming,
    WebSockets, uploads, and any trusted-proxy settings that apply.
-4. Switch public TCP 80 to Traefik in a controlled certificate-validation
+4. Record the UDM's existing TCP 80/443 forwarding rules and destinations
+   privately before changing them. Switch public TCP 80 to Traefik in a controlled certificate-validation
    window. Obtain and verify production certificates for required routes.
 5. Switch public TCP 443 only after all required routes pass. Verify from
    outside the LAN and from LAN clients. Keep DSM rules during observation.
