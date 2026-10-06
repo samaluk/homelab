@@ -35,6 +35,7 @@ Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https:
 | `tautulli` | Tautulli Plex stats |
 | `tdarr` | Tdarr transcoding |
 | `trek` | Trek |
+| `traefik` | HTTPS ingress and restricted Docker discovery |
 | `uptime-kuma` | Uptime Kuma |
 | `wizarr` | Wizarr invites |
 
@@ -66,6 +67,7 @@ Stacks with required secrets beyond host bind-mount paths:
 | `sitebin` | `SITEBIN_HOST` |
 | `tdarr` | `TDARR_SERVER_IP` |
 | `trek` | `APP_URL` |
+| `traefik` | `TRAEFIK_ACME_EMAIL`, `TRAEFIK_PROXY_SUBNET`, `TRAEFIK_DOCKER_API_SUBNET`, `TRAEFIK_NAS_HOST`, optional `TRAEFIK_DOMAIN` |
 
 Never commit `.env` files or secret values to git.
 

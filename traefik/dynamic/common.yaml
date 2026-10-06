@@ -1,0 +1,21 @@
+http:
+  middlewares:
+    hsts:
+      headers:
+        stsSeconds: 15768000
+        stsIncludeSubdomains: true
+        stsPreload: true
+    streaming:
+      headers:
+        customRequestHeaders:
+          X-Accel-Buffering: 'no'
+          Cache-Control: no-cache
+  serversTransports:
+    default:
+      forwardingTimeouts:
+        dialTimeout: 60s
+        responseHeaderTimeout: 60s
+    extended:
+      forwardingTimeouts:
+        dialTimeout: 300s
+        responseHeaderTimeout: 300s
