@@ -2,9 +2,8 @@
 
 Traefik replaces DSM's HTTPS reverse proxy while retaining Synology DDNS and
 the existing `*.malukzedan.synology.me` application URLs. Komodo deploys the
-`traefik` stack from this repository's `main` branch once the infrastructure PR
-lands. This document describes the planned migration; the Compose stack,
-Komodo resource, Infisical folder, and root README entries arrive with that PR.
+`traefik` stack from this repository's `main` branch. The infrastructure can
+run beside DSM while application routes and router cutover are prepared.
 
 ## Migration architecture
 
@@ -23,8 +22,12 @@ while applications use that network.
 
 The Docker provider talks to a restricted socket proxy on a separate internal
 network. Only the socket proxy mounts the Docker socket. Discovery permits
-read requests needed to inspect containers and follow events, with write
-requests disabled. The dashboard is disabled.
+only GET/HEAD requests for ping, version, container listing/inspection and
+events. A mounted HAProxy allowlist blocks archive, export, logs, process
+listing and write endpoints, including the overly broad `CONTAINERS=1`
+behavior in the pinned upstream image. Container inspection still reveals
+environment metadata; only Traefik joins this API network. The dashboard is
+disabled.
 
 Host-network applications, DSM, Komodo, Portainer, and services on other LAN
 machines use explicitly configured file-provider backends. Preserve their
@@ -32,6 +35,24 @@ existing access policy and HTTPS backend verification. Do not change a
 host-network application's network mode just to integrate the proxy.
 
 ## Certificates and configuration
+
+The infrastructure stack requires these non-secret runtime variables in its
+Infisical folder:
+
+- `TRAEFIK_ACME_EMAIL`: certificate account email.
+- `TRAEFIK_PROXY_SUBNET`: unused CIDR for `homelab-proxy`.
+- `TRAEFIK_PROXY_IP`: reserved address within that CIDR for Traefik, excluding
+  its network, broadcast and Docker gateway addresses; applications
+  can trust this exact proxy address instead of the whole shared network.
+- `TRAEFIK_DOCKER_API_SUBNET`: different unused CIDR for the internal API network.
+- `TRAEFIK_NAS_HOST`: NAS LAN address, used by explicit host backends.
+- `TRAEFIK_DOMAIN`: optional hostname suffix; defaults to the existing DDNS name.
+
+Check the NAS routes and Docker networks before choosing subnets. This NAS has
+nearly exhausted Docker's default address pools, so explicit unused CIDRs avoid
+allocation failure. Additional file dependencies must name files, not the
+mounted directory: register `dynamic/common.yaml`, `socket-proxy/haproxy.cfg`
+and subsequent route files.
 
 Store runtime configuration in Infisical **prod /traefik**, matching the stack
 name. Keep certificate accounts and private keys under
