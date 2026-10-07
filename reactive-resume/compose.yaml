@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17-bookworm@sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652
+    image: postgres:17-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
     container_name: reactive-resume-db
     volumes:
       - /volume1/docker/reactive-resume/postgres:/var/lib/postgresql/data
