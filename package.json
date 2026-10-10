@@ -1,6 +1,6 @@
 {
   "name": "homelab",
-  "packageManager": "bun@1.4.2",
+  "packageManager": "bun@1.4.3",
   "scripts": {
     "komodo": "varlock run --path .agents/skills/homelab-komodo/scripts/komodo --inject vars -- bun .agents/skills/homelab-komodo/scripts/komodo/cli.ts"
   },
