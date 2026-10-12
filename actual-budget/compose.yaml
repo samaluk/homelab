@@ -49,7 +49,7 @@ services:
       traefik.http.services.budget.loadbalancer.server.port: '5007'
 
   actualtap:
-    image: mattyfaz/actualtap:v1.0.37@sha256:0e6f415397009760a45efc66492d8b661f01d9c87fa6cdd47c8751be623e3e2a
+    image: mattyfaz/actualtap:v1.0.39@sha256:b9b0262c7ce58d4787e7333650528eaf89682ec80bdb15cdadd86594808c3892
     container_name: actualtap
     volumes:
       - /volume1/docker/actual-tap:/app/data
