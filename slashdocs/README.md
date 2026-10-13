@@ -4,6 +4,7 @@
 documents with comments, immutable versions, and CLI/remote MCP publishing.
 This stack runs the application, a dedicated Postgres 17 database, and
 Versity's S3-compatible gateway with a persistent POSIX backend.
+Local sign-in is provided by the separate [Tinyauth stack](../tinyauth/README.md).
 
 ## Deploy
 
@@ -27,23 +28,33 @@ Required configuration:
 | `BLOB_ACCESS_KEY_ID` | Unique access key for this stack's S3 gateway |
 | `BLOB_SECRET_ACCESS_KEY` | Random S3 secret shared by the gateway and application |
 | `SESSION_SECRET` | Random session-signing secret of at least 32 bytes |
-| `GOOGLE_OAUTH_CLIENT_ID` | Google OAuth web application client ID |
-| `GOOGLE_OAUTH_CLIENT_SECRET` | Matching OAuth client secret |
+| `SLASHDOCS_OIDC_ISSUER_URL` | `https://auth.malukzedan.synology.me` |
+| `SLASHDOCS_OIDC_CLIENT_ID` | Confidential web client ID registered for SlashDocs |
+| `SLASHDOCS_OIDC_CLIENT_SECRET` | Matching OIDC client secret |
 
-Use a Google OAuth **Web application** client with this exact redirect URI:
+Optional `SLASHDOCS_OIDC_INTERNAL_ISSUER_URL` lets the application reach the
+provider over its private container network while validating tokens against
+the public issuer. `SLASHDOCS_OIDC_PROVIDER_NAME` labels the sign-in button and
+defaults to `Homelab`.
+For Tinyauth, use `http://tinyauth:3000` as the internal issuer URL and
+`Tinyauth` as the provider name. Both services join `homelab-proxy`.
+
+Register a confidential OIDC web client with this exact redirect URI:
 
 ```text
-https://docs.malukzedan.synology.me/v1/auth/google/callback
+https://docs.malukzedan.synology.me/v1/auth/oidc/callback
 ```
 
-The consent app must use an **External** audience and be in **Production** to
-allow any Google account to sign in. An Internal audience limits sign-in to
-the owning Google Workspace organization. Testing mode limits sign-in to the
-configured test users. Request only
-the standard OpenID Connect profile/email scopes; SlashDocs requires a verified
-email. Documents start private. Explicit sharing can grant viewer, commenter,
+The provider must support authorization-code login and OpenID Connect discovery,
+with the `openid email profile` scopes and a true `email_verified` claim. For
+local accounts, the provider administrator maintains the trusted email
+identities. Configure only the generic `SLASHDOCS_OIDC_*` settings in the
+application; configuring them together with `GOOGLE_OAUTH_*` is rejected.
+
+Users sign in with accounts provisioned in the self-hosted provider. Documents
+start private. Explicit sharing can grant viewer, commenter,
 or editor access to a person or everyone who can sign in. Everyone links still
-require Google sign-in in v0.2.1; there is no anonymous viewer/commenter access
+require sign-in in v0.2.1; there is no anonymous viewer/commenter access
 or built-in document expiry.
 
 Traefik routes both hostnames to the application's internal HTTP port 8080
@@ -71,7 +82,7 @@ inside its bind mount. Do not reuse another stack's database or data paths.
 After merge, verify the GitHub deployment workflow, the Komodo stack, and all
 three container healthchecks. `https://docs.malukzedan.synology.me/readyz`
 checks dependency readiness. Verify trusted TLS on the render hostname too,
-then sign in with Google and test an HTML upload, rendering, comments, and a
+then sign in with the self-hosted provider and test an HTML upload, rendering, comments, and a
 new version. JavaScript runs inside the isolated sandbox; test reports that
 depend on browser storage, forms, downloads, or external APIs before moving
 them.
@@ -110,7 +121,7 @@ reports expire in Sitebin unless a new retention policy is explicitly chosen.
 
 Back up **both** the Postgres database (prefer `pg_dump` for a live database)
 and `/volume1/docker/slashdocs/blob`; either alone is incomplete. Keep session,
-database, S3, and OAuth credentials in Infisical. Restore a matching database
+database, S3, and OIDC credentials in Infisical. Restore a matching database
 and blob backup into this stack's dedicated paths.
 
 SlashDocs applies Postgres schema migrations at startup. Before application
