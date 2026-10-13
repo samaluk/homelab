@@ -36,8 +36,10 @@ Use a Google OAuth **Web application** client with this exact redirect URI:
 https://docs.malukzedan.synology.me/v1/auth/google/callback
 ```
 
-The consent app must be in **Production** to allow any Google account to sign
-in. Testing mode limits sign-in to the configured test users. Request only
+The consent app must use an **External** audience and be in **Production** to
+allow any Google account to sign in. An Internal audience limits sign-in to
+the owning Google Workspace organization. Testing mode limits sign-in to the
+configured test users. Request only
 the standard OpenID Connect profile/email scopes; SlashDocs requires a verified
 email. Documents start private. Explicit sharing can grant viewer, commenter,
 or editor access to a person or everyone who can sign in. Everyone links still
