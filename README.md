@@ -34,6 +34,7 @@ Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https:
 | `sonarr` | Sonarr TV |
 | `tautulli` | Tautulli Plex stats |
 | `tdarr` | Tdarr transcoding |
+| `tinyauth` | Private OIDC login with local accounts and optional TOTP |
 | `trek` | Trek |
 | `traefik` | HTTPS ingress and restricted Docker discovery |
 | `uptime-kuma` | Uptime Kuma |
@@ -66,6 +67,7 @@ Stacks with required secrets beyond host bind-mount paths:
 | `reactive-resume` | `APP_URL`, `POSTGRES_PASSWORD`, `AUTH_SECRET`, optional `SMTP_*` |
 | `sitebin` | `SITEBIN_HOST` |
 | `tdarr` | `TDARR_SERVER_IP` |
+| `tinyauth` | `TINYAUTH_HOST`, `TINYAUTH_TRUSTED_PROXIES`, `TINYAUTH_USERS_BASE64`, `TINYAUTH_ADMIN_EMAIL`, `TINYAUTH_OIDC_CONFIG_BASE64` |
 | `trek` | `APP_URL` |
 | `traefik` | `TRAEFIK_ACME_EMAIL`, `TRAEFIK_PROXY_SUBNET`, `TRAEFIK_PROXY_DYNAMIC_RANGE`, `TRAEFIK_PROXY_IP`, `TRAEFIK_DOCKER_API_SUBNET`, `TRAEFIK_NAS_HOST`; optional `TRAEFIK_OPENCODE_HOST`, `TRAEFIK_T3CODE_HOST`, `TRAEFIK_DOMAIN`, `TRAEFIK_CERT_RESOLVER` |
 
