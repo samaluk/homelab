@@ -6,7 +6,6 @@ services:
       - /volume1/docker/tinyauth:/data
     environment:
       TINYAUTH_APPURL: https://${TINYAUTH_HOST:?Missing TINYAUTH_HOST}
-      TINYAUTH_CONFIGFILE: /tmp/oidc.yaml
       TINYAUTH_LABELPROVIDER: none
       TINYAUTH_ANALYTICS_ENABLED: 'false'
       TINYAUTH_RESOURCES_ENABLED: 'false'
@@ -15,8 +14,8 @@ services:
       TINYAUTH_AUTH_SECURECOOKIE: 'true'
       TINYAUTH_AUTH_TRUSTEDPROXIES: ${TINYAUTH_TRUSTED_PROXIES:?Missing TINYAUTH_TRUSTED_PROXIES}
       TINYAUTH_AUTH_USERSFILE: /tmp/users
-      TINYAUTH_USERS_BASE64: ${TINYAUTH_USERS_BASE64:?Missing TINYAUTH_USERS_BASE64}
-      TINYAUTH_OIDC_CONFIG_BASE64: ${TINYAUTH_OIDC_CONFIG_BASE64:?Missing TINYAUTH_OIDC_CONFIG_BASE64}
+      LOGIN_USERS_BASE64: ${TINYAUTH_USERS_BASE64:?Missing TINYAUTH_USERS_BASE64}
+      LOGIN_OIDC_CONFIG_BASE64: ${TINYAUTH_OIDC_CONFIG_BASE64:?Missing TINYAUTH_OIDC_CONFIG_BASE64}
       TINYAUTH_AUTH_USERATTRIBUTES_ADMIN_EMAIL: ${TINYAUTH_ADMIN_EMAIL:?Missing TINYAUTH_ADMIN_EMAIL}
       TINYAUTH_AUTH_USERATTRIBUTES_ADMIN_NAME: Homelab admin
       GOMEMLIMIT: 96MiB
@@ -26,8 +25,15 @@ services:
       - -ec
       - |
         umask 077
-        printf '%s' "$${TINYAUTH_USERS_BASE64}" | base64 -d > /tmp/users
-        printf '%s' "$${TINYAUTH_OIDC_CONFIG_BASE64}" | base64 -d > /tmp/oidc.yaml
+        printf '%s' "$${LOGIN_USERS_BASE64}" | base64 -d > /tmp/users
+        printf '%s' "$${LOGIN_OIDC_CONFIG_BASE64}" | base64 -d > /tmp/oidc-clients.env
+        while IFS= read -r setting || [ -n "$${setting}" ]; do
+          case "$${setting}" in
+            TINYAUTH_OIDC_CLIENTS_*=*) export "$${setting}" ;;
+            '') ;;
+            *) printf '%s\n' 'Invalid OIDC client setting' >&2; exit 1 ;;
+          esac
+        done < /tmp/oidc-clients.env
         exec tinyauth
     entrypoint: /bin/sh
     restart: unless-stopped

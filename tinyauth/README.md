@@ -20,7 +20,7 @@ before merge so the normal GitHub workflow can deploy it.
 | `TINYAUTH_TRUSTED_PROXIES` | `172.16.10.2`, the existing Traefik address |
 | `TINYAUTH_USERS_BASE64` | Base64-encoded raw user-file contents: one `username:bcrypt-hash[:totp-secret]` entry per line |
 | `TINYAUTH_ADMIN_EMAIL` | Trusted email identity for the initial local `admin` account |
-| `TINYAUTH_OIDC_CONFIG_BASE64` | Base64-encoded YAML or JSON containing registered OIDC clients; schema below |
+| `TINYAUTH_OIDC_CONFIG_BASE64` | Base64-encoded raw environment-variable file registering OIDC clients; schema below |
 
 The initial account's password is stored separately as
 `TINYAUTH_BOOTSTRAP_PASSWORD` in Infisical. This value is for the operator to
@@ -28,6 +28,9 @@ retrieve; it is not passed to the container. Only the encoded password-hash
 list reaches the service. Base64 prevents bcrypt's dollar signs from being
 interpolated by dotenv/Compose. The startup command decodes the user list and
 client configuration into mode-0600 files in `/tmp`, which lives on tmpfs.
+Client settings are imported as environment values without shell evaluation.
+All Tinyauth settings use environment mode; a partial configuration file
+would override the environment settings instead of merging with them.
 
 Before the first deployment, create `/volume1/docker/tinyauth` with UID/GID
 1000:1000 and mode 0700. Back up that directory, including the SQLite database
@@ -54,17 +57,14 @@ tinyauth oidc create myapp
 ```
 
 Run this privately and save the generated credentials in Infisical. Add a
-client entry to the decoded OIDC configuration:
+client entry to the decoded OIDC configuration. Use a configuration key
+containing only letters and digits, and raw values without shell quoting:
 
-```yaml
-oidc:
-  clients:
-    myapp:
-      clientId: '<generated-client-id>'
-      clientSecret: '<generated-client-secret>'
-      trustedRedirectUris:
-        - https://app.example.com/callback
-      name: My application
+```text
+TINYAUTH_OIDC_CLIENTS_MYAPP_CLIENTID=<generated-client-id>
+TINYAUTH_OIDC_CLIENTS_MYAPP_CLIENTSECRET=<generated-client-secret>
+TINYAUTH_OIDC_CLIENTS_MYAPP_TRUSTEDREDIRECTURIS=https://app.example.com/callback
+TINYAUTH_OIDC_CLIENTS_MYAPP_NAME=My application
 ```
 
 Store the base64-encoded configuration in `TINYAUTH_OIDC_CONFIG_BASE64`.
