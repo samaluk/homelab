@@ -42,6 +42,21 @@
       "automerge": false
     },
     {
+      "description": "SlashDocs applies database migrations on startup; review version updates and take paired database/blob backups before merging.",
+      "matchFileNames": [
+        "slashdocs/compose.yaml"
+      ],
+      "matchPackageNames": [
+        "razorpay/slashdocs"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "automerge": false
+    },
+    {
       "matchDatasources": [
         "docker"
       ],
@@ -87,7 +102,8 @@
     {
       "matchFileNames": [
         "miniflux/compose.yaml",
-        "reactive-resume/compose.yaml"
+        "reactive-resume/compose.yaml",
+        "slashdocs/compose.yaml"
       ],
       "matchPackageNames": [
         "postgres"

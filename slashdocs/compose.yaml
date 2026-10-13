@@ -1,0 +1,104 @@
+services:
+  blob:
+    image: versity/versitygw:v1.8.0@sha256:30292fc2eeacc67a36993b01f7a7a5e3361a19cced0e80c1d71cfa2a4b0a2499
+    container_name: slashdocs-blob
+    volumes:
+      - /volume1/docker/slashdocs/blob:/data
+    environment:
+      ROOT_ACCESS_KEY_ID: ${BLOB_ACCESS_KEY_ID:?Missing BLOB_ACCESS_KEY_ID}
+      ROOT_SECRET_ACCESS_KEY: ${BLOB_SECRET_ACCESS_KEY:?Missing BLOB_SECRET_ACCESS_KEY}
+      GOMEMLIMIT: 96MiB
+    command:
+      - -ec
+      - mkdir -p /data/slashdocs-documents && exec versitygw --quiet --port :9000 posix /data
+    entrypoint: /bin/sh
+    restart: unless-stopped
+    healthcheck:
+      test: [ CMD, nc, -z, 127.0.0.1, '9000' ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    user: '1000:1000'
+    mem_limit: 128m
+    security_opt:
+      - no-new-privileges:true
+
+  postgres:
+    image: postgres:17-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
+    container_name: slashdocs-db
+    volumes:
+      - /volume1/docker/slashdocs/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: slashdocs
+      POSTGRES_USER: slashdocs
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}
+    restart: unless-stopped
+    healthcheck:
+      test: [ CMD, pg_isready, -U, slashdocs, -d, slashdocs ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    mem_limit: 256m
+    security_opt:
+      - no-new-privileges:true
+
+  slashdocs:
+    image: razorpay/slashdocs:0.2.1@sha256:b07c61f853d7908052935a14deb75a12c05f85786b9345705dcdbb714bcf5798
+    container_name: slashdocs
+    depends_on:
+      blob:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://slashdocs:${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}@postgres:5432/slashdocs?sslmode=disable
+      BLOB_BUCKET: slashdocs-documents
+      BLOB_ENDPOINT: http://blob:9000
+      BLOB_REGION: us-east-1
+      BLOB_FORCE_PATH_STYLE: 'true'
+      BLOB_ACCESS_KEY_ID: ${BLOB_ACCESS_KEY_ID:?Missing BLOB_ACCESS_KEY_ID}
+      BLOB_SECRET_ACCESS_KEY: ${BLOB_SECRET_ACCESS_KEY:?Missing BLOB_SECRET_ACCESS_KEY}
+      SESSION_SECRET: ${SESSION_SECRET:?Missing SESSION_SECRET}
+      SLASHDOCS_APP_ORIGIN: https://${SLASHDOCS_APP_HOST:?Missing SLASHDOCS_APP_HOST}
+      SLASHDOCS_RENDER_ORIGIN: https://${SLASHDOCS_RENDER_HOST:?Missing SLASHDOCS_RENDER_HOST}
+      SLASHDOCS_DEPLOYMENT: public
+      SLASHDOCS_DEFAULT_DOC_PERMISSION: private
+      SLASHDOCS_KV_EVENTS_MODE: notify
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID:?Missing GOOGLE_OAUTH_CLIENT_ID}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET:?Missing GOOGLE_OAUTH_CLIENT_SECRET}
+      GOMEMLIMIT: 384MiB
+    networks:
+      - default
+      - proxy
+    restart: unless-stopped
+    healthcheck:
+      test: [ CMD, wget, -q, -O, /dev/null, http://127.0.0.1:8080/readyz ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'docs'
+      traefik.http.routers.docs.rule: 'Host(`${SLASHDOCS_APP_HOST:?Missing SLASHDOCS_APP_HOST}`) || Host(`${SLASHDOCS_RENDER_HOST:?Missing SLASHDOCS_RENDER_HOST}`)'
+      traefik.http.routers.docs.middlewares: 'hsts@file'
+      traefik.http.services.docs.loadbalancer.server.port: '8080'
+    user: '1000:1000'
+    mem_limit: 512m
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m,mode=1777
+
+networks:
+  default:
+    internal: true
+    ipam:
+      config:
+        - subnet: ${SLASHDOCS_SUBNET:?Missing SLASHDOCS_SUBNET}
+  proxy:
+    external: true
+    name: homelab-proxy
