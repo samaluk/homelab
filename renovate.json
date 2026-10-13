@@ -27,6 +27,21 @@
       "automerge": true
     },
     {
+      "description": "Tinyauth applies SQLite migrations on startup; review version updates and back up its data before merging.",
+      "matchFileNames": [
+        "tinyauth/compose.yaml"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/tinyauthapp/tinyauth"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "automerge": false
+    },
+    {
       "matchDatasources": [
         "docker"
       ],

@@ -1,0 +1,63 @@
+services:
+  tinyauth:
+    image: ghcr.io/tinyauthapp/tinyauth:v5.2.0@sha256:220aa235c76393a73fece831d7ba967b8698d3907fd8e3c4c952f699c7b142a5
+    container_name: tinyauth
+    volumes:
+      - /volume1/docker/tinyauth:/data
+    environment:
+      TINYAUTH_APPURL: https://${TINYAUTH_HOST:?Missing TINYAUTH_HOST}
+      TINYAUTH_LABELPROVIDER: none
+      TINYAUTH_ANALYTICS_ENABLED: 'false'
+      TINYAUTH_RESOURCES_ENABLED: 'false'
+      TINYAUTH_SERVER_PORT: '3000'
+      TINYAUTH_AUTH_SUBDOMAINSENABLED: 'false'
+      TINYAUTH_AUTH_SECURECOOKIE: 'true'
+      TINYAUTH_AUTH_TRUSTEDPROXIES: ${TINYAUTH_TRUSTED_PROXIES:?Missing TINYAUTH_TRUSTED_PROXIES}
+      TINYAUTH_AUTH_USERSFILE: /tmp/users
+      LOGIN_USERS_BASE64: ${TINYAUTH_USERS_BASE64:?Missing TINYAUTH_USERS_BASE64}
+      LOGIN_OIDC_CONFIG_BASE64: ${TINYAUTH_OIDC_CONFIG_BASE64:?Missing TINYAUTH_OIDC_CONFIG_BASE64}
+      TINYAUTH_AUTH_USERATTRIBUTES_ADMIN_EMAIL: ${TINYAUTH_ADMIN_EMAIL:?Missing TINYAUTH_ADMIN_EMAIL}
+      TINYAUTH_AUTH_USERATTRIBUTES_ADMIN_NAME: Homelab admin
+      GOMEMLIMIT: 96MiB
+    networks:
+      - proxy
+    command:
+      - -ec
+      - |
+        umask 077
+        printf '%s' "$${LOGIN_USERS_BASE64}" | base64 -d > /tmp/users
+        printf '%s' "$${LOGIN_OIDC_CONFIG_BASE64}" | base64 -d > /tmp/oidc-clients.env
+        while IFS= read -r setting || [ -n "$${setting}" ]; do
+          case "$${setting}" in
+            TINYAUTH_OIDC_CLIENTS_*=*) export "$${setting}" ;;
+            '') ;;
+            *) printf '%s\n' 'Invalid OIDC client setting' >&2; exit 1 ;;
+          esac
+        done < /tmp/oidc-clients.env
+        exec tinyauth
+    entrypoint: /bin/sh
+    restart: unless-stopped
+    healthcheck:
+      test: [ CMD, tinyauth, healthcheck ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    labels:
+      traefik.enable: 'true'
+      homelab.hostname: 'auth'
+      traefik.http.routers.tinyauth.rule: 'Host(`${TINYAUTH_HOST:?Missing TINYAUTH_HOST}`)'
+      traefik.http.routers.tinyauth.middlewares: 'hsts@file'
+      traefik.http.services.tinyauth.loadbalancer.server.port: '3000'
+    user: '1000:1000'
+    mem_limit: 128m
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m,mode=1777
+
+networks:
+  proxy:
+    external: true
+    name: homelab-proxy
