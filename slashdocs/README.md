@@ -13,6 +13,9 @@ its runtime configuration in Infisical **prod /slashdocs**. Register the stack
 and configuration before merging the PR so the normal GitHub workflow can
 deploy it.
 
+Disable Komodo image auto-updates for this stack. Repository image pins and
+reviewed Renovate PRs govern updates, including application schema migrations.
+
 Required configuration:
 
 | Variable | Value or purpose |
