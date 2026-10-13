@@ -31,6 +31,7 @@ Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https:
 | `reactive-resume` | Reactive Resume builder |
 | `seerr` | Seerr requests |
 | `sitebin` | HTML reports with per-report passwords and expiry |
+| `slashdocs` | HTML documents with comments, versions, and agent publishing |
 | `sonarr` | Sonarr TV |
 | `tautulli` | Tautulli Plex stats |
 | `tdarr` | Tdarr transcoding |
@@ -66,6 +67,7 @@ Stacks with required secrets beyond host bind-mount paths:
 | `pihole` | `PIHOLE_WEB_PASSWORD` |
 | `reactive-resume` | `APP_URL`, `POSTGRES_PASSWORD`, `AUTH_SECRET`, optional `SMTP_*` |
 | `sitebin` | `SITEBIN_HOST` |
+| `slashdocs` | `SLASHDOCS_APP_HOST`, `SLASHDOCS_RENDER_HOST`, `SLASHDOCS_SUBNET`, `POSTGRES_PASSWORD`, `BLOB_*`, `SESSION_SECRET`, `SLASHDOCS_OIDC_*` |
 | `tdarr` | `TDARR_SERVER_IP` |
 | `tinyauth` | `TINYAUTH_HOST`, `TINYAUTH_TRUSTED_PROXIES`, `TINYAUTH_USERS_BASE64`, `TINYAUTH_ADMIN_EMAIL`, `TINYAUTH_OIDC_CONFIG_BASE64` |
 | `trek` | `APP_URL` |
