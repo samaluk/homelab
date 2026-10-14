@@ -17,7 +17,7 @@ services:
       start_period: 30s
 
   reactive-resume:
-    image: ghcr.io/reactive-resume/reactive-resume:v6.0.2@sha256:2b08d01446f8b775e0bf5888cc15b0a3fd6805521efefb0a0e21a4f5bfb253b3
+    image: ghcr.io/reactive-resume/reactive-resume:v6.0.3@sha256:6b1c08eb09b2e406dcc6174f3566e766550b11a64c0b16df6f1fbe237a38bfde
     container_name: reactive-resume
     depends_on:
       postgres:
