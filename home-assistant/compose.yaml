@@ -1,6 +1,6 @@
 services:
   home-assistant:
-    image: linuxserver/homeassistant:2026.10.1@sha256:2fc1dbb6818d62bebb4eb418a2f2332f1d8b3ee116b546df78b902d1f28f13fa
+    image: linuxserver/homeassistant:2026.10.1@sha256:80c73e1f3578953c4c646acf6b02d9bf0068482f307b582b0d9a755ff4ceb2d5
     container_name: home-assistant
     volumes:
       - /volume1/docker/home-assistant:/config
