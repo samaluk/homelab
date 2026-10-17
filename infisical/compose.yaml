@@ -1,6 +1,6 @@
 services:
   backend:
-    image: infisical/infisical:v0.166.7@sha256:9db5e968aab71a4c8bc02c3ad1dd99d4620f80d75e9f475c905c37b322e39c47
+    image: infisical/infisical:v0.166.8@sha256:bb8352b71cea9e329af1216f7d43804598ede5208c5dd427fcd38bc26c098505
     container_name: infisical-backend
     depends_on:
       db:
