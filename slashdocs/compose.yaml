@@ -45,7 +45,7 @@ services:
       - no-new-privileges:true
 
   slashdocs:
-    image: razorpay/slashdocs:0.2.1@sha256:b07c61f853d7908052935a14deb75a12c05f85786b9345705dcdbb714bcf5798
+    image: razorpay/slashdocs:0.3.0@sha256:40304de0c800f6a3dbdf8926621249ed94912705cc3938793cb1456376b08d8b
     container_name: slashdocs
     depends_on:
       blob:
