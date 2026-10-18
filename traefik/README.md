@@ -86,6 +86,10 @@ Infisical folder:
   where their ports have no listener, preserving an unavailable route without
   blocking startup of ingress for active applications. Set the original LAN
   hosts in Infisical to reconnect them.
+- `TRAEFIK_PHOTOS_HOST`: PicPeak's Debian host, default `192.168.1.66`.
+  The `photos` hostname routes to port 3900 over the LAN. PicPeak runs separately
+  from the personal Immich library; only JPEG proofs and edited exports are
+  published there. RAW originals remain on the NAS.
 - `TRAEFIK_CERT_RESOLVER`: optional; defaults to `letsencrypt`. Set `staging`
   in the Traefik stack for a certificate test. All Docker routes inherit this
   entrypoint default, and file-provider routes use the same stack setting.
