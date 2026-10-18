@@ -2,6 +2,13 @@
 # The legacy Minecraft HTTPS rule remains HTTP; game TCP forwarding is separate.
 http:
   routers:
+    photos:
+      rule: 'Host(`photos.{{ env "TRAEFIK_DOMAIN" }}`)'
+      entryPoints: [websecure]
+      service: photos
+      middlewares: [hsts]
+      tls:
+        certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
     dsm:
       rule: 'Host(`dsm.{{ env "TRAEFIK_DOMAIN" }}`)'
       entryPoints: [websecure]
@@ -94,6 +101,11 @@ http:
       tls:
         certResolver: '{{ env "TRAEFIK_CERT_RESOLVER" }}'
   services:
+    photos:
+      loadBalancer:
+        serversTransport: default
+        servers:
+          - url: 'http://{{ env "TRAEFIK_PHOTOS_HOST" }}:3900'
     dsm:
       loadBalancer:
         serversTransport: dsm
