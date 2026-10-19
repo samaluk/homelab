@@ -18,6 +18,7 @@ Docker Compose stacks for a personal homelab, deployed with [Komodo](https://kom
 | `bentopdf` | BentoPDF |
 | `changedetection` | ChangeDetection.io |
 | `easy-cli-proxy` | Shared AI subscription gateway and scoped catalog sync over Tailscale |
+| `executor` | Shared MCP/API integration catalog on Debian, accessed over Tailscale |
 | `home-assistant` | Home Assistant |
 | `icloudpd` | iCloud Photos sync |
 | `immich` | Immich photo library |
@@ -69,6 +70,7 @@ Stacks with required secrets beyond host bind-mount paths:
 | Folder | Variables |
 |--------|-----------|
 | `actual-budget` | `ACTUAL_*`, `FINTUAL_*`, `GMAIL_*` |
+| `executor` | `EXECUTOR_WEB_BASE_URL`, `EXECUTOR_BOOTSTRAP_ADMIN_*`, `BETTER_AUTH_SECRET`, `EXECUTOR_SECRET_KEY` |
 | `icloudpd` | `APPLE_USERNAME`, `ICLOUD_DATA_PATH`, `ICLOUD_SHARED_LIBRARY_ID` |
 | `immich` | `DB_*`, `UPLOAD_LOCATION`, `ICLOUD_EXTERNAL_LIBRARY_PATH` |
 | `jellyfin` | `JELLYFIN_PUBLISHED_SERVER_URL` |

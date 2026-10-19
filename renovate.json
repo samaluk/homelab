@@ -42,6 +42,22 @@
       "automerge": false
     },
     {
+      "description": "Executor applies SQLite migrations on startup; review image updates and back up its data and encryption keys before merging.",
+      "matchFileNames": [
+        "executor/compose.yaml"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/usefulsoftwareco/executor-selfhost"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "automerge": false
+    },
+    {
       "description": "SlashDocs applies database migrations on startup; review version updates and take paired database/blob backups before merging.",
       "matchFileNames": [
         "slashdocs/compose.yaml"
