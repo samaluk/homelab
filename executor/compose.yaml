@@ -1,0 +1,24 @@
+services:
+  executor:
+    image: ghcr.io/usefulsoftwareco/executor-selfhost:1.6.10@sha256:b9e001775d3eb7d662d347c8f7054333c78c1a4fd97cb5a86dc1d1d1406093b9
+    container_name: executor
+    volumes:
+      - /srv/executor:/data
+    environment:
+      EXECUTOR_WEB_BASE_URL: ${EXECUTOR_WEB_BASE_URL:?Missing EXECUTOR_WEB_BASE_URL}
+      EXECUTOR_ALLOW_LOCAL_NETWORK: 'false'
+      EXECUTOR_ALLOW_STDIO_MCP: 'false'
+      EXECUTOR_BOOTSTRAP_ADMIN_EMAIL: ${EXECUTOR_BOOTSTRAP_ADMIN_EMAIL:?Missing EXECUTOR_BOOTSTRAP_ADMIN_EMAIL}
+      EXECUTOR_BOOTSTRAP_ADMIN_PASSWORD: ${EXECUTOR_BOOTSTRAP_ADMIN_PASSWORD:?Missing EXECUTOR_BOOTSTRAP_ADMIN_PASSWORD}
+      EXECUTOR_BOOTSTRAP_ADMIN_NAME: ${EXECUTOR_BOOTSTRAP_ADMIN_NAME:-Admin}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Missing BETTER_AUTH_SECRET}
+      EXECUTOR_SECRET_KEY: ${EXECUTOR_SECRET_KEY:?Missing EXECUTOR_SECRET_KEY}
+    ports:
+      - '127.0.0.1:4788:4788'
+    restart: unless-stopped
+    user: '65532:65532'
+    cpus: 1.0
+    init: true
+    mem_limit: 1g
+    security_opt:
+      - no-new-privileges:true

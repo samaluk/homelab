@@ -10,6 +10,8 @@ Actions runners and PicPeak. Komodo does not manage or list K3s containers.
 - Debian 13, Core i7-8700K, 16 GB RAM.
 - Docker Engine 29.9.1 and Compose plugin 5.6.0 were installed from Docker's
   official Debian repository during onboarding.
+- Executor's deployment hook uses the native Infisical CLI. Its pinned install
+  and checksum are documented in [`executor/README.md`](../../executor/README.md).
 - Komodo Periphery **v2.2.0**, matching Core, runs as the root systemd service
   `periphery.service`. Root access lets the agent manage Docker and Compose.
 - Periphery connects outbound to `ws://100.121.250.33:9120` over Tailscale,
