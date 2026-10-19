@@ -1,13 +1,17 @@
 # AGENTS.md
 
-This repository is the source of truth for Docker Compose stacks running on a
-personal Synology NAS. Komodo deploys the stacks; Infisical and Komodo provide
+This repository is the source of truth for Docker Compose stacks running in a
+personal homelab. Existing stacks run on a Synology NAS; `debian-dev` is also
+registered in Komodo. Komodo deploys the stacks; Infisical and Komodo provide
 runtime configuration and secrets.
 
 ## Repository model
 
 - Each top-level service directory is one Komodo stack and normally contains a
   single `compose.yaml`.
+- `hosts/` contains host bootstrap configuration and runbooks, not stacks.
+  Read the target host's README before changing its runtime. Select the intended
+  Komodo server when creating a stack; do not assume every stack runs on the NAS.
 - A stack may also contain a `README.md` with service-specific operational
   details. Read it before changing or debugging that stack.
 - Host bind mounts generally live below `/volume1` on the Synology NAS. Preserve

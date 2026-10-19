@@ -1,0 +1,15 @@
+[Unit]
+Description=Komodo Periphery agent
+Wants=network-online.target
+Requires=docker.service
+After=network-online.target tailscaled.service docker.service
+
+[Service]
+Environment=HOME=/root
+ExecStart=/usr/local/bin/periphery --config-path /etc/komodo/periphery.config.toml
+Restart=on-failure
+RestartSec=5
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

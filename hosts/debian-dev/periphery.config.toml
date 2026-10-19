@@ -1,0 +1,10 @@
+root_directory = "/etc/komodo"
+private_key = "file:/etc/komodo/keys/periphery.key"
+core_public_keys = ["file:/etc/komodo/keys/core.pub"]
+
+# Noise-authenticated connection inside Tailscale; no inbound agent listener.
+core_address = "ws://100.121.250.33:9120"
+connect_as = "debian-dev"
+server_enabled = false
+
+include_disk_mounts = ["/"]
