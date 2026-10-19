@@ -1,6 +1,13 @@
 # homelab
 
-Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https://komo.do). Each service lives in its own directory with a `compose.yaml`.
+Docker Compose stacks for a personal homelab, deployed with [Komodo](https://komo.do). Each service lives in its own directory with a `compose.yaml`.
+
+## Servers
+
+- `Local`: Synology NAS; runs Komodo Core and the existing stacks below.
+- [`debian-dev`](hosts/debian-dev/README.md): Debian host for additional Compose
+  stacks. Docker runs alongside the existing K3s workloads. Komodo manages its
+  Docker workloads; K3s retains its own workloads.
 
 ## Stacks
 
@@ -43,7 +50,12 @@ Docker Compose stacks for a personal Synology NAS, deployed with [Komodo](https:
 
 ## Deployment
 
-Stacks are deployed on a Synology NAS through Komodo. Compose files use environment variable placeholders; values are injected at deploy time from [Infisical](https://infisical.com) (self-hosted) or Komodo stack variables.
+Stacks are deployed through Komodo to the server selected in each stack's
+configuration. Existing stacks target the Synology NAS. Host bootstrap
+configuration lives under `hosts/` and is applied explicitly; it is not a
+Komodo stack. Compose files use environment variable placeholders; values are
+injected at deploy time from [Infisical](https://infisical.com) (self-hosted) or
+Komodo stack variables.
 
 For local Komodo access, follow the [Komodo skill](.agents/skills/homelab-komodo/SKILL.md).
 It loads credentials from Infisical and validates them with [Varlock](https://varlock.dev/).

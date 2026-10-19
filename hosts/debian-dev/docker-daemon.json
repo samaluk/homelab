@@ -1,0 +1,4 @@
+{
+  "ip-forward-no-drop": true,
+  "log-driver": "local"
+}
