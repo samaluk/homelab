@@ -43,6 +43,10 @@ Disable independent Komodo image auto-updates. Renovate automerges digest,
 patch, and minor updates; major updates require review. Merge source changes
 through a PR; the repository workflow then queues `DeployStackIfChanged`.
 
+Upstream publishes release images only to GHCR. Renovate has no release
+timestamp for this registry, so the one-day release-age delay does not apply.
+Keep both the release tag and digest pinned.
+
 The pre-deploy command uses Komodo's existing Infisical identity references:
 
 ```bash

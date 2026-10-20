@@ -22,8 +22,14 @@ runtime configuration and secrets.
 - `.agents/skills/homelab-komodo/` contains the Komodo API tooling used for stack
   lifecycle operations. `.agents/skills/homelab-synology/` documents direct
   Synology inspection and in-container debugging.
-- `renovate.json` manages image updates. Images are generally pinned by tag and
-  digest, with service-specific exceptions documented in that file.
+- Pin Compose images by release tag and SHA-256 digest. If upstream has no
+  release tags, use a commit tag and digest, or a digest-only reference. Do not
+  use `latest`, `main`, or `master` tags.
+- Prefer upstream-maintained Docker Hub images when the same release is
+  available there. GHCR is acceptable when upstream only publishes there.
+- `renovate.json` manages image updates. Digest, patch, and minor updates normally
+  automerge; major updates require review. Startup migrations alone do not
+  justify disabling automerge. Document service-specific exceptions in that file.
 
 ## Deployment flow
 

@@ -12,11 +12,11 @@
   ],
   "packageRules": [
     {
-      "description": "Sitebin publishes a rolling latest channel; update its pinned digest without switching to commit tags.",
+      "description": "Sitebin has no versioned releases; update its commit tag and digest together in a reviewed PR until upstream publishes ordered release tags.",
       "matchPackageNames": [
         "ghcr.io/ittrail/sitebin.io"
       ],
-      "allowedVersions": "/^latest$/"
+      "enabled": false
     },
     {
       "matchUpdateTypes": [
@@ -34,6 +34,7 @@
       "automerge": false
     },
     {
+      "description": "Wait one day when release timestamps are available (Docker Hub); timestamp-less registries such as GHCR bypass this delay.",
       "matchDatasources": [
         "docker"
       ],

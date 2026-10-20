@@ -108,3 +108,7 @@ data/configuration backups and take a fresh backup before merging a major
 update. Retain the existing database, signing keys, and user list during
 troubleshooting or rollback; do not delete the directory to reset a login
 problem.
+
+Upstream publishes release images only to GHCR. Renovate has no release
+timestamp for this registry, so the one-day release-age delay does not apply.
+Keep both the release tag and digest pinned.

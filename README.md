@@ -63,11 +63,22 @@ It loads credentials from Infisical and validates them with [Varlock](https://va
 
 ## Dependency updates
 
-Renovate automerges digest, patch, and minor updates once checks and configured
-release-age requirements pass. Major updates require review. Startup database
-migrations alone do not disable automerge; maintain consistent backups and
-follow each stack's recovery runbook. Version exclusions and coordinated-image
-release rules are configured separately in [`renovate.json`](renovate.json).
+Renovate automerges digest, patch, and minor updates once checks pass. Major
+updates require review. Startup database migrations alone do not disable
+automerge; maintain consistent backups and follow each stack's recovery runbook.
+
+Docker Hub images normally wait one day before updating, with package-specific
+exceptions in [`renovate.json`](renovate.json). GHCR does not provide release
+timestamps to Renovate, so `timestamp-optional` lets those updates proceed
+without that delay. Tinyauth and Executor publish only to GHCR and use this
+behavior. Version exclusions and coordinated-image release rules are configured
+separately.
+
+Prefer upstream-maintained Docker Hub images when the same release is available
+there. Pin Compose images by release tag and SHA-256 digest. If upstream has no
+release tags, use a commit tag and digest, or a digest-only reference; avoid
+`latest`, `main`, and `master` tags. Sitebin uses a commit/digest pin with manual
+updates until upstream publishes versioned releases.
 
 ## Secrets (Infisical)
 
