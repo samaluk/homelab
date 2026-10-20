@@ -5,6 +5,10 @@ dedicated PostgreSQL 17 database and local upload storage. PDF export runs in
 the browser. Optional Redis-backed AI Agent workspace and S3 storage are not
 enabled.
 
+Use upstream's Docker Hub image, `amruthpillai/reactive-resume`, pinned by
+release tag and digest. Upstream publishes the same manifest to Docker Hub and
+GHCR; Docker Hub supplies the release timestamp for Renovate's one-day delay.
+
 ## Runtime configuration
 
 Komodo stack `reactive-resume` tracks this repository's `main` branch,

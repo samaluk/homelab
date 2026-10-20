@@ -12,11 +12,11 @@
   ],
   "packageRules": [
     {
-      "description": "Sitebin publishes a rolling latest channel; update its pinned digest without switching to commit tags.",
+      "description": "Sitebin has no versioned releases; update its commit tag and digest together in a reviewed PR until upstream publishes ordered release tags.",
       "matchPackageNames": [
         "ghcr.io/ittrail/sitebin.io"
       ],
-      "allowedVersions": "/^latest$/"
+      "enabled": false
     },
     {
       "matchUpdateTypes": [
@@ -27,52 +27,14 @@
       "automerge": true
     },
     {
-      "description": "Tinyauth applies SQLite migrations on startup; review version updates and back up its data before merging.",
-      "matchFileNames": [
-        "tinyauth/compose.yaml"
-      ],
-      "matchPackageNames": [
-        "ghcr.io/tinyauthapp/tinyauth"
-      ],
+      "description": "Major updates require review of breaking changes and migration steps.",
       "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch"
+        "major"
       ],
       "automerge": false
     },
     {
-      "description": "Executor applies SQLite migrations on startup; review image updates and back up its data and encryption keys before merging.",
-      "matchFileNames": [
-        "executor/compose.yaml"
-      ],
-      "matchPackageNames": [
-        "ghcr.io/usefulsoftwareco/executor-selfhost"
-      ],
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch",
-        "digest"
-      ],
-      "automerge": false
-    },
-    {
-      "description": "SlashDocs applies database migrations on startup; review version updates and take paired database/blob backups before merging.",
-      "matchFileNames": [
-        "slashdocs/compose.yaml"
-      ],
-      "matchPackageNames": [
-        "razorpay/slashdocs"
-      ],
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch"
-      ],
-      "automerge": false
-    },
-    {
+      "description": "Wait one day when release timestamps are available (Docker Hub); timestamp-less registries such as GHCR bypass this delay.",
       "matchDatasources": [
         "docker"
       ],

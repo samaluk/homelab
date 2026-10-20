@@ -34,6 +34,16 @@ sudo chmod 0700 /volume1/docker/sitebin
 Preserve and back up that directory. No named Docker volume or separate data
 initializer is needed.
 
+## Image updates
+
+Upstream publishes GHCR images with rolling and commit tags, but no versioned
+releases. Keep the community image pinned by commit tag and digest. The current
+`sha-c9a3453` tag resolves to the same digest previously pinned under `latest`.
+Renovate updates are disabled because commit hashes have no release ordering.
+Update the commit tag and digest together in a reviewed PR after checking the
+image's source revision; revisit this exception when upstream publishes
+versioned releases.
+
 ## Use
 
 Open [reports](https://reports.malukzedan.synology.me), select a report named

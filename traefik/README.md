@@ -52,6 +52,10 @@ behavior in the pinned upstream image. Container inspection still reveals
 environment metadata; only Traefik joins this API network. The dashboard is
 disabled.
 
+The socket proxy uses upstream's Docker Hub image,
+`tecnativa/docker-socket-proxy`, pinned by release tag and digest. Its manifest
+matches the GHCR image; Docker Hub provides Renovate's release-age timestamp.
+
 The container healthcheck uses the image's lightweight `wget` to probe
 Traefik's loopback ping endpoint. The pinned official Alpine image includes
 BusyBox `wget` at `/usr/bin/wget`; its
