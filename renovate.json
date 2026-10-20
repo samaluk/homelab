@@ -27,48 +27,9 @@
       "automerge": true
     },
     {
-      "description": "Tinyauth applies SQLite migrations on startup; review version updates and back up its data before merging.",
-      "matchFileNames": [
-        "tinyauth/compose.yaml"
-      ],
-      "matchPackageNames": [
-        "ghcr.io/tinyauthapp/tinyauth"
-      ],
+      "description": "Major updates require review of breaking changes and migration steps.",
       "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch"
-      ],
-      "automerge": false
-    },
-    {
-      "description": "Executor applies SQLite migrations on startup; review image updates and back up its data and encryption keys before merging.",
-      "matchFileNames": [
-        "executor/compose.yaml"
-      ],
-      "matchPackageNames": [
-        "ghcr.io/usefulsoftwareco/executor-selfhost"
-      ],
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch",
-        "digest"
-      ],
-      "automerge": false
-    },
-    {
-      "description": "SlashDocs applies database migrations on startup; review version updates and take paired database/blob backups before merging.",
-      "matchFileNames": [
-        "slashdocs/compose.yaml"
-      ],
-      "matchPackageNames": [
-        "razorpay/slashdocs"
-      ],
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch"
+        "major"
       ],
       "automerge": false
     },

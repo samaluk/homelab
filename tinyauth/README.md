@@ -102,7 +102,9 @@ after applications store user data; changing either creates a different
 identity in the application. Rotate client secrets in the provider and its
 application together.
 
-Tinyauth applies SQLite migrations on startup. Review version changes and
-take a data/configuration backup before merging update PRs. Retain the
-existing database, signing keys, and user list during troubleshooting or
-rollback; do not delete the directory to reset a login problem.
+Tinyauth applies SQLite migrations on startup. Renovate automerges digest,
+patch, and minor updates; major updates require review. Maintain consistent
+data/configuration backups and take a fresh backup before merging a major
+update. Retain the existing database, signing keys, and user list during
+troubleshooting or rollback; do not delete the directory to reset a login
+problem.

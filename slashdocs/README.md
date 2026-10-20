@@ -15,7 +15,8 @@ and configuration before merging the PR so the normal GitHub workflow can
 deploy it.
 
 Disable Komodo image auto-updates for this stack. Repository image pins and
-reviewed Renovate PRs govern updates, including application schema migrations.
+Renovate's automerge policy govern updates, including application schema
+migrations.
 
 Required configuration:
 
@@ -124,10 +125,11 @@ and `/volume1/docker/slashdocs/blob`; either alone is incomplete. Keep session,
 database, S3, and OIDC credentials in Infisical. Restore a matching database
 and blob backup into this stack's dedicated paths.
 
-SlashDocs applies Postgres schema migrations at startup. Before application
-updates, take paired backups and review upstream migration notes. Image
-rollback alone may be insufficient: restore compatible database/blob backups
-or apply documented down-migrations when necessary. Postgres major updates
-are disabled in Renovate and require a separate migration plan. SlashDocs
-version updates require review rather than automerge. Preserve all
-data directories during troubleshooting and rollback.
+SlashDocs applies Postgres schema migrations at startup. Renovate automerges
+digest, patch, and minor updates; major application updates require review of
+upstream migration notes and fresh paired database/blob backups. Maintain
+consistent backups for recovery from any update. Image rollback alone may be
+insufficient: restore compatible database/blob backups or apply documented
+down-migrations when necessary. Postgres major updates are disabled in Renovate
+and require a separate migration plan. Preserve all data directories during
+troubleshooting and rollback.

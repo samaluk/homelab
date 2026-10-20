@@ -61,6 +61,14 @@ Komodo stack variables.
 For local Komodo access, follow the [Komodo skill](.agents/skills/homelab-komodo/SKILL.md).
 It loads credentials from Infisical and validates them with [Varlock](https://varlock.dev/).
 
+## Dependency updates
+
+Renovate automerges digest, patch, and minor updates once checks and configured
+release-age requirements pass. Major updates require review. Startup database
+migrations alone do not disable automerge; maintain consistent backups and
+follow each stack's recovery runbook. Version exclusions and coordinated-image
+release rules are configured separately in [`renovate.json`](renovate.json).
+
 ## Secrets (Infisical)
 
 Secrets are organized in Infisical with **one folder per stack**, matching this repo's directory names (e.g. `/jellyfin`, `/open-webui`). Set values in the `prod` environment (or whichever environment your Komodo stacks use).

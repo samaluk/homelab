@@ -39,9 +39,9 @@ Infisical **prod /executor** must contain:
 The Komodo stack uses the shared `homelab` linked repo, branch `main`, run
 directory `executor`, and `compose.yaml`. Register `populate-env.sh` as an
 additional watched file requiring redeployment of the `executor` service.
-Disable independent Komodo image auto-updates; Renovate proposes image updates
-for review because startup can migrate SQLite. Merge source changes through
-a PR; the repository workflow then queues `DeployStackIfChanged`.
+Disable independent Komodo image auto-updates. Renovate automerges digest,
+patch, and minor updates; major updates require review. Merge source changes
+through a PR; the repository workflow then queues `DeployStackIfChanged`.
 
 The pre-deploy command uses Komodo's existing Infisical identity references:
 
@@ -98,7 +98,7 @@ or use a SQLite-aware backup; do not rely on copying a live database alone.
 Store backups outside this repository. Losing or changing `EXECUTOR_SECRET_KEY`
 can make stored integration credentials unreadable.
 
-Before upgrades, review the release notes and take that paired backup. A
-rollback may require restoring both the old database and its keys; changing
-the image pin alone does not undo migrations. Never delete or recreate the
-data directory as a troubleshooting shortcut.
+Before major upgrades, review the release notes and take a fresh paired backup.
+Startup can migrate SQLite, so a rollback may require restoring both the old
+database and its keys; changing the image pin alone does not undo migrations.
+Never delete or recreate the data directory as a troubleshooting shortcut.
