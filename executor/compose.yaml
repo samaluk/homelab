@@ -1,6 +1,6 @@
 services:
   executor:
-    image: ghcr.io/usefulsoftwareco/executor-selfhost:1.6.10@sha256:b9e001775d3eb7d662d347c8f7054333c78c1a4fd97cb5a86dc1d1d1406093b9
+    image: ghcr.io/usefulsoftwareco/executor-selfhost:1.6.11@sha256:ea8b4d1019cc00c81cb4236d8edc07a12ac75ef465593b89ae652c0800cd33c1
     container_name: executor
     volumes:
       - /srv/executor:/data
