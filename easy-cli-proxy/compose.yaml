@@ -1,6 +1,6 @@
 services:
   catalog:
-    image: ghcr.io/samaluk/cpa-gateway:20261023-upstream-defaults-1@sha256:c30dd8a9f7d414eedfd1b87cf9151fc538d11c739998d428a0bdacc810c4a9a1
+    image: ghcr.io/samaluk/cpa-gateway:20261024-native-images-1@sha256:134e72fda9ee1555b61404f60ca0cac66f72c0fb09bca97b7c763f698c9f75c8
     container_name: easy-cli-proxy-catalog
     depends_on:
       cpa:
@@ -27,7 +27,7 @@ services:
         max-file: "3"
     mem_limit: 128m
   cpa:
-    image: ghcr.io/samaluk/cpa-gateway:20261023-upstream-defaults-1@sha256:c30dd8a9f7d414eedfd1b87cf9151fc538d11c739998d428a0bdacc810c4a9a1
+    image: ghcr.io/samaluk/cpa-gateway:20261024-native-images-1@sha256:134e72fda9ee1555b61404f60ca0cac66f72c0fb09bca97b7c763f698c9f75c8
     container_name: easy-cli-proxy-core
     volumes:
       - /volume1/docker/easy-cli-proxy/data:/data
