@@ -38,6 +38,40 @@ The catalog service reads state through a read-only mount. The core can update
 OAuth and account-binding state. Back up this directory privately. A code
 rollback must retain the newest credential and binding state.
 
+## Argon dogfood release
+
+The October 27 candidate adds native Gemini support to the OpenCode Go plugin,
+including Gemini 4 Argon. The core, catalog gateway and other plugin binaries
+are byte-identical to the October 24 native-images base. The image embeds the
+new plugin commit, source-tree digest, binary hash and debug build tag.
+
+The debug tag enables `debugTrace`, which appends request/control-flow metadata
+to `/opt/cpa/opencode-go-debug.log` in the core container's writable layer. It
+does not log complete request bodies or credentials. There is no automatic
+rotation; the file survives restarts and is removed when the container is
+recreated. Docker's stdout log limits do not cover this file. During dogfooding,
+check its size and truncate it when it reaches 10 MiB:
+
+```sh
+sudo -n /usr/local/bin/docker exec easy-cli-proxy-core stat -c '%s bytes' /opt/cpa/opencode-go-debug.log
+sudo -n /usr/local/bin/docker exec easy-cli-proxy-core sh -c ': > /opt/cpa/opencode-go-debug.log'
+```
+
+Run these on the NAS; truncate only after inspecting the size. Keep any trace
+needed for diagnosis private, and remove this diagnostic build after dogfooding.
+
+The feature branch is
+[`feature/gemini-argon`](https://github.com/samaluk/opencode-go-cliproxyapi/tree/feature/gemini-argon),
+based directly on upstream main for a later upstream PR. The deployed source
+[`4ac475e`](https://github.com/samaluk/opencode-go-cliproxyapi/commit/4ac475e8ba1adad64ca1fd5051d6cf622637ecf4)
+also retains the existing local contributions. Packaging and the source lock are
+on [`deployment/20261027-argon-dogfood`](https://github.com/samaluk/CLIProxyAPI/tree/deployment/20261027-argon-dogfood/deployment).
+
+Enroll Argon through the existing private Go catalog after the new plugin is
+healthy. It uses the same Personal Go credential and account-binding policy.
+The user did not request changing model defaults. Roll back the image pin while
+retaining current OAuth, credentials and binding state.
+
 ## Deployment and updates
 
 Create the `easy-cli-proxy` Komodo stack using the shared homelab repository,

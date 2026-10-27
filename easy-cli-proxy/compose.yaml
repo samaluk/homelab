@@ -1,6 +1,6 @@
 services:
   catalog:
-    image: ghcr.io/samaluk/cpa-gateway:20261024-native-images-2@sha256:f3aee0f911f9810192f062dec4b333a092e100a414cf8a856a7e4c0bc2feeb21
+    image: ghcr.io/samaluk/cpa-gateway:20261027-argon-dogfood-1@sha256:39e01aa72d29a0783b9a9eb21b2bd0eb2c661baa38848bf39fade2c49a433517
     container_name: easy-cli-proxy-catalog
     depends_on:
       cpa:
@@ -27,7 +27,7 @@ services:
         max-file: "3"
     mem_limit: 128m
   cpa:
-    image: ghcr.io/samaluk/cpa-gateway:20261024-native-images-2@sha256:f3aee0f911f9810192f062dec4b333a092e100a414cf8a856a7e4c0bc2feeb21
+    image: ghcr.io/samaluk/cpa-gateway:20261027-argon-dogfood-1@sha256:39e01aa72d29a0783b9a9eb21b2bd0eb2c661baa38848bf39fade2c49a433517
     container_name: easy-cli-proxy-core
     volumes:
       - /volume1/docker/easy-cli-proxy/data:/data
