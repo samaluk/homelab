@@ -45,6 +45,21 @@ including Gemini 4 Argon. The core, catalog gateway and other plugin binaries
 are byte-identical to the October 24 native-images base. The image embeds the
 new plugin commit, source-tree digest, binary hash and debug build tag.
 
+The debug tag enables `debugTrace`, which appends request/control-flow metadata
+to `/opt/cpa/opencode-go-debug.log` in the core container's writable layer. It
+does not log complete request bodies or credentials. There is no automatic
+rotation; the file survives restarts and is removed when the container is
+recreated. Docker's stdout log limits do not cover this file. During dogfooding,
+check its size and truncate it when it reaches 10 MiB:
+
+```sh
+sudo -n /usr/local/bin/docker exec easy-cli-proxy-core stat -c '%s bytes' /opt/cpa/opencode-go-debug.log
+sudo -n /usr/local/bin/docker exec easy-cli-proxy-core sh -c ': > /opt/cpa/opencode-go-debug.log'
+```
+
+Run these on the NAS; truncate only after inspecting the size. Keep any trace
+needed for diagnosis private, and remove this diagnostic build after dogfooding.
+
 The feature branch is
 [`feature/gemini-argon`](https://github.com/samaluk/opencode-go-cliproxyapi/tree/feature/gemini-argon),
 based directly on upstream main for a later upstream PR. The deployed source
