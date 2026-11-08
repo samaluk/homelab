@@ -38,7 +38,28 @@ The catalog service reads state through a read-only mount. The core can update
 OAuth and account-binding state. Back up this directory privately. A code
 rollback must retain the newest credential and binding state.
 
-## Argon dogfood release
+## November 8 upstream refresh
+
+The November 8 image advances the core from 8.0.40 to
+`8.0.61-review.4fb41a1.20261108`, retaining all nine custom capability, scope,
+cooldown and update-revision contributions on current upstream main/dev.
+Packaging and its exact source lock are on
+[`deployment/20261108-upstream-defaults`](https://github.com/samaluk/CLIProxyAPI/tree/deployment/20261108-upstream-defaults/deployment).
+
+All three plugin upstreams are unchanged. The gateway and every plugin binary
+are byte-identical to the October 27 release, including native image routing
+and Gemini/Argon support. Both services use the same immutable image digest.
+Desktop Easy and optional Pi/T3 fork pins are historical client-layer records,
+not runtime dependencies to deploy with this server update.
+
+The core now records Codex refresh claims and receipts in `auth/.codex-refresh/`
+under the existing persistent data mount. These contain credentials: include
+them in private backups with the newest auth state, never publish them, and
+never delete claims or restore stale credentials as a recovery shortcut.
+Review unresolved refresh claims before downgrading to a pre-journal core.
+No credentials, aliases, bindings, ports, mounts or model defaults change.
+
+## Retained Argon dogfood plugin
 
 The October 27 candidate adds native Gemini support to the OpenCode Go plugin,
 including Gemini 4 Argon. The core, catalog gateway and other plugin binaries
