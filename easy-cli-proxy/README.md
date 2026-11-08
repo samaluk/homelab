@@ -38,12 +38,34 @@ The catalog service reads state through a read-only mount. The core can update
 OAuth and account-binding state. Back up this directory privately. A code
 rollback must retain the newest credential and binding state.
 
-## Argon dogfood release
+## November 8 upstream refresh
+
+The November 8 image advances the core from 8.0.40 to
+`8.0.61-review.4fb41a1.20261108`, retaining all nine custom capability, scope,
+cooldown and update-revision contributions on current upstream main/dev.
+Packaging and its exact source lock are on
+[`deployment/20261108-upstream-defaults`](https://github.com/samaluk/CLIProxyAPI/tree/deployment/20261108-upstream-defaults/deployment).
+
+All three plugin upstreams are unchanged. The gateway and every plugin binary
+are byte-identical to the October 27 release, including native image routing
+and Gemini/Argon support. Both services use the same immutable image digest.
+Desktop Easy and optional Pi/T3 fork pins are historical client-layer records,
+not runtime dependencies to deploy with this server update.
+
+The core now records Codex refresh claims and receipts in `auth/.codex-refresh/`
+under the existing persistent data mount. These contain credentials: include
+them in private backups with the newest auth state, never publish them, and
+never delete claims or restore stale credentials as a recovery shortcut.
+Review unresolved refresh claims before downgrading to a pre-journal core.
+No credentials, aliases, bindings, ports, mounts or model defaults change.
+
+## Retained Argon dogfood plugin
 
 The October 27 candidate adds native Gemini support to the OpenCode Go plugin,
-including Gemini 4 Argon. The core, catalog gateway and other plugin binaries
-are byte-identical to the October 24 native-images base. The image embeds the
-new plugin commit, source-tree digest, binary hash and debug build tag.
+including Gemini 4 Argon. In that October 27 image, the core, catalog gateway
+and other plugin binaries were byte-identical to the October 24 native-images
+base. That image embedded the new plugin commit, source-tree digest, binary
+hash and debug build tag; the November 8 image retains that plugin unchanged.
 
 The debug tag enables `debugTrace`, which appends request/control-flow metadata
 to `/opt/cpa/opencode-go-debug.log` in the core container's writable layer. It
@@ -62,10 +84,12 @@ needed for diagnosis private, and remove this diagnostic build after dogfooding.
 
 The feature branch is
 [`feature/gemini-argon`](https://github.com/samaluk/opencode-go-cliproxyapi/tree/feature/gemini-argon),
-based directly on upstream main for a later upstream PR. The deployed source
+based directly on upstream main for a later upstream PR. The retained plugin source
 [`4ac475e`](https://github.com/samaluk/opencode-go-cliproxyapi/commit/4ac475e8ba1adad64ca1fd5051d6cf622637ecf4)
-also retains the existing local contributions. Packaging and the source lock are
-on [`deployment/20261027-argon-dogfood`](https://github.com/samaluk/CLIProxyAPI/tree/deployment/20261027-argon-dogfood/deployment).
+also retains the existing local contributions. The October 27 packaging and
+source lock remain on
+[`deployment/20261027-argon-dogfood`](https://github.com/samaluk/CLIProxyAPI/tree/deployment/20261027-argon-dogfood/deployment);
+the current release uses the November 8 source lock linked above.
 
 Enroll Argon through the existing private Go catalog after the new plugin is
 healthy. It uses the same Personal Go credential and account-binding policy.
