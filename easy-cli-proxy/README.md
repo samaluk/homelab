@@ -62,9 +62,10 @@ No credentials, aliases, bindings, ports, mounts or model defaults change.
 ## Retained Argon dogfood plugin
 
 The October 27 candidate adds native Gemini support to the OpenCode Go plugin,
-including Gemini 4 Argon. The core, catalog gateway and other plugin binaries
-are byte-identical to the October 24 native-images base. The image embeds the
-new plugin commit, source-tree digest, binary hash and debug build tag.
+including Gemini 4 Argon. In that October 27 image, the core, catalog gateway
+and other plugin binaries were byte-identical to the October 24 native-images
+base. That image embedded the new plugin commit, source-tree digest, binary
+hash and debug build tag; the November 8 image retains that plugin unchanged.
 
 The debug tag enables `debugTrace`, which appends request/control-flow metadata
 to `/opt/cpa/opencode-go-debug.log` in the core container's writable layer. It
@@ -83,10 +84,12 @@ needed for diagnosis private, and remove this diagnostic build after dogfooding.
 
 The feature branch is
 [`feature/gemini-argon`](https://github.com/samaluk/opencode-go-cliproxyapi/tree/feature/gemini-argon),
-based directly on upstream main for a later upstream PR. The deployed source
+based directly on upstream main for a later upstream PR. The retained plugin source
 [`4ac475e`](https://github.com/samaluk/opencode-go-cliproxyapi/commit/4ac475e8ba1adad64ca1fd5051d6cf622637ecf4)
-also retains the existing local contributions. Packaging and the source lock are
-on [`deployment/20261027-argon-dogfood`](https://github.com/samaluk/CLIProxyAPI/tree/deployment/20261027-argon-dogfood/deployment).
+also retains the existing local contributions. The October 27 packaging and
+source lock remain on
+[`deployment/20261027-argon-dogfood`](https://github.com/samaluk/CLIProxyAPI/tree/deployment/20261027-argon-dogfood/deployment);
+the current release uses the November 8 source lock linked above.
 
 Enroll Argon through the existing private Go catalog after the new plugin is
 healthy. It uses the same Personal Go credential and account-binding policy.
