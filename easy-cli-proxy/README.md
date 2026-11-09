@@ -38,6 +38,20 @@ The catalog service reads state through a read-only mount. The core can update
 OAuth and account-binding state. Back up this directory privately. A code
 rollback must retain the newest credential and binding state.
 
+## November 8 lean core
+
+`20261108-lean-1` replaces only the core binary in the `20261108-upstream-defaults-1`
+image. It is still on the same reviewed upstream base, and it retires the fork's
+redundant Claude effort and plain Responses input implementation. Upstream
+already provides that behavior; the regression tests are kept. The gateway,
+every native plugin and all other files are byte-identical to the previous
+image. Packaging and source lock are on
+[`deployment/20261108-lean`](https://github.com/samaluk/CLIProxyAPI/tree/deployment/20261108-lean/deployment).
+
+No credentials, aliases, bindings, ports, mounts or model defaults change. To
+roll back, revert both pins to `20261108-upstream-defaults-1` and keep the newest
+auth, `auth/.codex-refresh/` journals and binding state.
+
 ## November 8 upstream refresh
 
 The November 8 image advances the core from 8.0.40 to
