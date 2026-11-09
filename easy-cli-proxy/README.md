@@ -44,8 +44,9 @@ rollback must retain the newest credential and binding state.
 image. It is still on the same reviewed upstream base, and it retires the fork's
 redundant Claude effort and plain Responses input implementation. Upstream
 already provides that behavior; the regression tests are kept. The gateway,
-every native plugin and all other files are byte-identical to the previous
-image. Packaging and source lock are on
+every native plugin and every other runtime file are byte-identical to the
+previous image; only `provenance.json` and `stack.lock.json` also change.
+Packaging and source lock are on
 [`deployment/20261108-lean`](https://github.com/samaluk/CLIProxyAPI/tree/deployment/20261108-lean/deployment).
 
 No credentials, aliases, bindings, ports, mounts or model defaults change. To
