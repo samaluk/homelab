@@ -15,6 +15,14 @@ and at most 1 GiB RAM, with PGlite and persistent state on Debian's local disk.
 - Clients need Tailscale access to Debian. Cloud agents without tailnet
   connectivity cannot reach this deployment.
 
+The dashboard and apps' MCP/API surfaces are available at this address, but
+embedded app web pages are **not available**. `EXECUTOR_APP_UI_BASE_URL` is
+intentionally unset: a non-localhost deployment needs a separate app origin with
+wildcard DNS and TLS. Tailscale MagicDNS/Serve does not provide that wildcard
+domain, and using the dashboard origin as the app base would produce
+unresolvable subdomains. Apps that include a web page report `no_app_domain`;
+their tools remain usable. Adding an app domain is separate infrastructure work.
+
 V2 does not read v1's `EXECUTOR_BOOTSTRAP_ADMIN_*` variables. A fresh v2 database
 requires first-administrator and organization setup. Complete that setup before
 handing the instance to clients; later users need an invitation. Keep the legacy
@@ -27,6 +35,10 @@ Private-network access from app code remains disabled through
 use upstream's default public-network restrictions; no private-origin allowlist
 is configured. V1's local-network and stdio flags do not apply to v2 and are not
 passed through. Review any network capability change through a PR.
+
+The beta image includes upstream PostHog usage-analytics configuration. Compose
+sets `EXECUTOR_DISABLE_ANALYTICS=1` to prevent that new outbound analytics traffic.
+The local Motel trace store is separate and remains enabled.
 
 ## Secrets and deployment
 
