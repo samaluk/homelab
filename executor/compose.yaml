@@ -1,24 +1,27 @@
 services:
   executor:
-    image: ghcr.io/usefulsoftwareco/executor-selfhost:1.6.11@sha256:ea8b4d1019cc00c81cb4236d8edc07a12ac75ef465593b89ae652c0800cd33c1
+    image: ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.41@sha256:712dc482432c918d48a84f80cc79b12125e951f9bb6929efc7b4594e5523c576
     container_name: executor
     volumes:
-      - /srv/executor:/data
+      - /srv/executor-v2:/app/data
+      - /srv/executor-v2-motel:/app/motel-data
     environment:
-      EXECUTOR_WEB_BASE_URL: ${EXECUTOR_WEB_BASE_URL:?Missing EXECUTOR_WEB_BASE_URL}
-      EXECUTOR_ALLOW_LOCAL_NETWORK: 'false'
-      EXECUTOR_ALLOW_STDIO_MCP: 'false'
-      EXECUTOR_BOOTSTRAP_ADMIN_EMAIL: ${EXECUTOR_BOOTSTRAP_ADMIN_EMAIL:?Missing EXECUTOR_BOOTSTRAP_ADMIN_EMAIL}
-      EXECUTOR_BOOTSTRAP_ADMIN_PASSWORD: ${EXECUTOR_BOOTSTRAP_ADMIN_PASSWORD:?Missing EXECUTOR_BOOTSTRAP_ADMIN_PASSWORD}
-      EXECUTOR_BOOTSTRAP_ADMIN_NAME: ${EXECUTOR_BOOTSTRAP_ADMIN_NAME:-Admin}
+      BETTER_AUTH_URL: ${EXECUTOR_WEB_BASE_URL:?Missing EXECUTOR_WEB_BASE_URL}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Missing BETTER_AUTH_SECRET}
-      EXECUTOR_SECRET_KEY: ${EXECUTOR_SECRET_KEY:?Missing EXECUTOR_SECRET_KEY}
+      EXECUTOR_APPS_ALLOW_PRIVATE_FETCH: 'false'
     ports:
-      - '127.0.0.1:4788:4788'
+      - '127.0.0.1:4788:4400'
     restart: unless-stopped
-    user: '65532:65532'
+    healthcheck:
+      test: ['CMD', 'executor-host', 'health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+    user: '1000:1000'
     cpus: 1.0
     init: true
     mem_limit: 1g
     security_opt:
       - no-new-privileges:true
+    stop_grace_period: 30s

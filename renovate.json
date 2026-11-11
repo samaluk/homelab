@@ -34,6 +34,14 @@
       "automerge": false
     },
     {
+      "description": "Executor v2 beta releases can change storage and authentication contracts before stable; review beta updates and recovery steps manually.",
+      "matchPackageNames": [
+        "ghcr.io/usefulsoftwareco/executor-selfhost"
+      ],
+      "matchCurrentVersion": "/-beta\\./",
+      "automerge": false
+    },
+    {
       "description": "Wait one day when release timestamps are available (Docker Hub); timestamp-less registries such as GHCR bypass this delay.",
       "matchDatasources": [
         "docker"
