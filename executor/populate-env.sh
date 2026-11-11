@@ -22,8 +22,7 @@ infisical export --token="${token}" \
   --env=prod --path=/executor --format=dotenv \
   --silent --telemetry=false > "${tmp_env}"
 
-for name in EXECUTOR_WEB_BASE_URL EXECUTOR_BOOTSTRAP_ADMIN_EMAIL \
-  EXECUTOR_BOOTSTRAP_ADMIN_PASSWORD BETTER_AUTH_SECRET EXECUTOR_SECRET_KEY; do
+for name in EXECUTOR_WEB_BASE_URL BETTER_AUTH_SECRET; do
   if ! grep -qE "^${name}=" "${tmp_env}"; then
     echo "Infisical prod /executor is missing ${name}" >&2
     exit 1
