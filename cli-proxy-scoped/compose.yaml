@@ -51,5 +51,11 @@ services:
     stop_grace_period: 60s
 
 networks:
-  personal: {}
-  work: {}
+  personal:
+    ipam:
+      config:
+        - subnet: ${CPA_SCOPED_PERSONAL_SUBNET:-172.16.13.0/28}
+  work:
+    ipam:
+      config:
+        - subnet: ${CPA_SCOPED_WORK_SUBNET:-172.16.13.16/28}

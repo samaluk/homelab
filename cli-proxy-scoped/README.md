@@ -21,6 +21,12 @@ credentials on the NAS; no API key, OAuth state, or management secret belongs
 in Compose or Git. `CPA_SCOPED_DATA_DIR` can point to an isolated fixture for
 local validation.
 
+The NAS has exhausted Docker's default network pools. The Personal and Work
+bridges use `172.16.13.0/28` and `172.16.13.16/28`, respectively. These ranges
+were checked against the NAS's existing Docker networks and routes. On another
+host, check for conflicts and override them with `CPA_SCOPED_PERSONAL_SUBNET`
+and `CPA_SCOPED_WORK_SUBNET` if needed.
+
 Use the pinned release's [configuration example][config]. Set `server.host`
 to `0.0.0.0` inside the container, `server.port` to `8317`, `oauth.auth-dir` to
 `/data/auth`, and configure a different `access.api-keys` entry in each
