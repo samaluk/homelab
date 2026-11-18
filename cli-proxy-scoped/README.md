@@ -19,7 +19,11 @@ Each must contain its own `config.yaml` and `auth/`. Use mode `0700` for the
 directories and `0600` for credential-bearing files. Keep configuration and
 credentials on the NAS; no API key, OAuth state, or management secret belongs
 in Compose or Git. `CPA_SCOPED_DATA_DIR` can point to an isolated fixture for
-local validation.
+local validation. On Synology, newly created paths under the Docker share can
+inherit ACLs even when created with a restrictive umask. Inspect the new stack
+paths with `synoacltool -get`; remove inherited ACLs from those paths only,
+then verify owner-only modes before writing real credentials. Do not change
+the parent share ACL.
 
 The NAS has exhausted Docker's default network pools. The Personal and Work
 bridges use `172.16.13.0/28` and `172.16.13.16/28`, respectively. These ranges
