@@ -17,7 +17,7 @@ services:
       start_period: 30s
 
   reactive-resume:
-    image: amruthpillai/reactive-resume:v6.1.0@sha256:2023eacb2fd193fd09437da3b2a3c4c79e4d97465ad306d7761400ee9a61eb8b
+    image: amruthpillai/reactive-resume:v6.1.1@sha256:6390bd3dfa2e1acd41dceef3e4be6724f4564346bfc9d0cd54316552cca9545d
     container_name: reactive-resume
     depends_on:
       postgres:
