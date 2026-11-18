@@ -1,0 +1,55 @@
+services:
+  personal:
+    image: eceasy/cli-proxy-api:v8.0.77@sha256:2acf44fbadf9933a04e971048b4c2ddd184ce6e3ea08fc2dc25354f3a365f5ab
+    volumes:
+      - ${CPA_SCOPED_DATA_DIR:-/volume1/docker/cli-proxy-scoped}/personal:/data
+    environment:
+      GOMEMLIMIT: 192MiB
+    ports:
+      - '127.0.0.1:8321:8317'
+    networks:
+      - personal
+    command: [ "./CLIProxyAPI", "-config", "/data/config.yaml" ]
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -ec 'exec 3<>/dev/tcp/127.0.0.1/8317; printf \"GET / HTTP/1.0\\r\\n\\r\\n\" >&3; read -r status <&3; [[ $$status == HTTP/*\\ 200\\ * ]]'" ]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    mem_limit: 256m
+    stop_grace_period: 60s
+  work:
+    image: eceasy/cli-proxy-api:v8.0.77@sha256:2acf44fbadf9933a04e971048b4c2ddd184ce6e3ea08fc2dc25354f3a365f5ab
+    volumes:
+      - ${CPA_SCOPED_DATA_DIR:-/volume1/docker/cli-proxy-scoped}/work:/data
+    environment:
+      GOMEMLIMIT: 192MiB
+    ports:
+      - '127.0.0.1:8322:8317'
+    networks:
+      - work
+    command: [ "./CLIProxyAPI", "-config", "/data/config.yaml" ]
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -ec 'exec 3<>/dev/tcp/127.0.0.1/8317; printf \"GET / HTTP/1.0\\r\\n\\r\\n\" >&3; read -r status <&3; [[ $$status == HTTP/*\\ 200\\ * ]]'" ]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    mem_limit: 256m
+    stop_grace_period: 60s
+
+networks:
+  personal: {}
+  work: {}
