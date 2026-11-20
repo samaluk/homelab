@@ -34,8 +34,8 @@ and `CPA_SCOPED_WORK_SUBNET` if needed.
 Use the pinned release's [configuration example][config]. Set `server.host`
 to `0.0.0.0` inside the container, `server.port` to `8317`, `oauth.auth-dir` to
 `/data/auth`, and configure a different `access.api-keys` entry in each
-instance. Keep discovery disabled. Enable management only when provisioning a T3 Usage source as described below. Add only that
-scope's provider definitions and OAuth credentials. Preserve fully qualified
+instance. Keep discovery disabled. Enable management only for scopes that T3 monitors,
+as described below. Add only that scope's provider definitions and OAuth credentials. Preserve fully qualified
 model IDs where supported so existing CLI presets do not need renaming.
 
 Validate a candidate with synthetic providers or API credentials before moving
@@ -49,8 +49,11 @@ that LAN clients cannot reach the raw loopback-published ports. Check that
 only the matching scope’s key and scoped models work on each listener.
 
 The retired `easy-cli-proxy` stack used tailnet HTTPS port `443` and loopback
-port `8317`. Keep its private state at `/volume1/docker/easy-cli-proxy/data`
-for recovery. Git history retains the original Compose definition. Restoring
+port `8317`. Remove the containers and the Komodo registration before merging
+the deletion of its Compose file so scheduled reconciliation cannot redeploy
+it. The old Serve entry can be removed on the NAS with
+`sudo tailscale serve --https=443 off`. Keep the private state at
+`/volume1/docker/easy-cli-proxy/data` for recovery. Git history retains the original Compose definition. Restoring
 the old OAuth files would not restore current grants; verify ownership and
 refresh state before any recovery.
 
@@ -58,9 +61,9 @@ refresh state before any recovery.
 
 T3 reads each stock instance as a separate CLIProxyAPI Usage source. Use the
 listener URLs without `/v1`. Set an independent `management.secret-key` for
-each scope. Keep `management.disable-control-panel` enabled and restrict
-access to the tailnet. T3 uses the authenticated management API, so remote
-management must be enabled for these two connections. The management key is
+each scope. Keep `management.allow-remote: true` while T3 polls the instance
+from another host, set `management.disable-control-panel: true`, and restrict
+access to the tailnet. The management key is
 an administrator credential; keep it in T3’s server-side secret store and
 out of client profiles. Confirm that the opposite scope’s management key
 is rejected by each endpoint.
