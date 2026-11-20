@@ -18,7 +18,6 @@ Docker Compose stacks for a personal homelab, deployed with [Komodo](https://kom
 | `bentopdf` | BentoPDF |
 | `changedetection` | ChangeDetection.io |
 | `cli-proxy-scoped` | Personal and Work CLIProxyAPI instances with separate credential stores |
-| `easy-cli-proxy` | Shared AI subscription gateway and scoped catalog sync over Tailscale |
 | `executor` | Executor v2 apps and MCP server on Debian, accessed over Tailscale |
 | `home-assistant` | Home Assistant |
 | `icloudpd` | iCloud Photos sync |

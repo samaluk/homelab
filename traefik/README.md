@@ -196,7 +196,7 @@ retired services or treating game traffic as HTTP.
 Sitebin and Reactive Resume publish only on NAS loopback. Traefik reaches
 their containers directly through the shared network, preserving loopback
 bindings as DSM fallback. Home Assistant, Pi-hole, and Plex retain host
-networking. The Tailscale-only `easy-cli-proxy` is outside this migration.
+networking. The scoped CLIProxyAPI listeners use Tailscale Serve.
 
 Before routing Home Assistant, add Traefik's reserved address to its HTTP
 trusted proxies while retaining the existing DSM loopback entry. See
