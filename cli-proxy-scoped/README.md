@@ -34,7 +34,7 @@ and `CPA_SCOPED_WORK_SUBNET` if needed.
 Use the pinned release's [configuration example][config]. Set `server.host`
 to `0.0.0.0` inside the container, `server.port` to `8317`, `oauth.auth-dir` to
 `/data/auth`, and configure a different `access.api-keys` entry in each
-instance. Keep remote management and discovery disabled. Add only that
+instance. Keep discovery disabled. Enable management only when provisioning a T3 Usage source as described below. Add only that
 scope's provider definitions and OAuth credentials. Preserve fully qualified
 model IDs where supported so existing CLI presets do not need renaming.
 
@@ -43,19 +43,31 @@ OAuth accounts. Stop the original owner before transferring any existing OAuth
 identity, including its refresh journals, to a new owner. Keep the newest
 OAuth state on rollback. A restore of old refresh tokens is not a rollback.
 
-Keep the existing `easy-cli-proxy` listener and its tailnet route in place
-during staging. Use SSH forwarding for a local pilot. For normal client use,
-publish the two listeners through separate tailnet-only HTTPS routes; confirm
-that each route reaches the intended backend and leave Funnel and WAN ingress
-off. On NAS Docker versions older than 28, also verify that LAN clients cannot
-reach the raw loopback-published ports.
+The Personal listener uses tailnet HTTPS port `8446`; Work uses `8445`. Leave
+Funnel and WAN ingress off. On NAS Docker versions older than 28, also verify
+that LAN clients cannot reach the raw loopback-published ports. Check that
+only the matching scope’s key and scoped models work on each listener.
 
-Before changing a client profile, confirm its own key and model work, the
-opposite key and model fail, and a real fx turn streams without a session
-header. Preserve existing model discovery, tool continuations, and any routes
-that need additional plugins, such as Personal OpenCode Go. The stock image is
-not a replacement for the existing catalog service by itself. Change one
-profile at a time; restore the prior endpoint if acceptance fails.
+The retired `easy-cli-proxy` stack used tailnet HTTPS port `443` and loopback
+port `8317`. Keep its private state at `/volume1/docker/easy-cli-proxy/data`
+for recovery. Git history retains the original Compose definition. Restoring
+the old OAuth files would not restore current grants; verify ownership and
+refresh state before any recovery.
+
+## T3 Code usage limits
+
+T3 reads each stock instance as a separate CLIProxyAPI Usage source. Use the
+listener URLs without `/v1`. Set an independent `management.secret-key` for
+each scope. Keep `management.disable-control-panel` enabled and restrict
+access to the tailnet. T3 uses the authenticated management API, so remote
+management must be enabled for these two connections. The management key is
+an administrator credential; keep it in T3’s server-side secret store and
+out of client profiles. Confirm that the opposite scope’s management key
+is rejected by each endpoint.
+
+T3 reads supported OAuth account quotas, such as Codex and Claude. This
+integration does not read API-key budgets for Work LiteLLM or Personal
+OpenCode Go.
 
 [config]: https://github.com/router-for-me/CLIProxyAPI/blob/v8.0.77/config.example.yaml
 
