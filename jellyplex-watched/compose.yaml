@@ -9,4 +9,4 @@ services:
       - PGID=100
       - TZ=America/Santiago
     env_file: .env
-    restart: unless-stopped
+    restart: always

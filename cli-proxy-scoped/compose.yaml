@@ -10,7 +10,7 @@ services:
     networks:
       - personal
     command: [ "./CLIProxyAPI", "-config", "/data/config.yaml" ]
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: [ "CMD-SHELL", "bash -ec 'exec 3<>/dev/tcp/127.0.0.1/8317; printf \"GET / HTTP/1.0\\r\\n\\r\\n\" >&3; read -r status <&3; [[ $$status == HTTP/*\\ 200\\ * ]]'" ]
       interval: 30s
@@ -35,7 +35,7 @@ services:
     networks:
       - work
     command: [ "./CLIProxyAPI", "-config", "/data/config.yaml" ]
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: [ "CMD-SHELL", "bash -ec 'exec 3<>/dev/tcp/127.0.0.1/8317; printf \"GET / HTTP/1.0\\r\\n\\r\\n\" >&3; read -r status <&3; [[ $$status == HTTP/*\\ 200\\ * ]]'" ]
       interval: 30s

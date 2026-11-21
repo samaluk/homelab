@@ -9,7 +9,7 @@ services:
       - docker-api
     command: [ -W, -db, -f, /etc/haproxy/haproxy.cfg ]
     entrypoint: haproxy
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: [ CMD, wget, -q, --spider, http://127.0.0.1:2375/_ping ]
       interval: 30s
@@ -72,7 +72,7 @@ services:
       - --log.level=INFO
       - --accesslog=true
       - --accesslog.fields.headers.defaultmode=drop
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: [ CMD, wget, -q, --spider, http://127.0.0.1:8080/ping ]
       interval: 30s

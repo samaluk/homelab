@@ -12,7 +12,7 @@ services:
       - -ec
       - mkdir -p /data/slashdocs-documents && exec versitygw --quiet --port :9000 posix /data
     entrypoint: /bin/sh
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: [ CMD, nc, -z, 127.0.0.1, '9000' ]
       interval: 10s
@@ -33,7 +33,7 @@ services:
       POSTGRES_DB: slashdocs
       POSTGRES_USER: slashdocs
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: [ CMD, pg_isready, -U, slashdocs, -d, slashdocs ]
       interval: 10s
@@ -75,7 +75,7 @@ services:
     networks:
       - default
       - proxy
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: [ CMD, wget, -q, -O, /dev/null, http://127.0.0.1:8080/readyz ]
       interval: 30s

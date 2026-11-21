@@ -15,7 +15,7 @@ services:
     networks:
       - infisical
       - proxy
-    restart: unless-stopped
+    restart: always
     labels:
       traefik.enable: 'true'
       homelab.hostname: 'infisical'

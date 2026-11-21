@@ -19,7 +19,7 @@ services:
       - proxy
     extra_hosts:
       - 'host.docker.internal:host-gateway'
-    restart: 'unless-stopped'
+    restart: always
     labels:
       traefik.enable: 'true'
       homelab.hostname: 'jellyfin'

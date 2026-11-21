@@ -17,7 +17,7 @@ services:
     networks:
       - default
       - proxy
-    restart: unless-stopped
+    restart: always
     labels:
       traefik.enable: 'true'
       homelab.hostname: 'reports'
