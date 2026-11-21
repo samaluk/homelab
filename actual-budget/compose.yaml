@@ -18,6 +18,7 @@ services:
     networks:
       - default
       - proxy
+    restart: always
     labels:
       traefik.enable: 'true'
       homelab.hostname: 'actual-ics'

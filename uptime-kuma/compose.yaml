@@ -12,7 +12,7 @@ services:
     networks:
       - default
       - proxy
-    restart: on-failure:5
+    restart: always
     labels:
       traefik.enable: 'true'
       homelab.hostname: 'uptime-kuma'

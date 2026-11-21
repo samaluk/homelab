@@ -49,11 +49,9 @@ ssh synology "id && uname -a"
 ## Restart policy
 
 A Container Manager `dockerd` restart on this NAS marks containers as manually
-stopped. `restart: unless-stopped`, `on-failure`, and a missing policy then
-leave those containers down. `restart: always` is what comes back after that
-restart. Use `always` for a service that should survive a dockerd crash.
-Keep `on-failure` only when a retry cap matters more than surviving a clean
-stop during daemon shutdown.
+stopped. After that stop, `restart: unless-stopped`, `on-failure`, and a
+missing policy leave the container down. `restart: always` is what comes back.
+Use `always` for every long-running service.
 
 ## Docker Inspection
 
