@@ -10,6 +10,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - PGDATA=/var/lib/postgresql/docker
     env_file: .env
+    restart: always
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "miniflux" ]
       interval: 10s
@@ -32,6 +33,7 @@ services:
     networks:
       - default
       - proxy
+    restart: always
     labels:
       traefik.enable: 'true'
       homelab.hostname: 'miniflux'

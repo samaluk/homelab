@@ -13,7 +13,7 @@ services:
     networks:
       - default
       - proxy
-    restart: on-failure:5
+    restart: always
     healthcheck:
       test: curl -f http://localhost:9696/ || exit 1
     labels:

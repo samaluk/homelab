@@ -18,6 +18,7 @@ services:
     networks:
       - default
       - proxy
+    restart: always
     labels:
       traefik.enable: 'true'
       homelab.hostname: 'actual-ics'
@@ -41,7 +42,7 @@ services:
     networks:
       - default
       - proxy
-    restart: unless-stopped
+    restart: always
     labels:
       traefik.enable: 'true'
       homelab.hostname: 'budget'
@@ -100,7 +101,7 @@ services:
       GMAIL_IMAP_DEBUG: "${GMAIL_IMAP_DEBUG:-}"
       FINTUAL_2FA_SENDER: "${FINTUAL_2FA_SENDER:-notificaciones@fintual.com}"
       FINTUAL_2FA_SUBJECT: "${FINTUAL_2FA_SUBJECT:-Código para entrar}"
-    restart: unless-stopped
+    restart: always
 
 networks:
   default:

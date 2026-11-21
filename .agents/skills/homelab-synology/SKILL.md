@@ -46,6 +46,13 @@ ssh synology "command -v docker || command -v podman || command -v container-man
 ssh synology "id && uname -a"
 ```
 
+## Restart policy
+
+A Container Manager `dockerd` restart on this NAS marks containers as manually
+stopped. After that stop, `restart: unless-stopped`, `on-failure`, and a
+missing policy leave the container down. `restart: always` is what comes back.
+Use `always` for every long-running service.
+
 ## Docker Inspection
 
 List containers for a service or stack by name:

@@ -14,7 +14,7 @@ services:
       - TZ=America/Santiago
       - VERSION=public
     network_mode: host
-    restart: unless-stopped
+    restart: always
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
       - /dev/dri/card0:/dev/dri/card0

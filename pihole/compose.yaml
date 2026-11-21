@@ -14,7 +14,7 @@ services:
       PIHOLE_UID: 1026
       PIHOLE_GID: 100
     network_mode: host
-    restart: on-failure:5
+    restart: always
     cap_add:
       - SYS_TIME
       - SYS_NICE

@@ -36,7 +36,7 @@ services:
         done < /tmp/oidc-clients.env
         exec tinyauth
     entrypoint: /bin/sh
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: [ CMD, tinyauth, healthcheck ]
       interval: 30s

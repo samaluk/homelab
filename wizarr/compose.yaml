@@ -14,7 +14,7 @@ services:
     networks:
       - default
       - proxy
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: curl -f http://localhost:5690/ || exit 1
       start_period: 30s

@@ -19,7 +19,7 @@ services:
     networks:
       - default
       - proxy
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: [ "CMD", "curl", "-fsS", "http://127.0.0.1:8080/health" ]
       interval: 30s
