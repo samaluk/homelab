@@ -2,8 +2,9 @@
 
 Executor v2 provides shared apps, service accounts, and an MCP endpoint. This
 stack runs on Komodo server **`debian-dev`**, with the published self-host image
-pinned to **2.0.0-beta.79** and its multi-architecture digest. It uses one CPU
-and at most 1 GiB RAM, with PGlite and persistent state on Debian's local disk.
+pinned by version and multi-architecture digest in [Compose](compose.yaml).
+It uses one CPU and at most 1 GiB RAM, with PGlite and persistent state on
+Debian's local disk.
 
 ## Access and sign-in
 
@@ -15,8 +16,7 @@ and at most 1 GiB RAM, with PGlite and persistent state on Debian's local disk.
 - Clients need Tailscale access to Debian. Cloud agents without tailnet
   connectivity cannot reach this deployment.
 - Executor Desktop uses the Web UI URL for **Sign in**. It checks
-  `/.well-known/executor` and then discovers desktop OAuth. The beta.41
-  server returns 404 on the identity endpoint used by beta.79 Desktop.
+  `/.well-known/executor` and then discovers desktop OAuth.
 
 The dashboard and apps' MCP/API surfaces are available at this address, but
 embedded app web pages are **not available**. `EXECUTOR_APP_UI_BASE_URL` is
@@ -57,13 +57,18 @@ the database. V1's `EXECUTOR_SECRET_KEY` is not a v2 encryption-key setting;
 retain it and the legacy bootstrap variables in Infisical for rollback.
 
 The Komodo stack uses the shared `homelab` linked repo, branch `main`, run
-directory `executor`, and `compose.yaml`. Register `populate-env.sh` as an
-additional watched file requiring redeployment of the `executor` service.
-Disable independent Komodo image auto-updates. Renovate requires manual review
-while Executor is on a v2 beta because prereleases can change storage and
-authentication contracts. Stable digest, patch, and minor updates follow the
-repository defaults; major updates require review. Merge source changes
-through a PR; the repository workflow then queues `DeployStackIfChanged`.
+directory `executor`, and `compose.yaml`. Register `populate-env.sh` and
+`deploy-with-backup.sh` as watched files requiring a redeploy of `executor`.
+Set Komodo to pull images before deploying and wrap the `up` command with
+`bash ./deploy-with-backup.sh [[COMPOSE_COMMAND]]`. Add
+`--wait --wait-timeout 180` to the Compose up arguments so Komodo records a
+failure if the updated container fails its health check.
+
+Keep independent Komodo image auto-updates disabled. Renovate uses SemVer to
+order the numbered `2.0.0-beta.N` tags and automerges updates within that
+series. Changing release series or leaving the beta channel requires review.
+Stable digest, patch, and minor updates follow the repository defaults. The
+workflow queues `DeployStackIfChanged` when the image pin reaches `main`.
 
 Upstream publishes release images only to GHCR. Renovate has no release
 timestamp for this registry, so the one-day release-age delay does not apply.
@@ -127,14 +132,20 @@ receive an authentication challenge. For desktop sign-in, check that
 `/.well-known/executor` returns `kind: self-host` and advertises the HTTPS origin
 above. Use Komodo for lifecycle operations and stack logs.
 
-Before a v2 update, stop the stack through Komodo and back up all of
-`/srv/executor-v2`, including `encryption.key`, together with the matching
-Infisical session secret. Back up telemetry separately if it is needed. Do not
-copy a running PGlite database as an ordinary filesystem backup. Store backups
-outside this repository. Losing the encryption key makes saved accounts
-unreadable. Startup data steps can make a previous image incompatible; restore
-the matching product data and keys when rolling back. Never delete or recreate
-a data directory as a troubleshooting shortcut.
+On an image change, the Compose wrapper stops Executor after the new image
+has been pulled. It verifies a root-only archive in `/srv/backups/executor`
+containing `/srv/executor-v2`, the encryption key, the session settings, and the
+previous image reference when available. It then runs Compose. If a failure
+leaves the previous container intact, the wrapper restarts it if it was
+running before the attempt. An upgrade that fails after replacing the
+container requires manual recovery. A successful upgrade prunes automatic
+archives older than 30 days.
+
+For maintenance outside this deployment path, stop Executor before taking a
+filesystem backup. Back up telemetry separately if needed. Startup data
+migrations can make data incompatible with the previous image. When rolling
+back, preserve the current data separately and restore the archived data and
+matching keys for the previous image.
 
 ## V1 to v2 cutover and rollback
 
@@ -151,11 +162,12 @@ Infisical secrets unchanged. Provision the separate v2 directories above, merge
 the source change, then let the GitHub workflow deploy through Komodo. The
 Tailscale Serve configuration and client endpoint do not change.
 
-To return to v1, revert this migration through a PR so Compose, the environment
-hook, and documentation return together. The v1 image resumes using its original
-`/srv/executor` bind mount and Infisical keys. Retain the v2 directories for
-recovery; never mount them into v1 or overwrite v1 with v2 data. If the original
-v1 database is damaged, stop the stack through Komodo before restoring its
-consistent snapshot and matching secrets with ownership `65532:65532`.
+To return to v1, take a fresh offline v2 backup first. Remove the Compose
+wrapper and its watched-file entry in Komodo, then revert the migration through
+a PR so Compose, the environment hook, and documentation return together.
+The v1 image uses its original `/srv/executor` bind mount and Infisical keys.
+Keep the v2 directories for recovery. If the original v1 database is damaged,
+stop the stack through Komodo before restoring its consistent snapshot and
+matching secrets with ownership `65532:65532`.
 
 Upstream reference: [self-host v2 beta instructions](https://github.com/UsefulSoftwareCo/executor/blob/executor%402.0.0-beta.79/apps/hosted/self-host/README.md).

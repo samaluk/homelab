@@ -34,11 +34,20 @@
       "automerge": false
     },
     {
-      "description": "Executor v2 beta releases can change storage and authentication contracts before stable; review beta updates and recovery steps manually.",
+      "description": "Use SemVer for Executor's numbered releases and exclude platform-specific image tags.",
       "matchPackageNames": [
         "ghcr.io/usefulsoftwareco/executor-selfhost"
       ],
-      "matchCurrentVersion": "/-beta\\./",
+      "versioning": "semver",
+      "allowedVersions": "/^\\d+\\.\\d+\\.\\d+(?:-beta\\.\\d+)?$/"
+    },
+    {
+      "description": "Executor can automatically update within the 2.0.0 beta series. Review the transition to another release series or channel.",
+      "matchPackageNames": [
+        "ghcr.io/usefulsoftwareco/executor-selfhost"
+      ],
+      "matchCurrentVersion": "/^2\\.0\\.0-beta\\.\\d+$/",
+      "matchNewValue": "!/^2\\.0\\.0-beta\\.\\d+$/",
       "automerge": false
     },
     {
