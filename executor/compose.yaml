@@ -1,6 +1,6 @@
 services:
   executor:
-    image: ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.41@sha256:712dc482432c918d48a84f80cc79b12125e951f9bb6929efc7b4594e5523c576
+    image: ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.79@sha256:a985a591b8e29997a23b37136bcafa12b36ce3ebee5a012778e7e727864d19eb
     container_name: executor
     volumes:
       - /srv/executor-v2:/app/data
@@ -16,7 +16,7 @@ services:
     healthcheck:
       test: ['CMD', 'executor-host', 'health']
       interval: 30s
-      timeout: 5s
+      timeout: 30s
       retries: 3
       start_period: 120s
     user: '1000:1000'
