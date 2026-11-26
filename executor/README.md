@@ -2,7 +2,7 @@
 
 Executor v2 provides shared apps, service accounts, and an MCP endpoint. This
 stack runs on Komodo server **`debian-dev`**, with the published self-host image
-pinned to **2.0.0-beta.41** and its multi-architecture digest. It uses one CPU
+pinned to **2.0.0-beta.79** and its multi-architecture digest. It uses one CPU
 and at most 1 GiB RAM, with PGlite and persistent state on Debian's local disk.
 
 ## Access and sign-in
@@ -14,6 +14,9 @@ and at most 1 GiB RAM, with PGlite and persistent state on Debian's local disk.
   Funnel is not enabled.
 - Clients need Tailscale access to Debian. Cloud agents without tailnet
   connectivity cannot reach this deployment.
+- Executor Desktop uses the Web UI URL for **Sign in**. It checks
+  `/.well-known/executor` and then discovers desktop OAuth. The beta.41
+  server returns 404 on the identity endpoint used by beta.79 Desktop.
 
 The dashboard and apps' MCP/API surfaces are available at this address, but
 embedded app web pages are **not available**. `EXECUTOR_APP_UI_BASE_URL` is
@@ -38,7 +41,8 @@ passed through. Review any network capability change through a PR.
 
 The beta image includes upstream PostHog usage-analytics configuration. Compose
 sets `EXECUTOR_DISABLE_ANALYTICS=1` to prevent that new outbound analytics traffic.
-The local Motel trace store is separate and remains enabled.
+The local telemetry collector still uses `/app/motel-data`. Beta.79 leaves
+the older Motel data in place and stores new telemetry separately.
 
 ## Secrets and deployment
 
@@ -116,10 +120,12 @@ them. Executor does not join the NAS's Docker networks or need a Traefik route.
 ## Health, backups, and upgrades
 
 The native `executor-host health` check requests `/health`; Compose allows
-120 seconds for startup. Verify Komodo reports
-the stack running and the container healthy, then check the HTTPS UI and MCP
-authentication. An unauthenticated MCP request should receive an authentication
-challenge. Use Komodo for lifecycle operations and stack logs.
+120 seconds for startup and 30 seconds per probe to account for storage stalls.
+Verify Komodo reports the stack running and the container healthy, then check
+the HTTPS UI and MCP authentication. An unauthenticated MCP request should
+receive an authentication challenge. For desktop sign-in, check that
+`/.well-known/executor` returns `kind: self-host` and advertises the HTTPS origin
+above. Use Komodo for lifecycle operations and stack logs.
 
 Before a v2 update, stop the stack through Komodo and back up all of
 `/srv/executor-v2`, including `encryption.key`, together with the matching
@@ -152,4 +158,4 @@ recovery; never mount them into v1 or overwrite v1 with v2 data. If the original
 v1 database is damaged, stop the stack through Komodo before restoring its
 consistent snapshot and matching secrets with ownership `65532:65532`.
 
-Upstream reference: [self-host v2 beta instructions](https://github.com/UsefulSoftwareCo/executor/blob/executor%402.0.0-beta.41/apps/hosted/self-host/README.md).
+Upstream reference: [self-host v2 beta instructions](https://github.com/UsefulSoftwareCo/executor/blob/executor%402.0.0-beta.79/apps/hosted/self-host/README.md).
