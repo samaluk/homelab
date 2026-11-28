@@ -1,6 +1,6 @@
 services:
   personal:
-    image: eceasy/cli-proxy-api:v8.1.2@sha256:37733f2a1eaa029e3915a37087b617f85535fe1b25534c8d2cb7f5152e23b02b
+    image: eceasy/cli-proxy-api:v8.1.7@sha256:fd49f56bfcfbfc424709e501f4f8c9ff6e28ff8d8d039eb75d28850201511879
     volumes:
       - ${CPA_SCOPED_DATA_DIR:-/volume1/docker/cli-proxy-scoped}/personal:/data
     environment:
@@ -25,7 +25,7 @@ services:
     mem_limit: 256m
     stop_grace_period: 60s
   work:
-    image: eceasy/cli-proxy-api:v8.1.2@sha256:37733f2a1eaa029e3915a37087b617f85535fe1b25534c8d2cb7f5152e23b02b
+    image: eceasy/cli-proxy-api:v8.1.7@sha256:fd49f56bfcfbfc424709e501f4f8c9ff6e28ff8d8d039eb75d28850201511879
     volumes:
       - ${CPA_SCOPED_DATA_DIR:-/volume1/docker/cli-proxy-scoped}/work:/data
     environment:
